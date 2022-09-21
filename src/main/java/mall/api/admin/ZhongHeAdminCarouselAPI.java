@@ -33,11 +33,6 @@ import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author 13
- * @qq交流群 796794009
- * @email 2449207463@qq.com
- */
 @RestController
 @Api(value = "v1", tags = "8-1.后台管理系统轮播图模块接口")
 @RequestMapping("/manage-api/v1")
