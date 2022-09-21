@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mall.dao.ZhongHeAdminLogMapper">
+  <resultMap id="BaseResultMap" type="mall.entity.Log">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="admin_user_id" jdbcType="BIGINT" property="adminUserId" />
+    <result column="login_user_name" jdbcType="VARCHAR" property="loginUserName" />
+    <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
+    <result column="role" jdbcType="TINYINT" property="role" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="api" jdbcType="VARCHAR" property="api" />
+    <result column="detail" jdbcType="VARCHAR" property="detail" />
+    <result column="result" jdbcType="VARCHAR" property="result" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    admin_user_id, login_user_name, organization_id, role, update_time, api, detail, result
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_zhonghe_mall_admin_log
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectByOrganizationId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from tb_zhonghe_mall_admin_log
+    where organization_id = #{organization_id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from tb_zhonghe_mall_admin_log
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteBatch" parameterType="java.lang.Long">
+    delete from tb_zhonghe_mall_admin_log
+    where admin_user_id in
+    <foreach item="id" collection="ids" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </delete>
+  <insert id="insert" parameterType="mall.entity.Log">
+    insert into tb_zhonghe_mall_admin_log (admin_user_id, login_user_name, organization_id, role,
+    update_time, api, detail, result)
+    values (#{adminUserId,jdbcType=BIGINT}, #{loginUserName,jdbcType=VARCHAR}, #{organizationId,jdbcType=BIGINT},
+      #{role,jdbcType=TINYINT}, #{updateTime,jdbcType=TIMESTAMP},
+      #{api,jdbcType=VARCHAR}, #{detail,jdbcType=VARCHAR}, #{result,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="mall.entity.Log">
+    insert into tb_zhonghe_mall_admin_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="adminUserId != null">
+        admin_user_id,
+      </if>
+      <if test="loginUserName != null">
+        login_user_name,
+      </if>
+      <if test="organizationId != null">
+        organization_id,
+      </if>
+      <if test="role != null">
+        role,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="api != null">
+        api,
+      </if>
+      <if test="detail != null">
+        detail,
+      </if>
+      <if test="result != null">
+        result,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="adminUserId != null">
+        #{adminUserId,jdbcType=BIGINT},
+      </if>
+      <if test="loginUserName != null">
+        #{loginUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="organizationId != null">
+        #{organizationId,jdbcType=BIGINT},
+      </if>
+      <if test="role != null">
+        #{role,jdbcType=TINYINT},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="api != null">
+        #{api,jdbcType=VARCHAR},
+      </if>
+      <if test="detail != null">
+        #{detail,jdbcType=VARCHAR},
+      </if>
+      <if test="result != null">
+        #{result,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="mall.entity.Log">
+    update tb_zhonghe_mall_admin_log
+    <set>
+      <if test="adminUserId != null">
+        admin_user_id = #{adminUserId,jdbcType=BIGINT},
+      </if>
+      <if test="loginUserName != null">
+        login_user_name = #{loginUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="organizationId != null">
+        organization_id = #{organizationId,jdbcType=BIGINT},
+      </if>
+      <if test="role != null">
+        role = #{role,jdbcType=TINYINT},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="api != null">
+        api = #{api,jdbcType=VARCHAR},
+      </if>
+      <if test="detail != null">
+        detail = #{detail,jdbcType=VARCHAR},
+      </if>
+      <if test="result != null">
+        result = #{result,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="mall.entity.Log">
+    update tb_zhonghe_mall_admin_log
+    set admin_user_id = #{adminUserId,jdbcType=BIGINT},
+        login_user_name = #{loginUserName,jdbcType=VARCHAR},
+      organization_id = #{organizationId,jdbcType=BIGINT},
+      role = #{role,jdbcType=TINYINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      api = #{api,jdbcType=VARCHAR},
+      detail = #{detail,jdbcType=VARCHAR},
+      result = #{result,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

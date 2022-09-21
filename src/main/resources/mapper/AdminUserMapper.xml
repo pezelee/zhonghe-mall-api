@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mall.dao.AdminUserMapper">
+    <resultMap id="BaseResultMap" type="mall.entity.AdminUser">
+        <id column="admin_user_id" jdbcType="BIGINT" property="adminUserId" />
+        <result column="login_user_name" jdbcType="VARCHAR" property="loginUserName" />
+        <result column="login_password" jdbcType="VARCHAR" property="loginPassword" />
+        <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+        <result column="locked" jdbcType="TINYINT" property="locked" />
+        <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
+        <result column="org_name" jdbcType="VARCHAR" property="orgName" />
+        <result column="role" jdbcType="TINYINT" property="role" />
+        <result column="phone" jdbcType="VARCHAR" property="phone" />
+        <result column="sponsor" jdbcType="VARCHAR" property="sponsor" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_user" jdbcType="INTEGER" property="createUser"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_user" jdbcType="INTEGER" property="updateUser"/>
+
+    </resultMap>
+    <sql id="Base_Column_List">
+        admin_user_id, login_user_name, login_password, nick_name, locked, organization_id, role, phone, sponsor,
+        create_time, create_user, update_time, update_user
+    </sql>
+    <sql id="Join_Column_List">
+        admin_user_id, login_user_name, login_password, nick_name, locked,
+        self.organization_id,join1.org_name, role, phone, sponsor,
+        self.create_time, self.create_user, self.update_time, self.update_user
+    </sql>
+    <select id="login" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from tb_zhonghe_mall_admin_user
+        where login_user_name = #{userName,jdbcType=VARCHAR} AND login_password=#{password,jdbcType=VARCHAR} AND locked = 0
+    </select>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from tb_zhonghe_mall_admin_user
+        where admin_user_id = #{adminUserId,jdbcType=BIGINT}
+    </select>
+    <!--查询登录手机号是否重复-->
+    <select id="selectByLoginName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_zhonghe_mall_admin_user
+        where login_user_name = #{loginName} and locked = 0
+    </select>
+<!--根据客户经理号获取客户经理信息-->
+    <select id="selectBySponsor" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from tb_zhonghe_mall_admin_user
+        where sponsor = #{sponsor,jdbcType=VARCHAR} and locked =0
+    </select>
+    <insert id="insert" parameterType="mall.entity.AdminUser">
+        insert into tb_zhonghe_mall_admin_user (admin_user_id, login_user_name, login_password,
+        nick_name, locked, organization_id, role, phone,sponsor)
+        values (#{adminUserId,jdbcType=BIGINT}, #{loginUserName,jdbcType=VARCHAR}, #{loginPassword,jdbcType=VARCHAR},
+        #{nickName,jdbcType=VARCHAR}, #{locked,jdbcType=TINYINT},  #{organizationId,jdbcType=BIGINT},
+        #{role,jdbcType=TINYINT},#{phone,jdbcType=VARCHAR},#{sponsor,jdbcType=VARCHAR}), #{createTime,jdbcType=TIMESTAMP},
+      #{createUser,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=INTEGER}
+    </insert>
+    <insert id="insertSelective" parameterType="mall.entity.AdminUser">
+        insert into tb_zhonghe_mall_admin_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="adminUserId != null">
+                admin_user_id,
+            </if>
+            <if test="loginUserName != null">
+                login_user_name,
+            </if>
+            <if test="loginPassword != null">
+                login_password,
+            </if>
+            <if test="nickName != null">
+                nick_name,
+            </if>
+            <if test="locked != null">
+                locked,
+            </if>
+            <if test="organizationId != null">
+                organization_id,
+            </if>
+            <if test="role != null">
+                role,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="sponsor != null">
+                sponsor,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="createUser != null">
+                create_user,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="updateUser != null">
+                update_user,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="adminUserId != null">
+                #{adminUserId,jdbcType=BIGINT},
+            </if>
+            <if test="loginUserName != null">
+                #{loginUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="loginPassword != null">
+                #{loginPassword,jdbcType=VARCHAR},
+            </if>
+            <if test="nickName != null">
+                #{nickName,jdbcType=VARCHAR},
+            </if>
+            <if test="locked != null">
+                #{locked,jdbcType=TINYINT},
+            </if>
+            <if test="organizationId != null">
+                #{organizationId,jdbcType=BIGINT},
+            </if>
+            <if test="role != null">
+                #{role,jdbcType=TINYINT},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="sponsor != null">
+                #{sponsor,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUser != null">
+                #{createUser,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                #{updateUser,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="mall.entity.AdminUser">
+        update tb_zhonghe_mall_admin_user
+        <set>
+            <if test="loginUserName != null">
+                login_user_name = #{loginUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="loginPassword != null">
+                login_password = #{loginPassword,jdbcType=VARCHAR},
+            </if>
+            <if test="nickName != null">
+                nick_name = #{nickName,jdbcType=VARCHAR},
+            </if>
+            <if test="locked != null">
+                locked = #{locked,jdbcType=TINYINT},
+            </if>
+            <if test="organizationId != null">
+                organization_id = #{organizationId,jdbcType=BIGINT},
+            </if>
+            <if test="role != null">
+                role = #{role,jdbcType=TINYINT},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="sponsor != null">
+                sponsor = #{sponsor,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUser != null">
+                create_user = #{createUser,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser,jdbcType=INTEGER},
+            </if>
+        </set>
+        where admin_user_id = #{adminUserId,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="mall.entity.AdminUser">
+        update tb_zhonghe_mall_admin_user
+        set login_user_name = #{loginUserName,jdbcType=VARCHAR},
+        login_password = #{loginPassword,jdbcType=VARCHAR},
+        nick_name = #{nickName,jdbcType=VARCHAR},
+        locked = #{locked,jdbcType=TINYINT},
+        organization_id = #{organizationId,jdbcType=BIGINT},
+        role = #{role,jdbcType=TINYINT},
+        phone = #{phone,jdbcType=VARCHAR},
+        sponsor = #{sponsor,jdbcType=VARCHAR},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+        create_user = #{createUser,jdbcType=INTEGER},
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+        update_user = #{updateUser,jdbcType=INTEGER}
+        where admin_user_id = #{adminUserId,jdbcType=BIGINT}
+    </update>
+    <update id="lockByPrimaryKey" parameterType="java.lang.Long">
+    update tb_zhonghe_mall_admin_user
+    set locked = 1,
+<!--        <if test="update_user != null">-->
+<!--          update_user = #{update_user,jdbcType=INTEGER},-->
+<!--        </if>-->
+        update_time=now()
+    where admin_user_id = #{adminUserId,jdbcType=BIGINT} and locked = 0
+  </update>
+    <update id="lockUserBatch">
+        update tb_zhonghe_mall_admin_user
+        set locked=#{lockStatus} where admin_user_id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <select id="findMallAdminList" parameterType="Map" resultMap="BaseResultMap">
+        select
+        <include refid="Join_Column_List"/>
+        from tb_zhonghe_mall_admin_user  as self
+        LEFT JOIN tb_zhonghe_mall_organization as join1 on self.organization_id= join1.organization_id
+        where 1=1
+        <if test="loginName!=null and loginName!=''">
+            and login_name = #{loginName}
+        </if>
+        <if test="lockStatus!=null ">
+            and locked = #{lockStatus}
+        </if>
+        order by login_user_name desc
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <select id="getTotalMallAdmins" parameterType="Map" resultType="int">
+        select count(*) from tb_zhonghe_mall_admin_user
+        where 1=1
+        <if test="loginName!=null and loginName!=''">
+            and login_name = #{loginName}
+        </if>
+        <if test="lockStatus!=null">
+            and locked = #{lockStatus}
+        </if>
+    </select>
+
+    <select id="findMallAdminListByOrg" parameterType="Map" resultMap="BaseResultMap">
+        select
+        <include refid="Join_Column_List"/>
+        from tb_zhonghe_mall_admin_user  as self
+        LEFT JOIN tb_zhonghe_mall_organization as join1 on self.organization_id= join1.organization_id
+        where 1=1
+        <if test="loginName!=null and loginName!=''">
+            and login_name = #{loginName}
+        </if>
+        <if test="lockStatus!=null">
+            and locked = #{lockStatus}
+        </if>
+        <if test="organizationId =null and organizationId =''">
+            and self.organization_id = #{organizationId}
+        </if>
+        order by login_user_name desc
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <select id="getTotalMallAdminsByOrg" parameterType="Map" resultType="int">
+        select count(*) from tb_zhonghe_mall_admin_user
+        where 1=1
+        <if test="loginName!=null and loginName!=''">
+            and login_name = #{loginName}
+        </if>
+        <if test="lockStatus!=null">
+            and locked = #{lockStatus}
+        </if>
+        <if test="organizationId =null and organizationId =''">
+            and organization_id = #{organizationId}
+        </if>
+    </select>
+</mapper>

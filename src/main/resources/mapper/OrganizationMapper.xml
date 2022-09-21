@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mall.dao.OrganizationMapper">
+    <resultMap id="BaseResultMap" type="mall.entity.Organization">
+        <id column="organization_id" jdbcType="BIGINT" property="organizationId"/>
+        <result column="org_name" jdbcType="VARCHAR" property="orgName"/>
+        <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="is_deleted" jdbcType="TINYINT" property="isDeleted"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_user" jdbcType="INTEGER" property="createUser"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_user" jdbcType="INTEGER" property="updateUser"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    organization_id, org_name, description, is_deleted,
+    create_time, create_user, update_time, update_user
+  </sql>
+    <select id="findOrganizationList" parameterType="Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_zhonghe_mall_organization
+        where is_deleted = 0
+        order by organization_id desc
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+    <select id="getTotalOrganizations" parameterType="Map" resultType="int">
+        select count(*) from tb_zhonghe_mall_organization
+        where is_deleted = 0
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_zhonghe_mall_organization
+        where organization_id = #{organizationId,jdbcType=BIGINT} and is_deleted=0
+    </select>
+    <select id="selectByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_zhonghe_mall_organization
+        where org_name = #{orgName,jdbcType=VARCHAR} and is_deleted=0
+    </select>
+    <update id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    update tb_zhonghe_mall_organization
+        set is_deleted=1,update_time=now()
+    where organization_id = #{organizationId,jdbcType=BIGINT}
+  </update>
+    <insert id="insert" parameterType="mall.entity.Organization">
+    insert into tb_zhonghe_mall_organization (organization_id, org_name, description,
+      is_deleted, create_time,  create_user, update_time, update_user
+      )
+    values (#{organizationId,jdbcType=INTEGER}, #{orgName,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},
+      #{isDeleted,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP},
+      #{createUser,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=INTEGER}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="mall.entity.Organization">
+        insert into tb_zhonghe_mall_organization
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="organizationId != null">
+                organization_id,
+            </if>
+            <if test="orgName != null">
+                org_name,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="isDeleted != null">
+                is_deleted,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="createUser != null">
+                create_user,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="updateUser != null">
+                update_user,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="organizationId != null">
+                #{organizationId,jdbcType=INTEGER},
+            </if>
+            <if test="orgName != null">
+                #{orgName,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="isDeleted != null">
+                #{isDeleted,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUser != null">
+                #{createUser,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                #{updateUser,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="mall.entity.Organization">
+        update tb_zhonghe_mall_organization
+        <set>
+            <if test="orgName != null">
+                org_name = #{orgName,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="isDeleted != null">
+                is_deleted = #{isDeleted,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUser != null">
+                create_user = #{createUser,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser,jdbcType=INTEGER},
+            </if>
+        </set>
+        where organization_id = #{organizationId,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="mall.entity.Organization">
+    update tb_zhonghe_mall_organization
+    set org_name = #{orgName,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      is_deleted = #{isDeleted,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=INTEGER}
+    where organization_id = #{organizationId,jdbcType=BIGINT}
+  </update>
+    <update id="deleteBatch">
+        update tb_zhonghe_mall_organization
+        set is_deleted=1,
+        <if test="updateUser != null">
+            update_user = #{updateUser,jdbcType=INTEGER},
+        </if>
+        update_time=now()
+        where organization_id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+</mapper>

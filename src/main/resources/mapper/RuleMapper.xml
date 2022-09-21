@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mall.dao.RuleMapper">
+  <resultMap id="BaseResultMap" type="mall.entity.Rule">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="activity_id" jdbcType="BIGINT" property="activityId" />
+    <result column="activity_name" jdbcType="VARCHAR" property="activityName" />
+    <result column="notice_empty" jdbcType="VARCHAR" property="noticeEmpty" />
+    <result column="notice_lv1" jdbcType="VARCHAR" property="noticeLv1" />
+    <result column="notice_lv2" jdbcType="VARCHAR" property="noticeLv2" />
+    <result column="notice_lv3" jdbcType="VARCHAR" property="noticeLv3" />
+    <result column="notice_other" jdbcType="VARCHAR" property="noticeOther" />
+    <result column="vacancy" jdbcType="TINYINT" property="vacancy"/>
+    <result column="interval_lv1" jdbcType="INTEGER" property="intervalLv1" />
+    <result column="interval_lv2" jdbcType="INTEGER" property="intervalLv2" />
+    <result column="interval_lv3" jdbcType="INTEGER" property="intervalLv3" />
+    <result column="interval_draw" jdbcType="INTEGER" property="intervalDraw" />
+    <result column="person_interval_lv1" jdbcType="INTEGER" property="personIntervalLv1" />
+    <result column="person_interval_lv2" jdbcType="INTEGER" property="personIntervalLv2" />
+    <result column="person_interval_lv3" jdbcType="INTEGER" property="personIntervalLv3" />
+    <result column="guarantee_lv1" jdbcType="INTEGER" property="guaranteeLv1" />
+    <result column="guarantee_lv2" jdbcType="INTEGER" property="guaranteeLv2" />
+    <result column="guarantee_lv3" jdbcType="INTEGER" property="guaranteeLv3" />
+    <result column="period_1st" jdbcType="VARCHAR" property="period1st" />
+    <result column="period_2nd" jdbcType="VARCHAR" property="period2nd" />
+    <result column="expire_type" jdbcType="TINYINT" property="expireType"/>
+    <result column="expire_days" jdbcType="INTEGER" property="expireDays" />
+    <result column="status" jdbcType="TINYINT" property="status"/>
+    <result column="create_user" jdbcType="BIGINT" property="createUser"/>
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    <result column="update_user" jdbcType="BIGINT" property="updateUser"/>
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, activity_id, activity_name, notice_empty, notice_lv1, notice_lv2, notice_lv3, notice_other,
+    vacancy, interval_lv1, interval_lv2, interval_lv3, interval_draw,
+    person_interval_lv1, person_interval_lv2, person_interval_lv3,
+    guarantee_lv1, guarantee_lv2, guarantee_lv3, period_1st, period_2nd,
+    expire_type, expire_days, status,
+    create_user, create_time, update_user, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_zhonghe_mall_rule
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectByActivityId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from tb_zhonghe_mall_rule
+    where activity_id = #{activityId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from tb_zhonghe_mall_rule
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="mall.entity.Rule">
+    insert into tb_zhonghe_mall_rule (
+      id, activity_id, activity_name, notice_empty, notice_lv1, notice_lv2, notice_lv3, notice_other,
+      vacancy, interval_lv1, interval_lv2, interval_lv3, interval_draw,
+      person_interval_lv1, person_interval_lv2, person_interval_lv3,
+      guarantee_lv1, guarantee_lv2, guarantee_lv3, period_1st, period_2nd,
+      expire_type, expire_days, status,
+      create_user, create_time, update_user, update_time
+      )
+    values (
+      #{id,jdbcType=BIGINT}, #{activityId,jdbcType=BIGINT}, #{activityName,jdbcType=VARCHAR},
+      #{noticeEmpty,jdbcType=VARCHAR},#{noticeLv1,jdbcType=VARCHAR},#{noticeLv2,jdbcType=VARCHAR},
+      #{noticeLv3,jdbcType=VARCHAR},#{noticeOther,jdbcType=VARCHAR},  #{vacancy,jdbcType=TINYINT},
+      #{intervalLv1,jdbcType=INTEGER}, #{intervalLv2,jdbcType=INTEGER},
+      #{intervalLv3,jdbcType=INTEGER}, #{intervalDraw,jdbcType=INTEGER},
+      #{personIntervalLv1,jdbcType=INTEGER}, #{personIntervalLv2,jdbcType=INTEGER}, #{personIntervalLv3,jdbcType=INTEGER},
+      #{guaranteeLv1,jdbcType=INTEGER}, #{guaranteeLv2,jdbcType=INTEGER}, #{guaranteeLv3,jdbcType=INTEGER},
+      #{period1st,jdbcType=VARCHAR},#{period2nd,jdbcType=VARCHAR},
+      #{expireType,jdbcType=TINYINT}, #{expireDays,jdbcType=INTEGER}, #{status,jdbcType=TINYINT},
+      #{createUser,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP},
+      #{updateUser,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP},
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="mall.entity.Rule">
+    insert into tb_zhonghe_mall_rule
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="activityId != null">
+        activity_id,
+      </if>
+      <if test="activityName != null">
+        activity_name,
+      </if>
+      <if test="noticeEmpty != null">
+        notice_empty,
+      </if>
+      <if test="noticeLv1 != null">
+        notice_lv1,
+      </if>
+      <if test="noticeLv2 != null">
+        notice_lv2,
+      </if>
+      <if test="noticeLv3 != null">
+        notice_lv3,
+      </if>
+      <if test="noticeOther != null">
+        notice_other,
+      </if>
+      <if test="vacancy != null">
+        vacancy,
+      </if>
+      <if test="intervalLv1 != null">
+        interval_lv1,
+      </if>
+      <if test="intervalLv2 != null">
+        interval_lv2,
+      </if>
+      <if test="intervalLv3 != null">
+        interval_lv3,
+      </if>
+      <if test="intervalDraw != null">
+        interval_draw,
+      </if>
+      <if test="personIntervalLv1 != null">
+        person_interval_lv1,
+      </if>
+      <if test="personIntervalLv2 != null">
+        person_interval_lv2,
+      </if>
+      <if test="personIntervalLv3 != null">
+        person_interval_lv3,
+      </if>
+      <if test="guaranteeLv1 != null">
+        guarantee_lv1,
+      </if>
+      <if test="guaranteeLv2 != null">
+        guarantee_lv2,
+      </if>
+      <if test="guaranteeLv3 != null">
+        guarantee_lv3,
+      </if>
+      <if test="period1st != null">
+        period_1st,
+      </if>
+      <if test="period2nd != null">
+        period_2nd,
+      </if>
+      <if test="expireType != null">
+        expire_type,
+      </if>
+      <if test="expireDays != null">
+        expire_days,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="activityId != null">
+        #{activityId,jdbcType=BIGINT},
+      </if>
+      <if test="activityName != null">
+        #{activityName,jdbcType=VARCHAR},
+      </if>
+      <if test="noticeEmpty != null">
+        #{noticeEmpty,jdbcType=VARCHAR},
+      </if>
+      <if test="noticeLv1 != null">
+        #{noticeLv1,jdbcType=VARCHAR},
+      </if>
+      <if test="noticeLv2 != null">
+        #{noticeLv2,jdbcType=VARCHAR},
+      </if>
+      <if test="noticeLv3 != null">
+        #{noticeLv3,jdbcType=VARCHAR},
+      </if>
+      <if test="noticeOther != null">
+        #{noticeOther,jdbcType=VARCHAR},
+      </if>
+      <if test="vacancy != null">
+        #{vacancy,jdbcType=TINYINT},
+      </if>
+      <if test="intervalLv1 != null">
+        #{intervalLv1,jdbcType=INTEGER},
+      </if>
+      <if test="intervalLv2 != null">
+        #{intervalLv2,jdbcType=INTEGER},
+      </if>
+      <if test="intervalLv3 != null">
+        #{intervalLv3,jdbcType=INTEGER},
+      </if>
+      <if test="intervalDraw != null">
+        #{intervalDraw,jdbcType=INTEGER},
+      </if>
+      <if test="personIntervalLv1 != null">
+        #{personIntervalLv1,jdbcType=INTEGER},
+      </if>
+      <if test="personIntervalLv2 != null">
+        #{personIntervalLv2,jdbcType=INTEGER},
+      </if>
+      <if test="personIntervalLv3 != null">
+        #{personIntervalLv3,jdbcType=INTEGER},
+      </if>
+      <if test="guaranteeLv1 != null">
+        #{guaranteeLv1,jdbcType=INTEGER},
+      </if>
+      <if test="guaranteeLv2 != null">
+        #{guaranteeLv2,jdbcType=INTEGER},
+      </if>
+      <if test="guaranteeLv3 != null">
+        #{guaranteeLv3,jdbcType=INTEGER},
+      </if>
+      <if test="period1st != null">
+        #{period1st,jdbcType=VARCHAR},
+      </if>
+      <if test="period2nd != null">
+        #{period2nd,jdbcType=VARCHAR},
+      </if>
+      <if test="expireType != null">
+        #{expireType,jdbcType=TINYINT},
+      </if>
+      <if test="expireDays != null">
+        #{expireDays,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="mall.entity.Rule">
+    update tb_zhonghe_mall_rule
+    <set>
+      <if test="id != null">
+        id = #{id,jdbcType=BIGINT},
+      </if>
+      <if test="activityId != null">
+        activity_id = #{activityId,jdbcType=BIGINT},
+      </if>
+      <if test="activityName != null">
+        activity_name = #{activityName,jdbcType=VARCHAR},
+      </if>
+      <if test="noticeEmpty != null">
+        notice_empty = #{noticeEmpty,jdbcType=VARCHAR},
+      </if>
+      <if test="noticeLv1 != null">
+        notice_lv1 = #{noticeLv1,jdbcType=VARCHAR},
+      </if>
+      <if test="noticeLv2 != null">
+        notice_lv2 = #{noticeLv2,jdbcType=VARCHAR},
+      </if>
+      <if test="noticeLv3 != null">
+        notice_lv3 = #{noticeLv3,jdbcType=VARCHAR},
+      </if>
+      <if test="noticeOther != null">
+        notice_other = #{noticeOther,jdbcType=VARCHAR},
+      </if>
+      <if test="vacancy != null">
+        vacancy = #{vacancy,jdbcType=TINYINT},
+      </if>
+      <if test="intervalLv1 != null">
+        interval_lv1 = #{intervalLv1,jdbcType=INTEGER},
+      </if>
+      <if test="intervalLv2 != null">
+        interval_lv2 = #{intervalLv2,jdbcType=INTEGER},
+      </if>
+      <if test="intervalLv3 != null">
+        interval_lv3 = #{intervalLv3,jdbcType=INTEGER},
+      </if>
+      <if test="intervalDraw != null">
+        interval_draw = #{intervalDraw,jdbcType=INTEGER},
+      </if>
+      <if test="personIntervalLv1 != null">
+        person_interval_lv1 = #{personIntervalLv1,jdbcType=INTEGER},
+      </if>
+      <if test="personIntervalLv2 != null">
+        person_interval_lv2 = #{personIntervalLv2,jdbcType=INTEGER},
+      </if>
+      <if test="personIntervalLv3 != null">
+        person_interval_lv3 = #{personIntervalLv3,jdbcType=INTEGER},
+      </if>
+      <if test="guaranteeLv1 != null">
+        guarantee_lv1 = #{guaranteeLv1,jdbcType=INTEGER},
+      </if>
+      <if test="guaranteeLv2 != null">
+        guarantee_lv2 = #{guaranteeLv2,jdbcType=INTEGER},
+      </if>
+      <if test="guaranteeLv3 != null">
+        guarantee_lv3 = #{guaranteeLv3,jdbcType=INTEGER},
+      </if>
+      <if test="period1st != null">
+        period_1st = #{period1st,jdbcType=VARCHAR},
+      </if>
+      <if test="period2nd != null">
+        period_2nd = #{period2nd,jdbcType=VARCHAR},
+      </if>
+      <if test="expireType != null">
+        expire_type = #{expireType,jdbcType=TINYINT},
+      </if>
+      <if test="expireDays != null">
+        expire_days = #{expireDays,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="mall.entity.Rule">
+    update tb_zhonghe_mall_rule
+    set activity_id = #{activityId,jdbcType=BIGINT},
+        activity_name = #{activityName,jdbcType=VARCHAR},
+        notice_empty = #{noticeEmpty,jdbcType=VARCHAR},
+        notice_lv1 = #{noticeLv1,jdbcType=VARCHAR},
+        notice_lv2 = #{noticeLv2,jdbcType=VARCHAR},
+        notice_lv3 = #{noticeLv3,jdbcType=VARCHAR},
+        notice_other = #{noticeOther,jdbcType=VARCHAR},
+        vacancy = #{vacancy,jdbcType=TINYINT},
+        interval_lv1 = #{intervalLv1,jdbcType=INTEGER},
+        interval_lv2 = #{intervalLv2,jdbcType=INTEGER},
+        interval_lv3 = #{intervalLv3,jdbcType=INTEGER},
+        interval_draw = #{intervalDraw,jdbcType=INTEGER},
+        person_interval_lv1 = #{personIntervalLv1,jdbcType=INTEGER},
+        person_interval_lv2 = #{personIntervalLv2,jdbcType=INTEGER},
+        person_interval_lv3 = #{personIntervalLv3,jdbcType=INTEGER},
+        guarantee_lv1 = #{guaranteeLv1,jdbcType=INTEGER},
+        guarantee_lv2 = #{guaranteeLv2,jdbcType=INTEGER},
+        guarantee_lv3 = #{guaranteeLv3,jdbcType=INTEGER},
+        period_1st = #{period1st,jdbcType=VARCHAR},
+        period_2st = #{period2st,jdbcType=VARCHAR},
+        expire_type = #{expireType,jdbcType=TINYINT},
+        expire_days = #{expireDays,jdbcType=INTEGER},
+        status = #{status,jdbcType=TINYINT},
+        create_user = #{createUser,jdbcType=BIGINT},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+        update_user = #{updateUser,jdbcType=BIGINT},
+        update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

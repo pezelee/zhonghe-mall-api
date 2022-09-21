@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mall.dao.ActivityMapper">
+    <resultMap id="BaseResultMap" type="mall.entity.Activity">
+        <id column="activity_id" jdbcType="BIGINT" property="activityId"/>
+        <result column="activity_name" jdbcType="VARCHAR" property="activityName"/>
+        <result column="activity_intro" jdbcType="VARCHAR" property="activityIntro"/>
+        <result column="organization_id" jdbcType="BIGINT" property="organizationId"/>
+        <result column="activity_cover_img" jdbcType="VARCHAR" property="activityCoverImg"/>
+        <result column="activity_carousel" jdbcType="VARCHAR" property="activityCarousel"/>
+        <result column="starttime" jdbcType="TIMESTAMP" property="starttime"/>
+        <result column="endtime" jdbcType="TIMESTAMP" property="endtime"/>
+        <result column="expiretime" jdbcType="TIMESTAMP" property="expiretime"/>
+        <result column="prizes" jdbcType="VARCHAR" property="prizes"/>
+        <result column="rule" jdbcType="BIGINT" property="rule"/>
+        <result column="template" jdbcType="BIGINT" property="template"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="create_user" jdbcType="INTEGER" property="createUser"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_user" jdbcType="INTEGER" property="updateUser"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="mall.entity.Activity">
+        <result column="activity_detail_content" jdbcType="LONGVARCHAR" property="activityDetailContent"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    activity_id, activity_name, activity_intro, organization_id, activity_cover_img, activity_carousel,
+    starttime, endtime, expiretime, prizes, rule, template, status, create_user, create_time, update_user, update_time
+  </sql>
+    <sql id="Blob_Column_List">
+    activity_detail_content
+  </sql>
+
+    <insert id="batchInsert">
+        INSERT INTO tb_zhonghe_mall_activity(activity_name, activity_intro, organization_id,activity_cover_img,
+        activity_carousel,activity_detail_content,
+        starttime,endtime,expiretime,prizes,
+        rule,template)
+        VALUES
+        <foreach collection="zhongHeMallActivityList" item="activity" separator=",">
+            (#{activity.activityName},#{activity.activityIntro},#{activity.organizationId},#{activity.activityCoverImg},#{activity.activityCarousel},#{activity.activityDetailContent},#{activity.starttime},#{activity.endtime},#{activity.expiretime},#{activity.prizes},#{activity.rule},#{activity.template})
+        </foreach>
+    </insert>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from tb_zhonghe_mall_activity
+        where activity_id = #{activityId,jdbcType=BIGINT}
+    </select>
+    <select id="selectByOrganizationAndName" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from tb_zhonghe_mall_activity
+        where activity_name = #{activityName,jdbcType=VARCHAR} and organization_id = #{organizationId,jdbcType=BIGINT}
+    </select>
+    <update id="batchUpdateStatus">
+        update tb_zhonghe_mall_activity
+        set status=#{status},
+        update_time=now() ,
+        update_user=#{adminId}
+        where activity_id in
+        <foreach item="id" collection="activityIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <select id="findAllActivityListByOrg" parameterType="Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_zhonghe_mall_activity
+        <where>
+                and organization_id = #{organizationId}
+                and status = 0
+                and starttime &lt; now()
+                and endtime &gt; now()
+        </where>
+        order by activity_id desc
+    </select>
+    <select id="findActivityList" parameterType="Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_zhonghe_mall_activity
+        <where>
+            <if test="activityName!=null and activityName!=''">
+                and activity_name like CONCAT('%',#{activityName},'%')
+            </if>
+            <if test="status!=null">
+                and status = #{status}
+            </if>
+            <if test="startDate!=null">
+                and DATE_FORMAT(endtime,'%Y-%m-%d %H:%i:%s') &gt;= STR_TO_DATE(#{startDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="endDate!=null">
+                and DATE_FORMAT(starttime,'%Y-%m-%d %H:%i:%s') &lt;= STR_TO_DATE(#{endDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+        </where>
+        order by activity_id desc
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+    <select id="findActivityListByOrg" parameterType="Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_zhonghe_mall_activity
+        <where>
+            <if test="activityName!=null and activityName!=''">
+                and activity_name like CONCAT('%',#{activityName},'%')
+            </if>
+            <if test="organizationId!=null and organizationId!=''">
+                and organization_id = #{organizationId}
+            </if>
+            <if test="status!=null">
+                and status = #{status}
+            </if>
+            <if test="startDate!=null">
+                and DATE_FORMAT(endtime,'%Y-%m-%d %H:%i:%s') &gt;= STR_TO_DATE(#{startDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="endDate!=null">
+                and DATE_FORMAT(starttime,'%Y-%m-%d %H:%i:%s') &lt;= STR_TO_DATE(#{endDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+        </where>
+        order by activity_id desc
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <select id="findActivityListBySearch" parameterType="Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_zhonghe_mall_activity
+        <where>
+            <if test="keyword!=null and keyword!=''">
+                and (activity_name like CONCAT('%',#{keyword},'%') or activity_intro like CONCAT('%',#{keyword},'%'))
+            </if>
+            <if test="organizationId!=null and organizationId!=''">
+                and organization_id = #{organizationId}
+            </if>
+            <if test="status!=null">
+                and status = #{status}
+            </if>
+        </where>
+        <if test="orderBy!=null and orderBy!=''">
+            <choose>
+                <when test="orderBy == 'new'">
+                    <!-- 按照发布时间倒序排列 -->
+                    order by activity_id desc
+                </when>
+<!--                <when test="orderBy == 'price'">-->
+<!--                    &lt;!&ndash; 按照售价从小到大排列 &ndash;&gt;-->
+<!--                    order by selling_price asc-->
+<!--                </when>-->
+                <otherwise>
+                    <!-- 默认按照开始时间从大到小排列 -->
+                    order by starttime desc
+                </otherwise>
+            </choose>
+        </if>
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <select id="getTotalActivityBySearch" parameterType="Map" resultType="int">
+        select count(*) from tb_zhonghe_mall_activity
+        <where>
+            <if test="keyword!=null and keyword!=''">
+                and (activity_name like CONCAT('%',#{keyword},'%') or activity_intro like CONCAT('%',#{keyword},'%'))
+            </if>
+            <if test="organizationId!=null and organizationId!=''">
+                and organization_id = #{organizationId}
+            </if>
+            <if test="status!=null">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByPrimaryKeys" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_zhonghe_mall_activity
+        where activity_id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        order by field(activity_id,
+        <foreach item="id" collection="list" separator=",">
+            #{id}
+        </foreach>
+        );
+    </select>
+    <select id="getTotalActivity" parameterType="Map" resultType="int">
+        select count(*) from tb_zhonghe_mall_activity
+        <where>
+            <if test="activityName!=null and activityName!=''">
+                and activity_name like CONCAT('%',#{activityName},'%')
+            </if>
+            <if test="status!=null">
+                and status = #{status}
+            </if>
+<!--            <if test="startTime != null and startTime.trim() != ''">-->
+<!--                and create_time &gt; #{startTime}-->
+<!--            </if>-->
+<!--            <if test="endTime != null and endTime.trim() != ''">-->
+<!--                and create_time &lt; #{endTime}-->
+<!--            </if>-->
+        </where>
+    </select>
+    <select id="getTotalActivityByOrg" parameterType="Map" resultType="int">
+        select count(*) from tb_zhonghe_mall_activity
+        <where>
+            <if test="activityName!=null and activityName!=''">
+                and activity_name like CONCAT('%',#{activityName},'%')
+            </if>
+            <if test="organizationId!=null and organizationId!=''">
+                and organization_id = #{organizationId}
+            </if>
+            <if test="status!=null">
+                and status = #{status}
+            </if>
+<!--            <if test="startTime != null and startTime.trim() != ''">-->
+<!--                and create_time &gt; #{startTime}-->
+<!--            </if>-->
+<!--            <if test="endTime != null and endTime.trim() != ''">-->
+<!--                and create_time &lt; #{endTime}-->
+<!--            </if>-->
+        </where>
+    </select>
+    <delete id="openByPrimaryKey" parameterType="java.lang.Long">
+    update from tb_zhonghe_mall_activity
+    set status=0
+    where activity_id = #{activityId,jdbcType=BIGINT}
+  </delete>
+    <delete id="closeByPrimaryKey" parameterType="java.lang.Long">
+    update from tb_zhonghe_mall_activity
+    set status=2
+    where activity_id = #{activityId,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" parameterType="mall.entity.Activity">
+    insert into tb_zhonghe_mall_activity (
+    activity_id, activity_name, activity_intro, organization_id, activity_cover_img, activity_carousel,activity_detail_content,
+    starttime, endtime, expiretime,prizes, rule, template, status, create_user, create_time, update_user, update_time
+      )
+    values (#{activityId,jdbcType=BIGINT}, #{activityName,jdbcType=VARCHAR},
+      #{activityIntro,jdbcType=VARCHAR}, #{organizationId,jdbcType=BIGINT},
+      #{activityCoverImg,jdbcType=VARCHAR}, #{activityCarousel,jdbcType=VARCHAR}, #{activityDetailContent,jdbcType=LONGVARCHAR},
+      #{starttime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=TIMESTAMP}, #{expiretime,jdbcType=TIMESTAMP}, #{prizes,jdbcType=VARCHAR},
+      #{rule,jdbcType=BIGINT}, #{template,jdbcType=BIGINT}, #{status,jdbcType=TINYINT},
+      #{createUser,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+      #{updateUser,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="mall.entity.Activity">
+        insert into tb_zhonghe_mall_activity
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="activityId != null">
+                activity_id,
+            </if>
+            <if test="activityName != null">
+                activity_name,
+            </if>
+            <if test="activityIntro != null">
+                activity_intro,
+            </if>
+            <if test="organizationId != null">
+                organization_id,
+            </if>
+            <if test="activityCoverImg != null">
+                activity_cover_img,
+            </if>
+            <if test="activityCarousel != null">
+                activity_carousel,
+            </if>
+            <if test="starttime != null">
+                starttime,
+            </if>
+            <if test="endtime != null">
+                endtime,
+            </if>
+            <if test="expiretime != null">
+                expiretime,
+            </if>
+            <if test="prizes != null">
+                prizes,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="rule != null">
+                rule,
+            </if>
+            <if test="template != null">
+                template,
+            </if>
+            <if test="createUser != null">
+                create_user,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateUser != null">
+                update_user,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="activityDetailContent != null">
+                activity_detail_content,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="activityId != null">
+                #{activityId,jdbcType=BIGINT},
+            </if>
+            <if test="activityName != null">
+                #{activityName,jdbcType=VARCHAR},
+            </if>
+            <if test="activityIntro != null">
+                #{activityIntro,jdbcType=VARCHAR},
+            </if>
+            <if test="organizationId != null">
+                #{organizationId,jdbcType=BIGINT},
+            </if>
+            <if test="activityCoverImg != null">
+                #{activityCoverImg,jdbcType=VARCHAR},
+            </if>
+            <if test="activityCarousel != null">
+                #{activityCarousel,jdbcType=VARCHAR},
+            </if>
+            <if test="starttime != null">
+                #{starttime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endtime != null">
+                #{endtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="expiretime != null">
+                #{expiretime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="prizes != null">
+                #{prizes,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=TINYINT},
+            </if>
+            <if test="rule != null">
+                #{rule,jdbcType=BIGINT},
+            </if>
+            <if test="template != null">
+                #{template,jdbcType=BIGINT},
+            </if>
+            <if test="createUser != null">
+                #{createUser,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                #{updateUser,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="activityDetailContent != null">
+                #{activityDetailContent,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="mall.entity.Activity">
+        update tb_zhonghe_mall_activity
+        <set>
+            <if test="activityName != null">
+                activity_name = #{activityName,jdbcType=VARCHAR},
+            </if>
+            <if test="activityIntro != null">
+                activity_intro = #{activityIntro,jdbcType=VARCHAR},
+            </if>
+            <if test="organizationId != null">
+                organization_id = #{organizationId,jdbcType=BIGINT},
+            </if>
+            <if test="activityCoverImg != null">
+                activity_cover_img = #{activityCoverImg,jdbcType=VARCHAR},
+            </if>
+            <if test="activityCarousel != null">
+                activity_carousel = #{activityCarousel,jdbcType=VARCHAR},
+            </if>
+            <if test="starttime != null">
+                starttime = #{starttime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endtime != null">
+                endtime = #{endtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="expiretime != null">
+                expiretime = #{expiretime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="prizes != null">
+                prizes = #{prizes,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="rule != null">
+                rule = #{rule,jdbcType=BIGINT},
+            </if>
+            <if test="template != null">
+                template = #{template,jdbcType=BIGINT},
+            </if>
+            <if test="createUser != null">
+                create_user = #{createUser,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="activityDetailContent != null">
+                activity_detail_content = #{activityDetailContent,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where activity_id = #{activityId,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="mall.entity.Activity">
+    update tb_zhonghe_mall_activity
+    set activity_name = #{activityName,jdbcType=VARCHAR},
+      activity_intro = #{activityIntro,jdbcType=VARCHAR},
+      organization_id = #{organizationId,jdbcType=BIGINT},
+      activity_cover_img = #{activityCoverImg,jdbcType=VARCHAR},
+      activity_carousel = #{activityCarousel,jdbcType=VARCHAR},
+      starttime = #{starttime,jdbcType=TIMESTAMP},
+      endtime = #{endtime,jdbcType=TIMESTAMP},
+      expiretime = #{expiretime,jdbcType=TIMESTAMP},
+      prizes = #{prizes,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      rule = #{rule,jdbcType=BIGINT},
+      template = #{template,jdbcType=BIGINT},
+      create_user = #{createUser,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      activity_detail_content = #{activityDetailContent,jdbcType=LONGVARCHAR}
+    where activity_id = #{activityId,jdbcType=BIGINT}
+  </update>
+    <update id="updateByPrimaryKey" parameterType="mall.entity.Activity">
+    update tb_zhonghe_mall_activity
+    set activity_name = #{activityName,jdbcType=VARCHAR},
+      activity_intro = #{activityIntro,jdbcType=VARCHAR},
+      organization_id = #{organizationId,jdbcType=BIGINT},
+      activity_cover_img = #{activityCoverImg,jdbcType=VARCHAR},
+      activity_carousel = #{activityCarousel,jdbcType=VARCHAR},
+      starttime = #{starttime,jdbcType=TIMESTAMP},
+      endtime = #{endtime,jdbcType=TIMESTAMP},
+      expiretime = #{expiretime,jdbcType=TIMESTAMP},
+      prizes = #{prizes,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      rule = #{rule,jdbcType=BIGINT},
+      template = #{template,jdbcType=BIGINT},
+      create_user = #{createUser,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where activity_id = #{activityId,jdbcType=BIGINT}
+  </update>
+</mapper>

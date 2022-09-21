@@ -1,0 +1,568 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mall.dao.LotteryDrawMapper">
+    <resultMap id="BaseResultMap" type="mall.entity.LotteryDraw">
+        <id column="lotterydraw_id" jdbcType="BIGINT" property="lotteryDrawId"/>
+        <result column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
+        <result column="sponsor" jdbcType="VARCHAR" property="sponsor"/>
+        <result column="organization_id" jdbcType="BIGINT" property="organizationId"/>
+        <result column="org_name" jdbcType="VARCHAR" property="orgName"/>
+        <result column="activity_id" jdbcType="BIGINT" property="activityId"/>
+        <result column="activity_name" jdbcType="VARCHAR" property="activityName"/>
+        <result column="draw_time" jdbcType="TIMESTAMP" property="drawTime"/>
+        <result column="expire_time" jdbcType="TIMESTAMP" property="expireTime"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="prize_id" jdbcType="BIGINT" property="prizeId"/>
+        <result column="prize_name" jdbcType="VARCHAR" property="prizeName"/>
+        <result column="prize_value" jdbcType="INTEGER" property="prizeValue"/>
+        <result column="prize_type" jdbcType="TINYINT" property="prizeType"/>
+        <result column="mail_no" jdbcType="VARCHAR" property="mailNo"/>
+        <result column="create_user" jdbcType="INTEGER" property="createUser"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_user" jdbcType="INTEGER" property="updateUser"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    lotterydraw_id, user_id, nick_name,sponsor, organization_id, org_name,
+    activity_id, activity_name, draw_time, expire_time, status, prize_id, prize_name,prize_value,prize_type,mail_no,
+    create_user, create_time, update_user, update_time
+    </sql>
+    <insert id="batchInsert">
+        INSERT INTO tb_zhonghe_mall_lotterydraw(user_id, nick_name,sponsor, organization_id, org_name,
+        activity_id, activity_name, draw_time, expire_time, status, prize_id, prize_name,prize_value,prize_type,mail_no,
+        create_user, create_time, update_user, update_time)
+        VALUES
+        <foreach collection="LotteryDrawList" item="lotterydraw" separator=",">
+            (#{lotterydraw.user_id},#{lotterydraw.nick_name},#{lotterydraw.sponsor},#{lotterydraw.organizationId},
+            #{lotterydraw.org_name},#{lotterydraw.activity_id},#{lotterydraw.activity_name},#{lotterydraw.draw_time},
+            #{lotterydraw.expire_time},#{lotterydraw.status},#{lotterydraw.prize_id},#{lotterydraw.prize_name},#{lotterydraw.prize_value},
+            #{lotterydraw.prize_type},#{lotterydraw.mail_no})
+        </foreach>
+    </insert>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_zhonghe_mall_lotterydraw
+        where lotterydraw_id = #{lotteryDrawId,jdbcType=BIGINT}
+    </select>
+    <update id="batchUpdateStatus">
+        update tb_zhonghe_mall_lotterydraw
+        set status=#{status},update_time=now() where lotterydraw_id in
+        <foreach item="id" collection="lotteryDrawIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from tb_zhonghe_mall_lotterydraw
+    where lotterydraw_id = #{lotteryDrawId,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" parameterType="mall.entity.LotteryDraw">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="lotteryDrawId">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    insert into tb_zhonghe_mall_lotterydraw (lotterydraw_id, user_id, nick_name,sponsor, organization_id, org_name,
+      activity_id, activity_name, draw_time, expire_time, status, prize_id, prize_name,prize_value, prize_type,mail_no,
+      create_user, create_time, update_user, update_time
+      )
+    values (#{lotteryDrawId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{nickName,jdbcType=VARCHAR},
+      #{sponsor,jdbcType=VARCHAR}, #{organizationId,jdbcType=BIGINT}, #{orgName,jdbcType=VARCHAR},
+      #{activityId,jdbcType=BIGINT}, #{activityName,jdbcType=VARCHAR}, #{drawTime,jdbcType=TIMESTAMP},
+      #{expireTime,jdbcType=TIMESTAMP},      #{status,jdbcType=TINYINT}, #{prizeId,jdbcType=BIGINT},
+      #{prizeName,jdbcType=VARCHAR}, #{prizeValue,jdbcType=INTEGER},#{prizeType,jdbcType=TINYINT}, #{mailNo,jdbcType=VARCHAR},
+      #{createUser,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+      #{updateUser,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="mall.entity.LotteryDraw">
+        insert into tb_zhonghe_mall_lotterydraw
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="lotteryDrawId != null">
+                lotterydraw_id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="nickName != null">
+                nick_name,
+            </if>
+            <if test="sponsor != null">
+                sponsor,
+            </if>
+            <if test="organizationId != null">
+                organization_id,
+            </if>
+            <if test="orgName != null">
+                org_name,
+            </if>
+            <if test="activityId != null">
+                activity_id,
+            </if>
+            <if test="activityName != null">
+                activity_name,
+            </if>
+            <if test="drawTime != null">
+                draw_time,
+            </if>
+            <if test="expireTime != null">
+                expire_time,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="prizeId != null">
+                prize_id,
+            </if>
+            <if test="prizeName != null">
+                prize_name,
+            </if>
+            <if test="prizeValue != null">
+                prize_value,
+            </if>
+            <if test="prizeType != null">
+                prize_type,
+            </if>
+            <if test="mailNo != null">
+                mail_no,
+            </if>
+            <if test="createUser != null">
+                create_user,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateUser != null">
+                update_user,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="lotteryDrawId != null">
+                #{lotteryDrawId,jdbcType=BIGINT},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="nickName != null">
+                #{nickName,jdbcType=VARCHAR},
+            </if>
+            <if test="sponsor != null">
+                #{sponsor,jdbcType=VARCHAR},
+            </if>
+            <if test="organizationId != null">
+                #{organization_id,jdbcType=BIGINT},
+            </if>
+            <if test="orgName != null">
+                #{orgName,jdbcType=VARCHAR},
+            </if>
+            <if test="activityId != null">
+                #{activityId,jdbcType=BIGINT},
+            </if>
+            <if test="activityName != null">
+                #{activityName,jdbcType=VARCHAR},
+            </if>
+            <if test="drawTime != null">
+                #{drawTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="expireTime != null">
+                #{expireTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=TINYINT},
+            </if>
+            <if test="prizeId != null">
+                #{prizeId,jdbcType=BIGINT},
+            </if>
+            <if test="prizeName != null">
+                #{prizeName,jdbcType=VARCHAR},
+            </if>
+            <if test="prizeValue != null">
+                #{prizeValue,jdbcType=INTEGER},
+            </if>
+            <if test="mailNo != null">
+                #{mailNo,jdbcType=VARCHAR},
+            </if>
+            <if test="createUser != null">
+                #{createUser,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                #{updateUser,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="mall.entity.LotteryDraw">
+        update tb_zhonghe_mall_lotterydraw
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="nickName != null">
+                nick_name = #{nickName,jdbcType=VARCHAR},
+            </if>
+            <if test="sponsor != null">
+                sponsor = #{sponsor,jdbcType=VARCHAR},
+            </if>
+            <if test="organizationId != null">
+                organization_id = #{organizationId,jdbcType=BIGINT},
+            </if>
+            <if test="orgName != null">
+                org_name = #{orgName,jdbcType=VARCHAR},
+            </if>
+            <if test="activityId != null">
+                activity_id = #{activityId,jdbcType=BIGINT},
+            </if>
+            <if test="activityName != null">
+                activity_name = #{activityName,jdbcType=VARCHAR},
+            </if>
+            <if test="drawTime != null">
+                draw_time = #{drawTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="expireTime != null">
+                expire_time = #{expireTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="prizeId != null">
+                prize_id = #{prizeId,jdbcType=BIGINT},
+            </if>
+            <if test="prizeName != null">
+                prize_name = #{prizeName,jdbcType=VARCHAR},
+            </if>
+            <if test="prizeValue != null">
+                prize_value = #{prizeValue,jdbcType=INTEGER},
+            </if>
+            <if test="prizeType != null">
+                prize_type = #{prizeType,jdbcType=TINYINT},
+            </if>
+            <if test="mailNo != null">
+                mail_no = #{mailNo,jdbcType=VARCHAR},
+            </if>
+            <if test="createUser != null">
+                create_user = #{createUser,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where lotterydraw_id = #{lotteryDrawId,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="mall.entity.LotteryDraw">
+    update tb_zhonghe_mall_lotterydraw
+    set user_id = #{userId,jdbcType=BIGINT},
+      nick_name = #{nickName,jdbcType=VARCHAR},
+      sponsor = #{sponsor,jdbcType=VARCHAR},
+      organization_id = #{organizationId,jdbcType=BIGINT},
+      org_name = #{orgName,jdbcType=VARCHAR},
+      activity_id = #{activityId,jdbcType=BIGINT},
+      activity_name = #{activityName,jdbcType=VARCHAR},
+      draw_time = #{drawTime,jdbcType=TIMESTAMP},
+      expire_time = #{expireTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=TINYINT},
+      prize_id = #{prizeId,jdbcType=BIGINT},
+      prize_name = #{prizeName,jdbcType=VARCHAR},
+      prize_value = #{prizeValue,jdbcType=INTEGER},
+      prize_type = #{prizeType,jdbcType=TINYINT},
+      mail_no = #{mailNo,jdbcType=VARCHAR},
+      create_user = #{createUser,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where lotterydraw_id = #{lotteryDrawId,jdbcType=BIGINT}
+  </update>
+    <select id="getPointList" parameterType="Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_zhonghe_mall_lotterydraw
+        <where>
+            <if test="userId!=null">
+                and user_id = #{userId}
+            </if>
+            and prize_type = 2
+        </where>
+        order by lotterydraw_id desc
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+    <select id="getTotalPointList" parameterType="Map" resultType="int">
+        select count(*) from tb_zhonghe_mall_lotterydraw
+        <where>
+            <if test="userId!=null">
+                and user_id = #{userId}
+            </if>
+            and prize_type = 2
+        </where>
+    </select>
+    <select id="findLotteryDrawList" parameterType="Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_zhonghe_mall_lotterydraw
+        <where>
+            <if test="activityId!=null and activityId!=''">
+                and activity_id = #{activityId}
+            </if>
+            <if test="activityName!=null and activityName!=''">
+                and activity_name like CONCAT('%',#{activityName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="sponsor!=null">
+                and sponsor = #{sponsor}
+            </if>
+            <if test="nickName!=null">
+                and nick_name like CONCAT('%',#{nickName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="prizeName!=null">
+                and prize_name like CONCAT('%',#{prizeName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="prizeType!=null">
+                and prize_type like CONCAT('%',#{prizeType,jdbcType=TINYINT},'%')
+            </if>
+            <if test="mailNo!=null">
+                and mail_no like CONCAT('%',#{mailNo,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="startDate!=null">
+                and DATE_FORMAT(draw_time,'%Y-%m-%d %H:%i:%s') &gt;= STR_TO_DATE(#{startDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="endDate!=null">
+                and DATE_FORMAT(draw_time,'%Y-%m-%d %H:%i:%s') &lt;= STR_TO_DATE(#{endDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="status!=null">
+                and status = #{status}
+            </if>
+        </where>
+        order by lotterydraw_id desc
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+    <select id="getTotalLotteryDraw" parameterType="Map" resultType="int">
+        select count(*) from tb_zhonghe_mall_lotterydraw
+        <where>
+            <if test="activityId!=null and activityId!=''">
+                and activity_id = #{activityId}
+            </if>
+            <if test="activityName!=null and activityName!=''">
+                and activity_name like CONCAT('%',#{activityName},'%')
+            </if>
+            <if test="sponsor!=null">
+                and sponsor = #{sponsor}
+            </if>
+            <if test="prizeName!=null">
+                and prize_name like CONCAT('%',#{prizeName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="prizeType!=null">
+                and prize_type like CONCAT('%',#{prizeType,jdbcType=TINYINT},'%')
+            </if>
+            <if test="mailNo!=null">
+                and mail_no like CONCAT('%',#{mailNo,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="startDate!=null">
+                and DATE_FORMAT(draw_time,'%Y-%m-%d %H:%i:%s') &gt;= STR_TO_DATE(#{startDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="endDate!=null">
+                and DATE_FORMAT(draw_time,'%Y-%m-%d %H:%i:%s') &lt;= STR_TO_DATE(#{endDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="nickName!=null">
+                and nick_name like CONCAT('%',#{nickName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="status!=null">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+    <select id="findLotteryDrawListByOrg" parameterType="Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_zhonghe_mall_lotterydraw
+        <where>
+            <if test="activityId!=null and activityId!=''">
+                and activity_id = #{activityId}
+            </if>
+            <if test="activityName!=null and activityName!=''">
+                and activity_name like CONCAT('%',#{activityName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="organizationId!=null and organizationId!=''">
+                and organization_id = #{organizationId}
+            </if>
+            <if test="sponsor!=null">
+                and sponsor = #{sponsor}
+            </if>
+            <if test="prizeName!=null">
+                and prize_name like CONCAT('%',#{prizeName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="prizeType!=null">
+                and prize_type like CONCAT('%',#{prizeType,jdbcType=TINYINT},'%')
+            </if>
+            <if test="mailNo!=null">
+                and mail_no like CONCAT('%',#{mailNo,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="startDate!=null">
+                and DATE_FORMAT(draw_time,'%Y-%m-%d %H:%i:%s') &gt;= STR_TO_DATE(#{startDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="endDate!=null">
+                and DATE_FORMAT(draw_time,'%Y-%m-%d %H:%i:%s') &lt;= STR_TO_DATE(#{endDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="nickName!=null">
+                and nick_name like CONCAT('%',#{nickName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="status!=null">
+                and status = #{status}
+            </if>
+        </where>
+        order by lotterydraw_id desc
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+    <select id="getTotalLotteryDrawByOrg" parameterType="Map" resultType="int">
+        select count(*) from tb_zhonghe_mall_lotterydraw
+        <where>
+            <if test="activityId!=null and activityId!=''">
+                and activity_id = #{activityId}
+            </if>
+            <if test="activityName!=null and activityName!=''">
+                and activity_name like CONCAT('%',#{activityName},'%')
+            </if>
+            <if test="organizationId!=null and organizationId!=''">
+                and organization_id = #{organizationId}
+            </if>
+            <if test="sponsor!=null">
+                and sponsor = #{sponsor}
+            </if>
+            <if test="mailNo!=null">
+                and mail_no like CONCAT('%',#{mailNo,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="prizeName!=null">
+                and prize_name like CONCAT('%',#{prizeName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="prizeType!=null">
+                and prize_type like CONCAT('%',#{prizeType,jdbcType=TINYINT},'%')
+            </if>
+            <if test="startDate!=null">
+                and DATE_FORMAT(draw_time,'%Y-%m-%d %H:%i:%s') &gt;= STR_TO_DATE(#{startDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="endDate!=null">
+                and DATE_FORMAT(draw_time,'%Y-%m-%d %H:%i:%s') &lt;= STR_TO_DATE(#{endDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="nickName!=null">
+                and nick_name like CONCAT('%',#{nickName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="status!=null">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+    <select id="findLotteryDrawListByUserId" parameterType="Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_zhonghe_mall_lotterydraw
+        <where> 1=1
+            <if test="activityId!=null and activityId!=''">
+                and activity_id = #{activityId}
+            </if>
+            <if test="activityName!=null and activityName!=''">
+                and activity_name like CONCAT('%',#{activityName},'%')
+            </if>
+            <if test="prizeName!=null">
+                and prize_name like CONCAT('%',#{prizeName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="prizeType!=null">
+                and prize_type like CONCAT('%',#{prizeType,jdbcType=TINYINT},'%')
+            </if>
+            <if test="status!=null">
+                 and status = #{status}
+            </if>
+            <if test="startDate!=null">
+                and DATE_FORMAT(draw_time,'%Y-%m-%d %H:%i:%s') &gt;= STR_TO_DATE(#{startDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="endDate!=null">
+                and DATE_FORMAT(draw_time,'%Y-%m-%d %H:%i:%s') &lt;= STR_TO_DATE(#{endDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="mailNo!=null">
+                and mail_no like CONCAT('%',#{mailNo,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="sponsor!=null">
+                and sponsor = #{sponsor}
+            </if>
+                and user_id = #{userId,jdbcType=BIGINT}
+        </where>
+        order by draw_time desc
+    </select>
+
+    <select id="getTotalLotteryDrawByUserId" parameterType="Map" resultType="int">
+        select count(*)
+        from tb_zhonghe_mall_lotterydraw
+        <where> 1=1
+            <if test="activityId!=null and activityId!=''">
+                and activity_id = #{activityId}
+            </if>
+            <if test="activityName!=null and activityName!=''">
+                and activity_name like CONCAT('%',#{activityName},'%')
+            </if>
+            <if test="prizeName!=null">
+                and prize_name like CONCAT('%',#{prizeName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="prizeType!=null">
+                and prize_type like CONCAT('%',#{prizeType,jdbcType=TINYINT},'%')
+            </if>
+            <if test="status!=null">
+                and status = #{status}
+            </if>
+            <if test="startDate!=null">
+                and DATE_FORMAT(draw_time,'%Y-%m-%d %H:%i:%s') &gt;= STR_TO_DATE(#{startDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="endDate!=null">
+                and DATE_FORMAT(draw_time,'%Y-%m-%d %H:%i:%s') &lt;= STR_TO_DATE(#{endDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="mailNo!=null">
+                and mail_no like CONCAT('%',#{mailNo,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="sponsor!=null">
+                and sponsor = #{sponsor}
+            </if>
+                and user_id = #{userId,jdbcType=BIGINT}
+        </where>
+    </select>
+<!-- 从已抽奖变成待发送  -->
+    <update id="toBeSent">
+        update tb_zhonghe_mall_lotterydraw
+        set status = 2,update_time = now()
+        where lotterydraw_id = #{lotteryDrawId,jdbcType=BIGINT}
+    </update>
+    <!-- 从待发送变成发送中 填写运单号 -->
+    <update id="sending" parameterType="mall.entity.LotteryDrawMail">
+        update tb_zhonghe_mall_lotterydraw
+        set mail_no = #{mailNo,jdbcType=VARCHAR},
+            status = 3,
+            update_time = now()
+        where lotterydraw_id = #{lotteryDrawId,jdbcType=BIGINT}
+    </update>
+    <!-- 从发送中变成发送完成  -->
+    <update id="sendOver">
+        update tb_zhonghe_mall_lotterydraw
+        set status = 4,update_time = now()
+        where lotterydraw_id = #{lotteryDrawId,jdbcType=BIGINT}
+    </update>
+    <!-- 从发送完成变成已接收  -->
+    <update id="received">
+        update tb_zhonghe_mall_lotterydraw
+        set status = 5
+--         ,update_time = now()
+        where lotterydraw_id = #{lotteryDrawId,jdbcType=BIGINT}
+    </update>
+</mapper>

@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mall.dao.ZhongHeMallPrizeMapper">
+    <resultMap id="BaseResultMap" type="mall.entity.ZhongHeMallPrize">
+        <id column="prize_id" jdbcType="BIGINT" property="prizeId"/>
+        <result column="organization_id" jdbcType="BIGINT" property="organizationId"/>
+        <result column="org_name" jdbcType="VARCHAR" property="orgName" />
+        <result column="prize_name" jdbcType="VARCHAR" property="prizeName"/>
+        <result column="prize_intro" jdbcType="VARCHAR" property="prizeIntro"/>
+        <result column="prize_category_id" jdbcType="BIGINT" property="prizeCategoryId"/>
+        <result column="prize_type" jdbcType="TINYINT" property="prizeType"/>
+        <result column="prize_cover_img" jdbcType="VARCHAR" property="prizeCoverImg"/>
+        <result column="prize_carousel" jdbcType="VARCHAR" property="prizeCarousel"/>
+        <result column="prize_value" jdbcType="INTEGER" property="prizeValue"/>
+        <result column="original_stock" jdbcType="INTEGER" property="originalStock"/>
+        <result column="stock_num" jdbcType="INTEGER" property="stockNum"/>
+        <result column="total_num" jdbcType="INTEGER" property="totalNum"/>
+        <result column="tag" jdbcType="VARCHAR" property="tag"/>
+        <result column="prize_sell_status" jdbcType="TINYINT" property="prizeSellStatus"/>
+        <result column="prize_weight" jdbcType="INTEGER" property="prizeWeight"/>
+        <result column="prize_level" jdbcType="TINYINT" property="prizeLevel"/>
+        <result column="prize_interval" jdbcType="INTEGER" property="prizeInterval"/>
+        <result column="create_user" jdbcType="BIGINT" property="createUser"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_user" jdbcType="BIGINT" property="updateUser"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="mall.entity.ZhongHeMallPrize">
+        <result column="prize_detail_content" jdbcType="LONGVARCHAR" property="prizeDetailContent"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        prize_id, organization_id, prize_name, prize_intro,prize_category_id, prize_type,
+        prize_cover_img, prize_carousel, prize_value, original_stock, stock_num, total_num, tag,
+        prize_sell_status, prize_weight, prize_level, prize_interval,
+        create_user, create_time, update_user, update_time
+  </sql>
+    <sql id="Join_Column_List">
+        prize_id, self.organization_id,join1.org_name, prize_name, prize_intro,prize_category_id, prize_type,
+        prize_cover_img, prize_carousel, prize_value, original_stock, stock_num, total_num, tag,
+        prize_sell_status, prize_weight, prize_level, prize_interval,
+        self.create_time, self.create_user, self.update_time, self.update_user
+  </sql>
+    <sql id="Blob_Column_List">
+    prize_detail_content
+  </sql>
+
+    <insert id="batchInsert">
+        INSERT INTO tb_zhonghe_mall_prize_info(organization_id, prize_name, prize_intro, prize_category_id, prize_type,
+        prize_cover_img, prize_carousel, prize_value,
+        prize_detail_content,prize_value, original_stock,stock_num,total_num
+        prize_weight,prize_level,prize_interval)
+        VALUES
+        <foreach collection="zhongHeMallPrizeList" item="prize" separator=",">
+            (#{prize.organizationId},#{prize.prizeIntro},#{prize.prizeCategoryId},
+            #{prize.prizeCoverImg},#{prize.prizeCarousel},#{prize.prizeValue},#{prize.prizeDetailContent},
+            #{prize.prizeValue},#{prize.originalStock},#{prize.stockNum},#{prize.totalNum},
+            #{prize.prizeWeight},#{prize.prizeLevel},#{prize.prizeInterval})
+        </foreach>
+    </insert>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from tb_zhonghe_mall_prize_info
+        where prize_id = #{prizeId,jdbcType=BIGINT}
+    </select>
+    <select id="selectByCategoryIdAndName" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from tb_zhonghe_mall_prize_info
+        where prize_name = #{prizeName,jdbcType=VARCHAR} and prize_category_id = #{prizeCategoryId,jdbcType=BIGINT} and organization_id= #{organizationId,jdbcType=BIGINT}
+    </select>
+    <update id="updateStockNum" parameterType="mall.entity.PrizeStockNumDTO">
+        update tb_zhonghe_mall_prize_info
+        set stock_num = stock_num - #{prizeCount,jdbcType=INTEGER},
+            total_num = total_num + #{prizeCount,jdbcType=INTEGER}
+        where prize_id = #{prizeId,jdbcType=BIGINT} and stock_num >= #{prizeCount,jdbcType=INTEGER} and prize_sell_status = 0
+    </update>
+    <update id="batchUpdateStatus">
+        update tb_zhonghe_mall_prize_info
+        set prize_sell_status=#{sellStatus},update_time=now(),update_user =#{adminId}  where 1=1
+        and prize_id in
+        <foreach item="id" collection="prizeIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+    <select id="findZhongHeMallPrizeList" parameterType="Map" resultMap="BaseResultMap">
+        select
+        <include refid="Join_Column_List"/>
+        from tb_zhonghe_mall_prize_info as self
+        LEFT JOIN tb_zhonghe_mall_organization as join1 on self.organization_id= join1.organization_id
+        <where>
+            <if test="prizeName!=null and prizeName!=''">
+                and prize_name like CONCAT('%',#{prizeName},'%')
+            </if>
+            <if test="prizeSellStatus!=null">
+                and prize_sell_status = #{prizeSellStatus}
+            </if>
+            <if test="prizeLevel!=null">
+                and prize_level = #{prizeLevel}
+            </if>
+            <if test="prizeType!=null">
+                and prize_type = #{prizeType}
+            </if>
+            <if test="startTime != null and startTime.trim() != ''">
+                and create_time &gt; #{startTime}
+            </if>
+            <if test="endTime != null and endTime.trim() != ''">
+                and create_time &lt; #{endTime}
+            </if>
+        </where>
+        order by prize_id desc
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <select id="findZhongHeMallPrizeListByOrg" parameterType="Map" resultMap="BaseResultMap">
+        select
+        <include refid="Join_Column_List"/>
+        from tb_zhonghe_mall_prize_info as self
+        LEFT JOIN tb_zhonghe_mall_organization as join1 on self.organization_id= join1.organization_id
+        <where>
+            <if test="prizeName!=null and prizeName!=''">
+                and prize_name like CONCAT('%',#{prizeName},'%')
+            </if>
+            <if test="prizeSellStatus!=null">
+                and prize_sell_status = #{prizeSellStatus}
+            </if>
+            <if test="prizeLevel!=null">
+                and prize_level = #{prizeLevel}
+            </if>
+            <if test="prizeType!=null">
+                and prize_type = #{prizeType}
+            </if>
+            <if test="organizationId!=null and organizationId!=''">
+                and admin.organization_id = #{organizationId}
+            </if>
+            <if test="startTime != null and startTime.trim() != ''">
+                and create_time &gt; #{startTime}
+            </if>
+            <if test="endTime != null and endTime.trim() != ''">
+                and create_time &lt; #{endTime}
+            </if>
+        </where>
+        order by prize_id desc
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <select id="findZhongHeMallPrizeListBySearch" parameterType="Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_zhonghe_mall_prize_info
+        <where>
+            <if test="organizationId!=null and organizationId!=''">
+                and organization_id = #{organizationId}
+            </if>
+            <if test="keyword!=null and keyword!=''">
+                and (prize_name like CONCAT('%',#{keyword},'%') or prize_intro like CONCAT('%',#{keyword},'%'))
+            </if>
+            <if test="prizeCategoryId!=null and prizeCategoryId!=''">
+                and prize_category_id = #{prizeCategoryId}
+            </if>
+            <if test="prizeSellStatus!=null">
+                and prize_sell_status = #{prizeSellStatus}
+            </if>
+            <if test="prizeLevel!=null">
+                and prize_level = #{prizeLevel}
+            </if>
+            <if test="prizeType!=null">
+                and prize_type = #{prizeType}
+            </if>
+        </where>
+        <if test="orderBy!=null and orderBy!=''">
+            <choose>
+                <when test="orderBy == 'new'">
+                    <!-- 按照发布时间倒序排列 -->
+                    order by prize_id desc
+                </when>
+                <otherwise>
+                    <!-- 默认按照库存数量从大到小排列 -->
+                    order by stock_num desc
+                </otherwise>
+            </choose>
+        </if>
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <select id="getTotalZhongHeMallPrizeBySearch" parameterType="Map" resultType="int">
+        select count(*) from tb_zhonghe_mall_prize_info
+        <where>
+            <if test="keyword!=null and keyword!=''">
+                and (prize_name like CONCAT('%',#{keyword},'%') or prize_intro like CONCAT('%',#{keyword},'%'))
+            </if>
+            <if test="organizationId!=null and organizationId!=''">
+                and organization_id = #{organizationId}
+            </if>
+            <if test="prizeCategoryId!=null and prizeCategoryId!=''">
+                and prize_category_id = #{prizeCategoryId}
+            </if>
+            <if test="prizeSellStatus!=null">
+                and prize_sell_status = #{prizeSellStatus}
+            </if>
+            <if test="prizeLevel!=null">
+                and prize_level = #{prizeLevel}
+            </if>
+            <if test="prizeType!=null">
+                and prize_type = #{prizeType}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByPrimaryKeys" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_zhonghe_mall_prize_info
+        where prize_id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        order by field(prize_id,
+        <foreach item="id" collection="list" separator=",">
+            #{id}
+        </foreach>
+        );
+    </select>
+    <select id="getTotalZhongHeMallPrize" parameterType="Map" resultType="int">
+        select count(*) from tb_zhonghe_mall_prize_info
+        <where>
+            <if test="prizeName!=null and prizeName!=''">
+                and prize_name like CONCAT('%',#{prizeName},'%')
+            </if>
+            <if test="prizeSellStatus!=null">
+                and prize_sell_status = #{prizeSellStatus}
+            </if>
+            <if test="prizeLevel!=null">
+                and prize_level = #{prizeLevel}
+            </if>
+            <if test="prizeType!=null">
+                and prize_type = #{prizeType}
+            </if>
+            <if test="startTime != null and startTime.trim() != ''">
+                and create_time &gt; #{startTime}
+            </if>
+            <if test="endTime != null and endTime.trim() != ''">
+                and create_time &lt; #{endTime}
+            </if>
+        </where>
+    </select>
+    <select id="getTotalZhongHeMallPrizeByOrg" parameterType="Map" resultType="int">
+        select count(*) from tb_zhonghe_mall_prize_info
+        <where>
+            <if test="organizationId!=null and organizationId!=''">
+                and organization_id = #{organizationId}
+            </if>
+            <if test="prizeName!=null and prizeName!=''">
+                and prize_name like CONCAT('%',#{prizeName},'%')
+            </if>
+            <if test="prizeSellStatus!=null">
+                and prize_sell_status = #{prizeSellStatus}
+            </if>
+            <if test="prizeLevel!=null">
+                and prize_level = #{prizeLevel}
+            </if>
+            <if test="prizeType!=null">
+                and prize_type = #{prizeType}
+            </if>
+            <if test="startTime != null and startTime.trim() != ''">
+                and create_time &gt; #{startTime}
+            </if>
+            <if test="endTime != null and endTime.trim() != ''">
+                and create_time &lt; #{endTime}
+            </if>
+        </where>
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from tb_zhonghe_mall_prize_info
+    where prize_id = #{prizeId,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" parameterType="mall.entity.ZhongHeMallPrize">
+    insert into tb_zhonghe_mall_prize_info (prize_id,organization_id, prize_name, prize_intro,prize_category_id, prize_type,
+      prize_cover_img, prize_carousel, prize_value, original_stock,
+      stock_num, total_num, tag, prize_sell_status, prize_weight, prize_level, prize_interval,
+      create_user, create_time,
+      update_user, update_time, prize_detail_content
+      )
+    values (#{prizeId,jdbcType=BIGINT}, #{organizationId,jdbcType=BIGINT}, #{prizeName,jdbcType=VARCHAR},
+      #{prizeIntro,jdbcType=VARCHAR}, #{prizeCategoryId,jdbcType=BIGINT}, #{prizeType,jdbcType=TINYINT},
+      #{prizeCoverImg,jdbcType=VARCHAR}, #{prizeCarousel,jdbcType=VARCHAR}, #{prizeValue,jdbcType=INTEGER},
+      #{originalStock,jdbcType=INTEGER}, #{stockNum,jdbcType=INTEGER}, #{totalNum,jdbcType=INTEGER},
+      #{tag,jdbcType=VARCHAR}, #{prizeSellStatus,jdbcType=TINYINT}, #{prizeWeight,jdbcType=INTEGER},
+      #{prizeLevel,jdbcType=TINYINT}, #{prizeInterval,jdbcType=INTEGER},
+      #{createUser,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP},
+      #{updateUser,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, #{prizeDetailContent,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="mall.entity.ZhongHeMallPrize">
+        insert into tb_zhonghe_mall_prize_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="prizeId != null">
+                prize_id,
+            </if>
+            <if test="organizationId != null">
+                organization_id,
+            </if>
+            <if test="prizeName != null">
+                prize_name,
+            </if>
+            <if test="prizeIntro != null">
+                prize_intro,
+            </if>
+            <if test="prizeCategoryId != null">
+                prize_category_id,
+            </if>
+            <if test="prizeType != null">
+                prize_type,
+            </if>
+            <if test="prizeCoverImg != null">
+                prize_cover_img,
+            </if>
+            <if test="prizeCarousel != null">
+                prize_carousel,
+            </if>
+            <if test="prizeValue != null">
+                prize_value,
+            </if>
+            <if test="originalStock != null">
+                original_stock,
+            </if>
+            <if test="stockNum != null">
+                stock_num,
+            </if>
+            <if test="totalNum != null">
+                total_num,
+            </if>
+            <if test="tag != null">
+                tag,
+            </if>
+            <if test="prizeSellStatus != null">
+                prize_sell_status,
+            </if>
+            <if test="prizeWeight != null">
+                prize_weight,
+            </if>
+            <if test="prizeLevel != null">
+                prize_level,
+            </if>
+            <if test="prizeInterval != null">
+                prize_interval,
+            </if>
+            <if test="createUser != null">
+                create_user,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateUser != null">
+                update_user,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="prizeDetailContent != null">
+                prize_detail_content,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="prizeId != null">
+                #{prizeId,jdbcType=BIGINT},
+            </if>
+            <if test="organizationId != null">
+                #{organizationId,jdbcType=BIGINT},
+            </if>
+            <if test="prizeName != null">
+                #{prizeName,jdbcType=VARCHAR},
+            </if>
+            <if test="prizeIntro != null">
+                #{prizeIntro,jdbcType=VARCHAR},
+            </if>
+            <if test="prizeCategoryId != null">
+                #{prizeCategoryId,jdbcType=BIGINT},
+            </if>
+            <if test="prizeType != null">
+                #{prizeType,jdbcType=TINYINT},
+            </if>
+            <if test="prizeCoverImg != null">
+                #{prizeCoverImg,jdbcType=VARCHAR},
+            </if>
+            <if test="prizeCarousel != null">
+                #{prizeCarousel,jdbcType=VARCHAR},
+            </if>
+            <if test="prizeValue != null">
+                #{prizeValue,jdbcType=INTEGER},
+            </if>
+            <if test="originalStock != null">
+                #{originalStock,jdbcType=INTEGER},
+            </if>
+            <if test="stockNum != null">
+                #{stockNum,jdbcType=INTEGER},
+            </if>
+            <if test="totalNum != null">
+                #{totalNum,jdbcType=INTEGER},
+            </if>
+            <if test="tag != null">
+                #{tag,jdbcType=VARCHAR},
+            </if>
+            <if test="prizeSellStatus != null">
+                #{prizeSellStatus,jdbcType=TINYINT},
+            </if>
+            <if test="prizeWeight != null">
+                #{prizeWeight,jdbcType=INTEGER},
+            </if>
+            <if test="prizeLevel != null">
+                #{prizeLevel,jdbcType=TINYINT},
+            </if>
+            <if test="prizeInterval != null">
+                #{prizeInterval,jdbcType=INTEGER},
+            </if>
+            <if test="createUser != null">
+                #{createUser,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                #{updateUser,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="prizeDetailContent != null">
+                #{prizeDetailContent,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="mall.entity.ZhongHeMallPrize">
+        update tb_zhonghe_mall_prize_info
+        <set>
+            <if test="organizationId != null">
+                organization_id = #{organizationId,jdbcType=BIGINT},
+            </if>
+            <if test="prizeName != null">
+                prize_name = #{prizeName,jdbcType=VARCHAR},
+            </if>
+            <if test="prizeIntro != null">
+                prize_intro = #{prizeIntro,jdbcType=VARCHAR},
+            </if>
+            <if test="prizeCategoryId != null">
+                prize_category_id = #{prizeCategoryId,jdbcType=BIGINT},
+            </if>
+            <if test="prizeType != null">
+                prize_type = #{prizeType,jdbcType=TINYINT},
+            </if>
+            <if test="prizeCoverImg != null">
+                prize_cover_img = #{prizeCoverImg,jdbcType=VARCHAR},
+            </if>
+            <if test="prizeCarousel != null">
+                prize_carousel = #{prizeCarousel,jdbcType=VARCHAR},
+            </if>
+            <if test="originalStock != null">
+                original_stock = #{originalStock,jdbcType=INTEGER},
+            </if>
+            <if test="prizeValue != null">
+                prize_value = #{prizeValue,jdbcType=INTEGER},
+            </if>
+            <if test="stockNum != null">
+                stock_num = #{stockNum,jdbcType=INTEGER},
+            </if>
+            <if test="totalNum != null">
+                total_num = #{totalNum,jdbcType=INTEGER},
+            </if>
+            <if test="tag != null">
+                tag = #{tag,jdbcType=VARCHAR},
+            </if>
+            <if test="prizeSellStatus != null">
+                prize_sell_status = #{prizeSellStatus,jdbcType=TINYINT},
+            </if>
+            <if test="prizeWeight != null">
+                prize_weight = #{prizeWeight,jdbcType=INTEGER},
+            </if>
+            <if test="prizeLevel != null">
+                prize_level = #{prizeLevel,jdbcType=TINYINT},
+            </if>
+            <if test="prizeInterval != null">
+                prize_interval = #{prizeInterval,jdbcType=INTEGER},
+            </if>
+            <if test="createUser != null">
+                create_user = #{createUser,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="prizeDetailContent != null">
+                prize_detail_content = #{prizeDetailContent,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where prize_id = #{prizeId,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="mall.entity.ZhongHeMallPrize">
+    update tb_zhonghe_mall_prize_info
+    set organization_id = #{organizationId,jdbcType=BIGINT},
+      prize_name = #{prizeName,jdbcType=VARCHAR},
+      prize_intro = #{prizeIntro,jdbcType=VARCHAR},
+      prize_category_id = #{prizeCategoryId,jdbcType=BIGINT},
+      prize_type = #{prizeType,jdbcType=TINYINT},
+      prize_cover_img = #{prizeCoverImg,jdbcType=VARCHAR},
+      prize_carousel = #{prizeCarousel,jdbcType=VARCHAR},
+      prize_value = #{originalStock,jdbcType=INTEGER},
+      original_stock = #{prizeValue,jdbcType=INTEGER},
+      stock_num = #{stockNum,jdbcType=INTEGER},
+      total_num = #{totalNum,jdbcType=INTEGER},
+      tag = #{tag,jdbcType=VARCHAR},
+      prize_sell_status = #{prizeSellStatus,jdbcType=TINYINT},
+      prize_weight = #{prizeWeight,jdbcType=INTEGER},
+      prize_level = #{prizeLevel,jdbcType=TINYINT},
+      prize_interval = #{prizeInterval,jdbcType=INTEGER},
+      create_user = #{createUser,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      prize_detail_content = #{prizeDetailContent,jdbcType=LONGVARCHAR}
+    where prize_id = #{prizeId,jdbcType=BIGINT}
+  </update>
+    <update id="updateByPrimaryKey" parameterType="mall.entity.ZhongHeMallPrize">
+    update tb_zhonghe_mall_prize_info
+    set organization_id = #{organizationId,jdbcType=BIGINT},
+      prize_name = #{prizeName,jdbcType=VARCHAR},
+      prize_intro = #{prizeIntro,jdbcType=VARCHAR},
+      prize_category_id = #{prizeCategoryId,jdbcType=BIGINT},
+      prize_type = #{prizeType,jdbcType=TINYINT},
+      prize_cover_img = #{prizeCoverImg,jdbcType=VARCHAR},
+      prize_carousel = #{prizeCarousel,jdbcType=VARCHAR},
+      prize_value = #{prizeValue,jdbcType=INTEGER},
+      original_stock = #{originalPrice,jdbcType=INTEGER},
+      stock_num = #{stockNum,jdbcType=INTEGER},
+      total_num = #{totalNum,jdbcType=INTEGER},
+      tag = #{tag,jdbcType=VARCHAR},
+      prize_sell_status = #{prizeSellStatus,jdbcType=TINYINT},
+      prize_weight = #{prizeWeight,jdbcType=INTEGER},
+      prize_level = #{prizeLevel,jdbcType=TINYINT},
+      prize_interval = #{prizeInterval,jdbcType=INTEGER},
+      create_user = #{createUser,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where prize_id = #{prizeId,jdbcType=BIGINT}
+  </update>
+</mapper>

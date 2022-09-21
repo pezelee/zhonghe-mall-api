@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mall.dao.ActivityDrawMapper">
+    <resultMap id="BaseResultMap" type="mall.entity.ActivityDraw">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="organization_id" jdbcType="BIGINT" property="organizationId"/>
+        <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+        <result column="login_name" jdbcType="VARCHAR" property="loginName" />
+        <result column="sponsor" jdbcType="VARCHAR" property="sponsor"/>
+        <result column="activity_id" jdbcType="BIGINT" property="activityId"/>
+        <result column="draws" jdbcType="INTEGER" property="draws"/>
+        <result column="create_user" jdbcType="INTEGER" property="createUser"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_user" jdbcType="INTEGER" property="updateUser"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, user_id,organization_id,
+    activity_id, draws,
+    create_user, create_time, update_user, update_time
+    </sql>
+    <sql id="Join_Column_List">
+    join1.user_id,join1.organization_id,join1.nick_name, join1.login_name,join1.sponsor,
+    self.activity_id, self.draws,
+    join1.create_time
+    </sql>
+    <insert id="batchInsert">
+        INSERT INTO tb_zhonghe_mall_activity_draws(
+        user_id, organization_id,
+        activity_id,draws,
+        create_user, create_time, update_user, update_time)
+        VALUES
+        <foreach collection="ActivityDrawList" item="activitydraw" separator=",">
+            (#{activitydraw.user_id},#{activitydraw.organizationId},
+            #{activitydraw.activity_id},#{activitydraw.draws},
+            #{activitydraw.create_user},#{activitydraw.create_time},#{activitydraw.update_user},#{activitydraw.update_time} )
+        </foreach>
+    </insert>
+    <insert id="batchInsertDraws">
+        INSERT INTO tb_zhonghe_mall_activity_draws(
+        user_id, organization_id,
+        activity_id,draws,
+        create_user, create_time, update_user, update_time)
+        VALUES
+        <foreach collection="ActivityDrawList" item="activitydraw" separator=",">
+            (#{activitydraw.userId},#{activitydraw.organizationId},
+            #{activitydraw.activityId},#{activitydraw.draws},
+            #{activitydraw.createUser},#{activitydraw.createTime},#{activitydraw.updateUser},#{activitydraw.updateTime} )
+        </foreach>
+    </insert>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_zhonghe_mall_activity_draws
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <select id="selectByKeyIds" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_zhonghe_mall_activity_draws
+        where activity_id = #{activityId,jdbcType=BIGINT} and user_id = #{userId,jdbcType=BIGINT}
+    </select>
+    <update id="updateDrawsByPrimaryKey">
+        update tb_zhonghe_mall_activity_draws
+        set draws=#{draws},update_time=now() where id = #{id}
+    </update>
+    <update id="batchUpdateDraws">
+        update tb_zhonghe_mall_activity_draws
+        set draws=#{draws},update_time=now() where id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from tb_zhonghe_mall_activity_draws
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" parameterType="mall.entity.ActivityDraw">
+        <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    insert into tb_zhonghe_mall_activity_draws (id, user_id, organization_id,
+      activity_id,draws,
+      create_user, create_time, update_user, update_time
+      )
+    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT},
+      #{organizationId,jdbcType=BIGINT}, #{activityId,jdbcType=BIGINT},#{draws,jdbcType=INTEGER},
+      #{createUser,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+      #{updateUser,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="mall.entity.ActivityDraw">
+        insert into tb_zhonghe_mall_activity_draws
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="organizationId != null">
+                organization_id,
+            </if>
+            <if test="activityId != null">
+                activity_id,
+            </if>
+            <if test="draws != null">
+                draws,
+            </if>
+            <if test="createUser != null">
+                create_user,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateUser != null">
+                update_user,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="organizationId != null">
+                #{organization_id,jdbcType=BIGINT},
+            </if>
+            <if test="activityId != null">
+                #{activityId,jdbcType=BIGINT},
+            </if>
+            <if test="draws != null">
+                #{draws,jdbcType=INTEGER},
+            </if>
+            <if test="createUser != null">
+                #{createUser,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                #{updateUser,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="mall.entity.ActivityDraw">
+        update tb_zhonghe_mall_activity_draws
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="organizationId != null">
+                organization_id = #{organizationId,jdbcType=BIGINT},
+            </if>
+            <if test="activityId != null">
+                activity_id = #{activityId,jdbcType=BIGINT},
+            </if>
+            <if test="draws != null">
+                draws = #{draws,jdbcType=INTEGER},
+            </if>
+            <if test="createUser != null">
+                create_user = #{createUser,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="mall.entity.ActivityDraw">
+    update tb_zhonghe_mall_activity_draws
+    set user_id = #{userId,jdbcType=BIGINT},
+      organization_id = #{organizationId,jdbcType=BIGINT},
+      activity_id = #{activityId,jdbcType=BIGINT},
+      draws = #{draws,jdbcType=INTEGER},
+      create_user = #{createUser,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+    <select id="findActivityDrawList" parameterType="Map" resultMap="BaseResultMap">
+        select
+        <include refid="Join_Column_List"/>
+        from tb_zhonghe_mall_user as join1
+        left join tb_zhonghe_mall_activity_draws as self on join1.user_id = self.user_id
+            <where>
+                <if test="organizationId!=null">
+                    and join1.organization_id = #{organizationId}
+                </if>
+                <if test="activityId!=null">
+                    and self.activity_id = #{activityId}
+                </if>
+                    and join1.is_deleted = 0
+                    and join1.locked_flag = 0
+            </where>
+        order by join1.user_id desc
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+    <select id="getTotalActivityDraw" parameterType="Map" resultType="int">
+        select count(*)
+        from tb_zhonghe_mall_user as u
+        left join tb_zhonghe_mall_activity_draws as d on u.user_id = d.user_id
+        <where>
+            <if test="organizationId!=null">
+                and u.organization_id = #{organizationId}
+            </if>
+            <if test="activityId!=null">
+                and d.activity_id = #{activityId}
+            </if>
+            and u.is_deleted = 0
+            and u.locked_flag = 0
+        </where>
+    </select>
+<!--    <select id="findActivityDrawList" parameterType="Map" resultMap="BaseResultMap">-->
+<!--        select-->
+<!--        <include refid="Base_Column_List"/>-->
+<!--        from tb_zhonghe_mall_activity_draws-->
+<!--        <where>-->
+<!--            <if test="activityName!=null and activityName!=''">-->
+<!--                and activity_name like CONCAT('%',#{activityName,jdbcType=VARCHAR},'%')-->
+<!--            </if>-->
+<!--            <if test="sponsor!=null">-->
+<!--                and sponsor = #{sponsor}-->
+<!--            </if>-->
+<!--            <if test="nickName!=null">-->
+<!--                and nick_name like CONCAT('%',#{nickName,jdbcType=VARCHAR},'%')-->
+<!--            </if>-->
+<!--        </where>-->
+<!--        order by id desc-->
+<!--        <if test="start!=null and limit!=null">-->
+<!--            limit #{start},#{limit}-->
+<!--        </if>-->
+<!--    </select>-->
+<!--    <select id="getTotalActivityDraw" parameterType="Map" resultType="int">-->
+<!--        select count(*) from tb_zhonghe_mall_activity_draws-->
+<!--&lt;!&ndash;        <where>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="activityName!=null and activityName!=''">&ndash;&gt;-->
+<!--&lt;!&ndash;                and activity_name like CONCAT('%',#{activityName,jdbcType=VARCHAR},'%')&ndash;&gt;-->
+<!--&lt;!&ndash;            </if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="sponsor!=null">&ndash;&gt;-->
+<!--&lt;!&ndash;                and sponsor = #{sponsor}&ndash;&gt;-->
+<!--&lt;!&ndash;            </if>&ndash;&gt;-->
+<!--&lt;!&ndash;            <if test="nickName!=null">&ndash;&gt;-->
+<!--&lt;!&ndash;                and nick_name like CONCAT('%',#{nickName,jdbcType=VARCHAR},'%')&ndash;&gt;-->
+<!--&lt;!&ndash;            </if>&ndash;&gt;-->
+<!--&lt;!&ndash;        </where>&ndash;&gt;-->
+<!--    </select>-->
+    <select id="findActivityDrawListByOrg" parameterType="Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_zhonghe_mall_activity_draws
+<!--        <where>-->
+<!--            <if test="organizationId!=null and organizationId!=''">-->
+<!--                and organization_id = #{organizationId}-->
+<!--            </if>-->
+<!--            <if test="activityName!=null and activityName!=''">-->
+<!--                and activity_name like CONCAT('%',#{activityName,jdbcType=VARCHAR},'%')-->
+<!--            </if>-->
+<!--            <if test="sponsor!=null">-->
+<!--                and sponsor = #{sponsor}-->
+<!--            </if>-->
+<!--            <if test="nickName!=null">-->
+<!--                and nick_name like CONCAT('%',#{nickName,jdbcType=VARCHAR},'%')-->
+<!--            </if>-->
+<!--        </where>-->
+        order by id desc
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+    <select id="getTotalActivityDrawByOrg" parameterType="Map" resultType="int">
+        select count(*) from tb_zhonghe_mall_activity_draws
+<!--        <where>-->
+<!--            <if test="organizationId!=null and organizationId!=''">-->
+<!--                and organization_id = #{organizationId}-->
+<!--            </if>-->
+<!--            <if test="activityName!=null and activityName!=''">-->
+<!--                and activity_name like CONCAT('%',#{activityName,jdbcType=VARCHAR},'%')-->
+<!--            </if>-->
+<!--            <if test="sponsor!=null">-->
+<!--                and sponsor = #{sponsor}-->
+<!--            </if>-->
+<!--            <if test="nickName!=null">-->
+<!--                and nick_name like CONCAT('%',#{nickName,jdbcType=VARCHAR},'%')-->
+<!--            </if>-->
+<!--        </where>-->
+    </select>
+    <select id="findActivityDrawListByUserId" parameterType="Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_zhonghe_mall_activity_draws
+<!--        <where> 1=1-->
+<!--            <if test="activityName!=null and activityName!=''">-->
+<!--                and activity_name like CONCAT('%',#{activityName,jdbcType=VARCHAR},'%')-->
+<!--            </if>-->
+<!--            <if test="sponsor!=null">-->
+<!--                and sponsor = #{sponsor}-->
+<!--            </if>-->
+<!--                and user_id = #{userId,jdbcType=BIGINT}-->
+<!--        </where>-->
+--         order by user_id desc
+    </select>
+
+    <select id="getTotalActivityDrawByUserId" parameterType="Map" resultType="int">
+        select count(*)
+        from tb_zhonghe_mall_activity_draws
+<!--        <where> 1=1-->
+<!--            <if test="activityName!=null and activityName!=''">-->
+<!--                and activity_name like CONCAT('%',#{activityName,jdbcType=VARCHAR},'%')-->
+<!--            </if>-->
+<!--            <if test="sponsor!=null">-->
+<!--                and sponsor = #{sponsor}-->
+<!--            </if>-->
+<!--                and user_id = #{userId,jdbcType=BIGINT}-->
+<!--        </where>-->
+    </select>
+
+<!-- 抽奖消耗次数  -->
+    <update id="drawOnce" parameterType="mall.entity.ActivityDraw">
+        update tb_zhonghe_mall_activity_draws
+        set draws = #{draws,jdbcType=INTEGER},update_time = now()
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>
