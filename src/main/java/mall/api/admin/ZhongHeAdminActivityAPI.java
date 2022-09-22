@@ -149,16 +149,19 @@ public class ZhongHeAdminActivityAPI {
         }
         logger.info("活动信息:{}", activity.toString());
         String prizes=activity.getPrizes();
-        String[] prizeIdList = prizes.split(",");
-        List<ZhongHeMallPrize> prizeList = new ArrayList<>();
-        for (String s : prizeIdList) {
-            Long prizeId = Long.valueOf(s);
-            ZhongHeMallPrize prizetemp = zhongHeMallPrizeService.getZhongHeMallPrizeById(prizeId);
-            prizeList.add(prizetemp);
+        String[] prizeIdList;
+        if (!prizes.equals("")) {
+            prizeIdList = prizes.split(",");
+            List<ZhongHeMallPrize> prizeList = new ArrayList<>();
+            for (String s : prizeIdList) {
+                Long prizeId = Long.valueOf(s);
+                ZhongHeMallPrize prizetemp = zhongHeMallPrizeService.getZhongHeMallPrizeById(prizeId);
+                prizeList.add(prizetemp);
+            }
+            logger.info("奖池信息:{}", prizeList.toString());
+            activityInfo.put("prizeList", prizeList);
         }
-        logger.info("奖池信息:{}", prizeList.toString());
         activityInfo.put("activity", activity);
-        activityInfo.put("prizeList", prizeList);
         adminLogService.addSuccessLog(adminUser,"获取单条活动信息接口",
                 "id:"+id.toString(),"SUCCESS");
         return ResultGenerator.genSuccessResult(activityInfo);

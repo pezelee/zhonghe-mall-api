@@ -54,15 +54,12 @@ public class ActivityAddParam {
     private Date expiretime;
 
     @ApiModelProperty("奖品列表")
-    @NotEmpty(message = "奖品列表不能为空")
     private String prizes;//活动奖品池:[1,2,5]
 
     @ApiModelProperty("规则id")
-    @NotNull(message = "规则id不能为空")
     private Long rule;
 
     @ApiModelProperty("模板id")
-    @NotNull(message = "模板id不能为空")
     private Long template;
 
     @ApiModelProperty("活动是否上架")
