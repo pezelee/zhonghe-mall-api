@@ -41,7 +41,7 @@ public interface AdminUserService {
      * @param nickName
      * @return
      */
-    Boolean updateName(Long loginUserId, String loginUserName, String nickName);
+    String updateName(Long loginUserId, String loginUserName, String nickName);
 
     /**
      * 登出接口

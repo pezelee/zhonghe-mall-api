@@ -103,8 +103,12 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    public Boolean updateName(Long Id, String loginUserName, String nickName) {
+    public String updateName(Long Id, String loginUserName, String nickName) {
         AdminUser adminUser = adminUserMapper.selectByPrimaryKey(Id);
+        //登录名重复
+        if (adminUserMapper.selectByLoginName(loginUserName) != null) {
+            return ServiceResultEnum.SAME_LOGIN_NAME_EXIST.getResult();
+        }
         //当前用户非空才可以进行更改
         if (adminUser != null) {
             //设置新名称并修改
@@ -112,10 +116,10 @@ public class AdminUserServiceImpl implements AdminUserService {
             adminUser.setNickName(nickName);
             if (adminUserMapper.updateByPrimaryKeySelective(adminUser) > 0) {
                 //修改成功则返回true
-                return true;
+                return ServiceResultEnum.SUCCESS.getResult();
             }
         }
-        return false;
+        return ServiceResultEnum.DB_ERROR.getResult();
     }
 
     @Override

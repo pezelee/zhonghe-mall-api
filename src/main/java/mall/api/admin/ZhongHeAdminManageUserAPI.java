@@ -129,11 +129,12 @@ public class ZhongHeAdminManageUserAPI {
         if (!isAdmin.equals(ServiceResultEnum.SUCCESS.getResult())) {
             return ResultGenerator.genFailResult(isAdmin);
         }
-        if (adminUserService.updateName(adminInfoParam.getAdminUserId(), adminInfoParam.getLoginUserName(), adminInfoParam.getNickName())) {
+        String result = adminUserService.updateName(adminInfoParam.getAdminUserId(), adminInfoParam.getLoginUserName(), adminInfoParam.getNickName());
+        if (result.equals(ServiceResultEnum.SUCCESS.getResult())) {
             adminLogService.addSuccessLog(adminUser,"修改管理员信息接口",adminInfoParam.toString(),"SUCCESS");
             return ResultGenerator.genSuccessResult();
         } else {
-            return ResultGenerator.genFailResult(ServiceResultEnum.DB_ERROR.getResult());
+            return ResultGenerator.genFailResult(result);
         }
     }
 
