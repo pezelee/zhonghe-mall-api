@@ -500,6 +500,7 @@
                 and sponsor = #{sponsor}
             </if>
                 and user_id = #{userId,jdbcType=BIGINT}
+                and expire_time &gt;= now()
         </where>
         order by draw_time desc
     </select>
@@ -536,6 +537,7 @@
                 and sponsor = #{sponsor}
             </if>
                 and user_id = #{userId,jdbcType=BIGINT}
+                and expire_time &gt;= now()
         </where>
     </select>
 <!-- 从已抽奖变成待发送  -->
