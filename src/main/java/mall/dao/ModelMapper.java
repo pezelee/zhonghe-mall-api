@@ -1,4 +1,3 @@
-
 package mall.dao;
 
 import mall.entity.Model;

@@ -1,4 +1,3 @@
-
 package mall.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
