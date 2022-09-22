@@ -58,9 +58,9 @@ public class ZhongHeMallPrizeServiceImpl implements ZhongHeMallPrizeService {
         if (goodsCategory == null || goodsCategory.getCategoryLevel().intValue() != ZhongHeMallCategoryLevelEnum.LEVEL_THREE.getLevel()) {
             return ServiceResultEnum.GOODS_CATEGORY_ERROR.getResult();
         }
-        if (prizeMapper.selectByCategoryIdAndName(prize.getPrizeName(), prize.getPrizeCategoryId(),prize.getOrganizationId()) != null) {
-            return ServiceResultEnum.SAME_PRIZE_EXIST.getResult();
-        }
+//        if (prizeMapper.selectByCategoryIdAndName(prize.getPrizeName(), prize.getPrizeCategoryId(),prize.getOrganizationId()) != null) {
+//            return ServiceResultEnum.SAME_PRIZE_EXIST.getResult();
+//        }
         prize.setUpdateTime(new Date());
         prize.setCreateTime(new Date());
         if (prizeMapper.insertSelective(prize) > 0) {
@@ -87,11 +87,11 @@ public class ZhongHeMallPrizeServiceImpl implements ZhongHeMallPrizeService {
         if (temp == null) {
             return ServiceResultEnum.DATA_NOT_EXIST.getResult();
         }
-        ZhongHeMallPrize temp2 = prizeMapper.selectByCategoryIdAndName(prize.getPrizeName(), prize.getPrizeCategoryId(),prize.getOrganizationId());
-        if (temp2 != null && !temp2.getPrizeId().equals(prize.getPrizeId())) {
-            //name和分类id相同且不同id 不能继续修改
-            return ServiceResultEnum.SAME_PRIZE_EXIST.getResult();
-        }
+//        ZhongHeMallPrize temp2 = prizeMapper.selectByCategoryIdAndName(prize.getPrizeName(), prize.getPrizeCategoryId(),prize.getOrganizationId());
+//        if (temp2 != null && !temp2.getPrizeId().equals(prize.getPrizeId())) {
+//            //name和分类id相同且不同id 不能继续修改
+//            return ServiceResultEnum.SAME_PRIZE_EXIST.getResult();
+//        }
         prize.setUpdateTime(new Date());
         if (prizeMapper.updateByPrimaryKeySelective(prize) > 0) {
             return ServiceResultEnum.SUCCESS.getResult();
