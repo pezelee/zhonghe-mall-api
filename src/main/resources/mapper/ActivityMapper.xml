@@ -205,12 +205,12 @@
             <if test="status!=null">
                 and status = #{status}
             </if>
-<!--            <if test="startTime != null and startTime.trim() != ''">-->
-<!--                and create_time &gt; #{startTime}-->
-<!--            </if>-->
-<!--            <if test="endTime != null and endTime.trim() != ''">-->
-<!--                and create_time &lt; #{endTime}-->
-<!--            </if>-->
+            <if test="startDate!=null">
+                and DATE_FORMAT(endtime,'%Y-%m-%d %H:%i:%s') &gt;= STR_TO_DATE(#{startDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="endDate!=null">
+                and DATE_FORMAT(starttime,'%Y-%m-%d %H:%i:%s') &lt;= STR_TO_DATE(#{endDate},'%Y-%m-%d %H:%i:%s')
+            </if>
         </where>
     </select>
     <select id="getTotalActivityByOrg" parameterType="Map" resultType="int">
@@ -225,12 +225,12 @@
             <if test="status!=null">
                 and status = #{status}
             </if>
-<!--            <if test="startTime != null and startTime.trim() != ''">-->
-<!--                and create_time &gt; #{startTime}-->
-<!--            </if>-->
-<!--            <if test="endTime != null and endTime.trim() != ''">-->
-<!--                and create_time &lt; #{endTime}-->
-<!--            </if>-->
+            <if test="startDate!=null">
+                and DATE_FORMAT(endtime,'%Y-%m-%d %H:%i:%s') &gt;= STR_TO_DATE(#{startDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="endDate!=null">
+                and DATE_FORMAT(starttime,'%Y-%m-%d %H:%i:%s') &lt;= STR_TO_DATE(#{endDate},'%Y-%m-%d %H:%i:%s')
+            </if>
         </where>
     </select>
     <delete id="openByPrimaryKey" parameterType="java.lang.Long">

@@ -106,7 +106,9 @@ public class ZhongHeAdminPrizeInfoAPI {
         BeanUtil.copyProperties(prizeAddParam, zhongHeMallPrize);
         zhongHeMallPrize.setCreateUser(adminUser.getAdminUserId());
         zhongHeMallPrize.setUpdateUser(adminUser.getAdminUserId());
-        zhongHeMallPrize.setOrganizationId(adminUser.getOrganizationId());
+        if (prizeAddParam.getOrganizationId() == null) {
+            zhongHeMallPrize.setOrganizationId(adminUser.getOrganizationId());
+        }
         String result = zhongHeMallPrizeService.saveZhongHeMallPrize(zhongHeMallPrize);
         if (ServiceResultEnum.SUCCESS.getResult().equals(result)) {
             adminLogService.addSuccessLog(adminUser,"新增奖品信息接口",prizeAddParam.toString(),"SUCCESS");
