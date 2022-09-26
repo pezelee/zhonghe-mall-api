@@ -48,6 +48,10 @@ public class ZhongHeMallOrganizationServiceImpl implements ZhongHeMallOrganizati
         if (temp == null) {
             return ServiceResultEnum.DATA_NOT_EXIST.getResult();
         }
+        Organization temp2 = organizationMapper.selectByName(organization.getOrgName());
+        if (temp2 != null && !organization.getOrganizationId().equals(temp2.getOrganizationId())) {
+            return ServiceResultEnum.SAME_ORG_NAME_EXIST.getResult();
+        }
         temp.setOrgName(organization.getOrgName());
         temp.setDescription(organization.getDescription());
         temp.setUpdateTime(new Date());
