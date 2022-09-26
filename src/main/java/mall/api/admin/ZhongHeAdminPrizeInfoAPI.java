@@ -51,6 +51,7 @@ public class ZhongHeAdminPrizeInfoAPI {
                        @RequestParam(required = false) @ApiParam(value = "奖品名称") String prizeName,
                        @RequestParam(required = false) @ApiParam(value = "奖品等级") Integer prizeLevel,
                        @RequestParam(required = false) @ApiParam(value = "发放方式") Integer prizeType,
+                       @RequestParam(required = false) @ApiParam(value = "组织Id") Long organizationId,
                        @RequestParam(required = false) @ApiParam(value = "上架状态 0-上架 1-下架") Integer prizeSellStatus,
                        @TokenToAdminUser AdminUserToken adminUser) {
         logger.info("奖品列表接口   AdminUser:{}",adminUser);
@@ -74,9 +75,26 @@ public class ZhongHeAdminPrizeInfoAPI {
             params.put("prizeSellStatus", prizeSellStatus);
         }
         Byte role=adminUser.getRole();
-        Long organizationId=adminUser.getOrganizationId();
+        if (role == 2) {
+            //非管理员没有权限
+            return ResultGenerator.genFailResult(ServiceResultEnum.PERMISSION_DENIED.getResult());
+        }else if(role == 1) {
+            //分行管理员
+            Long adminOrganizationId = adminUser.getOrganizationId();
+            if (organizationId != null) {
+                if (!adminOrganizationId.equals(organizationId)) {
+                    //分行管理员不可在其他分行活动
+                    return ResultGenerator.genFailResult(ServiceResultEnum.OTHER_ORG.getResult());
+                }
+                params.put("organizationId", organizationId);
+            }else {
+                params.put("organizationId", adminOrganizationId);
+            }
+
+        }else {
+            params.put("organizationId", organizationId);
+        }
         params.put("role", role);
-        params.put("organizationId", organizationId);
         PageQueryUtil pageUtil = new PageQueryUtil(params);
         adminLogService.addSuccessLog(adminUser,"奖品列表接口",params.toString(),"");
         return ResultGenerator.genSuccessResult(zhongHeMallPrizeService.getZhongHeMallPrizePage(pageUtil));
