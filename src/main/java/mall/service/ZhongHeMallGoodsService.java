@@ -1,7 +1,9 @@
  
 package mall.service;
 
+import mall.entity.AdminUserToken;
 import mall.entity.ZhongHeMallGoods;
+import mall.entity.excel.ImportGoods;
 import mall.util.PageQueryUtil;
 import mall.util.PageResult;
 
@@ -20,9 +22,19 @@ public interface ZhongHeMallGoodsService {
      * 添加商品
      *
      * @param goods
+     * @param adminUser
      * @return
      */
-    String saveZhongHeMallGoods(ZhongHeMallGoods goods);
+    String saveZhongHeMallGoods(ZhongHeMallGoods goods, AdminUserToken adminUser);
+
+    /**
+     * 导入时添加商品
+     *
+     * @param importGoodsgoods
+     * @param adminUser
+     * @return
+     */
+    String importGoods(ImportGoods importGoodsgoods, AdminUserToken adminUser);
 
     /**
      * 批量新增商品数据
@@ -36,9 +48,10 @@ public interface ZhongHeMallGoodsService {
      * 修改商品信息
      *
      * @param goods
+     * @param adminUser
      * @return
      */
-    String updateZhongHeMallGoods(ZhongHeMallGoods goods);
+    String updateZhongHeMallGoods(ZhongHeMallGoods goods, AdminUserToken adminUser);
 
     /**
      * 批量修改销售状态(上架下架)

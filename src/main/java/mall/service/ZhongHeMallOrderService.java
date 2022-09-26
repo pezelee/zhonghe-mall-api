@@ -9,6 +9,7 @@ import mall.api.mall.vo.ZhongHeMallUserAddressVO;
 import mall.entity.MallUser;
 import mall.entity.MallUserAddress;
 import mall.entity.ZhongHeMallOrder;
+import mall.entity.excel.ExportOrder;
 import mall.util.PageQueryUtil;
 import mall.util.PageResult;
 
@@ -77,6 +78,14 @@ public interface ZhongHeMallOrderService {
      * @return
      */
     PageResult getZhongHeMallOrdersPage(PageQueryUtil pageUtil);
+
+    /**
+     * 获得导出的订单数据
+     *
+     * @param pageUtil
+     * @return
+     */
+    List<ExportOrder> getZhongHeMallOrdersExport(PageQueryUtil pageUtil);
 
     /**
      * 订单信息修改

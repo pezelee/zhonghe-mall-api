@@ -2,6 +2,7 @@ package mall.util;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import mall.entity.excel.ImportError;
 import org.apache.poi.hssf.usermodel.HSSFDataValidation;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
@@ -21,10 +22,12 @@ import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -168,10 +171,35 @@ public class ExcelUtils {
         if (cname.trim().length() == 0) {
             return;
         }
+
         // 获取具体值
         String val = null;
         if (obj.containsKey(cname)) {
-            val = getString(obj.getString(cname));
+//            val = getString(obj.getString(cname));
+
+            // 判断是否为手机号
+            boolean phone = annotation.phone();
+            if (phone) {//字段为手机号时,从科学计数法转为字符串
+                String tempVal=getString(obj.getString(cname));
+
+                String regEx="^([\\+|-]?\\d+(.{0}|.\\d+))[Ee]{1}([\\+|-]?\\d+)$";
+                // 编译正则表达式
+                Pattern pattern = Pattern.compile(regEx);
+                // 忽略大小写的写法
+                // Pattern pat = Pattern.compile(regEx, Pattern.CASE_INSENSITIVE);
+                Matcher matcher = pattern.matcher(tempVal);
+                // 字符串是否与正则表达式相匹配
+                boolean rs = matcher.matches();
+                if (rs) {
+                    BigDecimal temp = new BigDecimal(tempVal);
+                    val = temp.toPlainString();
+                }else {
+                    errMsgList.add(String.format("[%s]的值格式不正确", cname));
+                    return;
+                }
+            }else {//字段不是手机号时,正常赋值
+                val = getString(obj.getString(cname));
+            }
         }
         if (val == null) {
             return;
@@ -197,6 +225,16 @@ public class ExcelUtils {
         if (maxLength > 0 && val.length() > maxLength) {
             errMsgList.add(String.format("[%s]长度不能超过%s个字符(当前%s个字符)", cname, maxLength, val.length()));
         }
+        // 判断是否符合最小值
+        String minStr = annotation.min();
+        if (!minStr.equals("")) {
+            int min = Integer.parseInt(minStr);
+            if (min > Integer.parseInt(val)) {
+                errMsgList.add(String.format("[%s]不能小于%s", cname, min));
+                return;
+            }
+        }
+
         // 判断当前属性是否有映射关系
         LinkedHashMap<String, String> kvMap = getKvMap(annotation.kv());
         if (!kvMap.isEmpty()) {
@@ -857,7 +895,8 @@ public class ExcelUtils {
     private static void write(HttpServletResponse response, SXSSFWorkbook book, String fileName) throws IOException {
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setCharacterEncoding("utf-8");
-        String name = new String(fileName.getBytes("GBK"), "ISO8859_1") + XLSX;
+        String name = URLEncoder.encode(fileName+".xlsx","utf-8");
+//        String name = new String(fileName.getBytes("GBK"), "ISO8859_1") + XLSX;
         response.addHeader("Content-Disposition", "attachment;filename=" + name);
         ServletOutputStream out = response.getOutputStream();
         book.write(out);
@@ -880,7 +919,11 @@ public class ExcelUtils {
             // 当数字类型长度超过8位时，改为字符串类型显示（Excel数字超过一定长度会显示为科学计数法）
             if (isNumeric(s) && s.length() < 8) {
                 cell.setCellType(CellType.NUMERIC);
-                cell.setCellValue(Double.parseDouble(s));
+                if (s.equals("")) {
+                    cell.setCellValue("");
+                }else {
+                    cell.setCellValue(Double.parseDouble(s));
+                }
                 return CELL_OTHER;
             } else {
                 cell.setCellType(CellType.STRING);
@@ -1001,6 +1044,13 @@ public class ExcelUtils {
             return s;
         }
         return s.trim();
+    }
+
+    public static ImportError newError(int rowNum, String rowTips){
+        ImportError importError = new ImportError();
+        importError.setRowNum(rowNum);
+        importError.setRowTips(rowTips);
+        return importError;
     }
 
 }

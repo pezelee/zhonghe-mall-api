@@ -12,22 +12,23 @@ import mall.config.annotation.TokenToAdminUser;
 import mall.entity.AdminUserToken;
 import mall.entity.GoodsCategory;
 import mall.entity.ZhongHeMallGoods;
+import mall.entity.excel.ExportGoods;
+import mall.entity.excel.ImportError;
+import mall.entity.excel.ImportGoods;
 import mall.service.AdminLogService;
 import mall.service.ZhongHeMallCategoryService;
 import mall.service.ZhongHeMallGoodsService;
-import mall.util.BeanUtil;
-import mall.util.PageQueryUtil;
-import mall.util.Result;
-import mall.util.ResultGenerator;
+import mall.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @Api(value = "v1", tags = "8-3.后台管理系统商品模块接口")
@@ -81,7 +82,7 @@ public class ZhongHeAdminGoodsInfoAPI {
         logger.info("新增商品信息接口  adminUser:{},goodsAddParam:{}", adminUser.toString(), goodsAddParam.toString());
         ZhongHeMallGoods zhongHeMallGoods = new ZhongHeMallGoods();
         BeanUtil.copyProperties(goodsAddParam, zhongHeMallGoods);
-        String result = zhongHeMallGoodsService.saveZhongHeMallGoods(zhongHeMallGoods);
+        String result = zhongHeMallGoodsService.saveZhongHeMallGoods(zhongHeMallGoods, adminUser);
         if (ServiceResultEnum.SUCCESS.getResult().equals(result)) {
             adminLogService.addSuccessLog(adminUser,"新增商品信息接口",goodsAddParam.toString(),"SUCCESS");
             return ResultGenerator.genSuccessResult();
@@ -100,7 +101,7 @@ public class ZhongHeAdminGoodsInfoAPI {
         logger.info("修改商品信息接口  adminUser:{},GoodsEditParam:{}", adminUser.toString(), goodsEditParam.toString());
         ZhongHeMallGoods zhongHeMallGoods = new ZhongHeMallGoods();
         BeanUtil.copyProperties(goodsEditParam, zhongHeMallGoods);
-        String result = zhongHeMallGoodsService.updateZhongHeMallGoods(zhongHeMallGoods);
+        String result = zhongHeMallGoodsService.updateZhongHeMallGoods(zhongHeMallGoods,adminUser);
         if (ServiceResultEnum.SUCCESS.getResult().equals(result)) {
             adminLogService.addSuccessLog(adminUser,"修改商品信息接口",goodsEditParam.toString(),"SUCCESS");
             return ResultGenerator.genSuccessResult();
@@ -161,6 +162,50 @@ public class ZhongHeAdminGoodsInfoAPI {
         } else {
             return ResultGenerator.genFailResult("修改失败");
         }
+    }
+
+    /**
+     * 用户导入
+     */
+    @PostMapping(value = "/goods/import")
+    @ApiOperation(value = "商品导入", notes = "商品导入")
+    public Result userImport(@RequestPart("file") MultipartFile file, @TokenToAdminUser AdminUserToken adminUser) throws Exception {
+        logger.info("商品导入接口 ,adminUser={}", adminUser.toString());
+        List<ImportGoods> goodsList = ExcelUtils.readMultipartFile(file, ImportGoods.class);
+//        logger.info("goodsList{}",goodsList.toString());
+        List<ImportError> errors = new ArrayList<>();
+        for(ImportGoods goods :goodsList){
+            if (goods.getRowTips().equals("")) {//通过导入格式校验
+//                logger.info(goods.toString());
+//                ZhongHeMallGoods zhongHeMallGoods = new ZhongHeMallGoods();
+                String addResult = zhongHeMallGoodsService.importGoods(goods,adminUser );
+
+//                logger.info(addResult.toString());
+                if (!ServiceResultEnum.SUCCESS.getResult().equals(addResult)) {
+                    //新增错误
+                    errors.add(ExcelUtils.newError(goods.getRowNum(),addResult));
+                }
+            }else {
+                //新增错误
+                errors.add(ExcelUtils.newError(goods.getRowNum(),goods.getRowTips()));
+
+            }
+        }
+//        adminLogService.addSuccessLog(adminUser,"商品导入接口","","SUCCESS");
+
+        logger.info(errors.toString());
+        adminLogService.addSuccessLog(adminUser,"商品导入接口","","SUCCESS");
+        return ResultGenerator.genSuccessResult(errors);
+    }
+
+    /**
+     * 下载商品导入模板
+     */
+    @GetMapping(value = "/goods/template")
+    @ApiOperation(value = "下载商品导入模板", notes = "下载商品导入模板")
+    public void template(HttpServletResponse response){
+        // 导出数据
+        ExcelUtils.exportTemplate(response, "商品导入模板", ExportGoods.class,true);
     }
 
 }

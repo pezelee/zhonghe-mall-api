@@ -8,6 +8,7 @@ import mall.common.ZhongHeMallException;
 import mall.dao.GoodsCategoryMapper;
 import mall.dao.ZhongHeMallGoodsMapper;
 import mall.entity.*;
+import mall.entity.excel.ImportGoods;
 import mall.service.ZhongHeMallGoodsService;
 import mall.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class ZhongHeMallGoodsServiceImpl implements ZhongHeMallGoodsService {
     }
 
     @Override
-    public String saveZhongHeMallGoods(ZhongHeMallGoods goods) {
+    public String saveZhongHeMallGoods(ZhongHeMallGoods goods, AdminUserToken adminUser) {
         GoodsCategory goodsCategory = goodsCategoryMapper.selectByPrimaryKey(goods.getGoodsCategoryId());
         // 分类不存在或者不是三级分类，则该参数字段异常
         if (goodsCategory == null || goodsCategory.getCategoryLevel().intValue() != ZhongHeMallCategoryLevelEnum.LEVEL_THREE.getLevel()) {
@@ -49,10 +50,45 @@ public class ZhongHeMallGoodsServiceImpl implements ZhongHeMallGoodsService {
         int minPoint = GoodsUtils.minPoint(sellPointDTOS);
         goods.setMinPoint(minPoint);
         goods.setVolume(0);
+        goods.setCreateTime(new Date());
+        goods.setUpdateTime(new Date());
+        goods.setCreateUser(adminUser.getAdminUserId());
+        goods.setUpdateUser(adminUser.getAdminUserId());
         if (goodsMapper.insertSelective(goods) > 0) {
             return ServiceResultEnum.SUCCESS.getResult();
         }
         return ServiceResultEnum.DB_ERROR.getResult();
+    }
+
+    @Override
+    public String importGoods(ImportGoods importGoodsgoods, AdminUserToken adminUser) {
+
+        GoodsCategory goodsCategory = goodsCategoryMapper.selectByLevelAndName((byte) 3,importGoodsgoods.getCategoryName());
+        if (goodsCategory == null) {
+            //分类名错误
+            return ServiceResultEnum.GOODS_CATEGORY_ERROR.getResult();
+        }
+        if (goodsMapper.selectByCategoryIdAndName(importGoodsgoods.getGoodsName(), goodsCategory.getCategoryId()) != null) {
+            return ServiceResultEnum.SAME_GOODS_EXIST.getResult();
+        }
+        ZhongHeMallGoods goods = new ZhongHeMallGoods();
+        BeanUtil.copyProperties(importGoodsgoods, goods);
+        goods.setMinPoint(importGoodsgoods.getSellingPointP());//最小兑换积分
+        goods.setGoodsCategoryId(goodsCategory.getCategoryId());
+        goods.setSellingPoint("("+importGoodsgoods.getSellingPointC()+"-"+importGoodsgoods.getSellingPointP()+")");
+        goods.setGoodsCoverImg("");
+        goods.setGoodsCarousel("");
+        goods.setGoodsSellStatus((byte) 0);
+        goods.setVolume(0);
+        goods.setCreateTime(new Date());
+        goods.setUpdateTime(new Date());
+        goods.setCreateUser(adminUser.getAdminUserId());
+        goods.setUpdateUser(adminUser.getAdminUserId());
+        if (goodsMapper.insertSelective(goods) > 0) {
+            return ServiceResultEnum.SUCCESS.getResult();
+        }
+        return ServiceResultEnum.DB_ERROR.getResult();
+//        return goods.toString();
     }
 
     @Override
@@ -63,7 +99,7 @@ public class ZhongHeMallGoodsServiceImpl implements ZhongHeMallGoodsService {
     }
 
     @Override
-    public String updateZhongHeMallGoods(ZhongHeMallGoods goods) {
+    public String updateZhongHeMallGoods(ZhongHeMallGoods goods, AdminUserToken adminUser) {
         GoodsCategory goodsCategory = goodsCategoryMapper.selectByPrimaryKey(goods.getGoodsCategoryId());
         // 分类不存在或者不是三级分类，则该参数字段异常
         if (goodsCategory == null || goodsCategory.getCategoryLevel().intValue() != ZhongHeMallCategoryLevelEnum.LEVEL_THREE.getLevel()) {
@@ -89,6 +125,7 @@ public class ZhongHeMallGoodsServiceImpl implements ZhongHeMallGoodsService {
         int minPoint = GoodsUtils.minPoint(sellPointDTOS);
         goods.setMinPoint(minPoint);
         goods.setUpdateTime(new Date());
+        goods.setUpdateUser(adminUser.getAdminUserId());
         if (goodsMapper.updateByPrimaryKeySelective(goods) > 0) {
             return ServiceResultEnum.SUCCESS.getResult();
         }

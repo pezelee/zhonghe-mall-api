@@ -22,8 +22,14 @@ public @interface ExcelImport {
     /** 是否为必填字段（默认为非必填） */
     boolean required() default false;
 
+    /** 是否为必填字段（默认为非必填） */
+    boolean phone() default false;
+
     /** 最大长度（默认255） */
     int maxLength() default 255;
+
+    /** 最小值 */
+    String min() default "";
 
     /** 导入唯一性验证（多个字段则取联合验证） */
     boolean unique() default false;

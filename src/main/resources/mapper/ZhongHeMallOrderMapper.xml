@@ -5,6 +5,7 @@
     <resultMap id="BaseResultMap" type="mall.entity.ZhongHeMallOrder">
         <id column="order_id" jdbcType="BIGINT" property="orderId"/>
         <result column="order_no" jdbcType="VARCHAR" property="orderNo"/>
+        <result column="organization_id" jdbcType="BIGINT" property="organizationId"/>
         <result column="user_id" jdbcType="BIGINT" property="userId"/>
         <result column="login_name" jdbcType="VARCHAR" property="loginName"/>
         <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
@@ -20,12 +21,37 @@
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
+    <resultMap id="ExportResultMap" type="mall.entity.excel.ExportOrder">
+        <id column="order_id" jdbcType="BIGINT" property="orderId"/>
+        <result column="order_no" jdbcType="VARCHAR" property="orderNo"/>
+        <result column="organization_id" jdbcType="BIGINT" property="organizationId"/>
+        <result column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="login_name" jdbcType="VARCHAR" property="loginName"/>
+        <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
+        <result column="total_price" jdbcType="INTEGER" property="totalPrice"/>
+        <result column="total_point" jdbcType="INTEGER" property="totalPoint"/>
+        <result column="pay_status" jdbcType="TINYINT" property="payStatus"/>
+        <result column="pay_type" jdbcType="TINYINT" property="payType"/>
+        <result column="pay_time" jdbcType="TIMESTAMP" property="payTime"/>
+        <result column="order_status" jdbcType="TINYINT" property="orderStatus"/>
+        <result column="mail_no" jdbcType="VARCHAR" property="mailNo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <result column="user_phone" jdbcType="VARCHAR" property="userPhone"/>
+        <result column="province_name" jdbcType="VARCHAR" property="provinceName"/>
+        <result column="city_name" jdbcType="VARCHAR" property="cityName"/>
+        <result column="region_name" jdbcType="VARCHAR" property="regionName"/>
+        <result column="detail_address" jdbcType="VARCHAR" property="detailAddress"/>
+    </resultMap>
     <sql id="Base_Column_List">
-    order_id, order_no, user_id, total_price, total_point, pay_status, pay_type, pay_time, order_status,
+    order_id, order_no, organization_id, user_id,login_name,nick_name,
+    total_price, total_point, pay_status, pay_type, pay_time, order_status,
     extra_info, mail_no, is_deleted, create_time, update_time
   </sql>
     <sql id="Join_Column_List">
-    self.order_id, self.order_no, self.user_id, self.total_price, self.total_point, self.pay_status, self.pay_type, self.pay_time,
+    self.order_id, self.order_no, self.organization_id, self.user_id, self.login_name, self.nick_name,
+    self.total_price, self.total_point, self.pay_status, self.pay_type, self.pay_time,
     self.order_status, self.extra_info, self.mail_no, self.is_deleted, self.create_time, self.update_time,
     j.login_name,j.nick_name
   </sql>
@@ -50,14 +76,54 @@
                  open="(" separator="," close=")">#{item}
         </foreach>
     </select>
-    <select id="findZhongHeMallOrderList" parameterType="Map" resultMap="BaseResultMap">
+    <select id="findZhongHeMallOrderExport" parameterType="Map" resultMap="ExportResultMap">
         select
-        <include refid="Join_Column_List"/>
+           self.order_id, order_no, organization_id, user_id,login_name,nick_name,
+           total_price, total_point, pay_status, pay_type, pay_time, order_status,
+           mail_no, is_deleted, create_time, update_time,
+           user_name,user_phone,province_name,city_name,region_name,detail_address
         from tb_zhonghe_mall_order as self
-        left join tb_zhonghe_mall_user as j on self.user_id = j.user_id
+        left join tb_zhonghe_mall_order_address as j on self.order_id = j.order_id
         <where>
             <if test="orderNo!=null and orderNo!=''">
                 and order_no = #{orderNo}
+            </if>
+            <if test="organizationId!=null">
+                and organization_id = #{organizationId}
+            </if>
+            <if test="userId!=null and userId!=''">
+                and self.user_id = #{userId}
+            </if>
+            <if test="payType!=null and payType!=''">
+                and pay_type = #{payType}
+            </if>
+            <if test="orderStatus!=null">
+                and order_status = #{orderStatus}
+            </if>
+            <if test="mailNo!=null">
+                and mail_no = #{mailNo}
+            </if>
+            <if test="startTime != null and startTime.trim() != ''">
+                and self.create_time &gt; #{startTime}
+            </if>
+            <if test="endTime != null and endTime.trim() != ''">
+                and self.create_time &lt; #{endTime}
+            </if>
+                and self.is_deleted = 0
+        </where>
+        order by self.create_time desc
+    </select>
+    <select id="findZhongHeMallOrderList" parameterType="Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_zhonghe_mall_order as self
+--         left join tb_zhonghe_mall_user as j on self.user_id = j.user_id
+        <where>
+            <if test="orderNo!=null and orderNo!=''">
+                and order_no = #{orderNo}
+            </if>
+            <if test="organizationId!=null">
+                and organization_id = #{organizationId}
             </if>
             <if test="userId!=null and userId!=''">
                 and self.user_id = #{userId}
@@ -93,6 +159,9 @@
             <if test="orderNo!=null and orderNo!=''">
                 and order_no = #{orderNo}
             </if>
+            <if test="organizationId!=null">
+                and organization_id = #{organizationId}
+            </if>
             <if test="userId!=null and userId!=''">
                 and user_id = #{userId}
             </if>
@@ -121,12 +190,13 @@
     where order_id = #{orderId,jdbcType=BIGINT} and is_deleted=0
   </update>
     <insert id="insert" parameterType="mall.entity.ZhongHeMallOrder">
-    insert into tb_zhonghe_mall_order (order_id, order_no, user_id,
+    insert into tb_zhonghe_mall_order (order_id, order_no, organization_id,user_id,login_name,nick_name,
       total_price, total_point, pay_status, pay_type,
       pay_time, order_status, extra_info, mail_no,
       is_deleted, create_time, update_time
       )
-    values (#{orderId,jdbcType=BIGINT}, #{orderNo,jdbcType=VARCHAR}, #{userId,jdbcType=BIGINT}, 
+    values (#{orderId,jdbcType=BIGINT}, #{orderNo,jdbcType=VARCHAR},#{organizationId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT},
+      #{loginName,jdbcType=VARCHAR},#{nickName,jdbcType=VARCHAR},
       #{totalPrice,jdbcType=INTEGER},#{totalPoint,jdbcType=INTEGER}, #{payStatus,jdbcType=TINYINT}, #{payType,jdbcType=TINYINT},
       #{payTime,jdbcType=TIMESTAMP}, #{orderStatus,jdbcType=TINYINT}, #{extraInfo,jdbcType=VARCHAR}, #{mailNo,jdbcType=VARCHAR},
       #{isDeleted,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
@@ -142,8 +212,17 @@
             <if test="orderNo != null">
                 order_no,
             </if>
+            <if test="organizationId != null">
+                organization_id,
+            </if>
             <if test="userId != null">
                 user_id,
+            </if>
+            <if test="loginName != null">
+                login_name,
+            </if>
+            <if test="nickName != null">
+                nick_name,
             </if>
             <if test="totalPrice != null">
                 total_price,
@@ -186,8 +265,17 @@
             <if test="orderNo != null">
                 #{orderNo,jdbcType=VARCHAR},
             </if>
+            <if test="organizationId != null">
+                #{organizationId,jdbcType=BIGINT},
+            </if>
             <if test="userId != null">
                 #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="loginName != null">
+                #{loginName,jdbcType=VARCHAR},
+            </if>
+            <if test="nickName != null">
+                #{nickName,jdbcType=VARCHAR},
             </if>
             <if test="totalPrice != null">
                 #{totalPrice,jdbcType=INTEGER},
@@ -254,8 +342,17 @@
             <if test="orderNo != null">
                 order_no = #{orderNo,jdbcType=VARCHAR},
             </if>
+            <if test="organizationId != null">
+                organization_id = #{organizationId,jdbcType=BIGINT},
+            </if>
             <if test="userId != null">
                 user_id = #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="loginName != null">
+                login_name = #{loginName,jdbcType=VARCHAR},
+            </if>
+            <if test="nickName != null">
+                nick_name = #{nickName,jdbcType=VARCHAR},
             </if>
             <if test="totalPrice != null">
                 total_price = #{totalPrice,jdbcType=INTEGER},
@@ -296,7 +393,10 @@
     <update id="updateByPrimaryKey" parameterType="mall.entity.ZhongHeMallOrder">
     update tb_zhonghe_mall_order
     set order_no = #{orderNo,jdbcType=VARCHAR},
+      organization_id = #{organizationId,jdbcType=BIGINT},
       user_id = #{userId,jdbcType=BIGINT},
+      login_name = #{loginName,jdbcType=VARCHAR},
+      nick_name = #{nickName,jdbcType=VARCHAR},
       total_price = #{totalPrice,jdbcType=INTEGER},
       total_point = #{totalPoint,jdbcType=INTEGER},
       pay_status = #{payStatus,jdbcType=TINYINT},

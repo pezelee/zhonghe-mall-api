@@ -11,19 +11,22 @@ import mall.api.mall.vo.ZhongHeMallUserVO;
 import mall.common.ServiceResultEnum;
 import mall.config.annotation.TokenToAdminUser;
 import mall.entity.AdminUserToken;
+import mall.entity.excel.ExportGoods;
+import mall.entity.excel.ExportOrder;
+import mall.entity.excel.ExportUser;
 import mall.service.AdminLogService;
 import mall.service.ZhongHeMallOrderService;
 import mall.service.ZhongHeMallUserService;
-import mall.util.PageQueryUtil;
-import mall.util.Result;
-import mall.util.ResultGenerator;
+import mall.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -48,7 +51,8 @@ public class ZhongHeAdminOrderAPI {
     public Result list(@RequestParam(required = false) @ApiParam(value = "页码，最小1 ") Integer pageNumber,
                        @RequestParam(required = false) @ApiParam(value = "每页条数，最小10条") Integer pageSize,
                        @RequestParam(required = false) @ApiParam(value = "订单号") String orderNo,
-                       @RequestParam(required = false) @ApiParam(value = "订单状态") Integer orderStatus, @TokenToAdminUser AdminUserToken adminUser) {
+                       @RequestParam(required = false) @ApiParam(value = "订单状态") Integer orderStatus,
+                       @TokenToAdminUser AdminUserToken adminUser) {
         logger.info("订单列表接口  adminUser:{}", adminUser.toString());
         if (pageNumber == null || pageNumber < 1 || pageSize == null || pageSize < 10) {
             return ResultGenerator.genFailResult("分页参数异常！");
@@ -63,10 +67,43 @@ public class ZhongHeAdminOrderAPI {
         if (orderStatus != null) {
             params.put("orderStatus", orderStatus);
         }
+        Byte role=adminUser.getRole();
+        Long organizationId=adminUser.getOrganizationId();
+        params.put("role", role);
+        if (role != 0) {
+            params.put("organizationId", organizationId);
+        }
         PageQueryUtil pageUtil = new PageQueryUtil(params);
         adminLogService.addSuccessLog(adminUser,"订单列表接口",params.toString(),"");
         return ResultGenerator.genSuccessResult(zhongHeMallOrderService.getZhongHeMallOrdersPage(pageUtil));
     }
+
+    /**
+     * 导出订单列表
+     */
+    @RequestMapping(value = "/orders/export", method = RequestMethod.GET)
+    @ApiOperation(value = "导出订单列表", notes = "可根据订单号和订单状态筛选")
+    public void export(@RequestParam(required = false) @ApiParam(value = "订单号") String orderNo,
+                       @RequestParam(required = false) @ApiParam(value = "订单状态") Integer orderStatus,
+                       @TokenToAdminUser AdminUserToken adminUser,
+                       HttpServletResponse response) {
+        logger.info("导出订单列表  adminUser:{}", adminUser.toString());
+        Map params = new HashMap(8);
+        if (!StringUtils.isEmpty(orderNo)) {
+            params.put("orderNo", orderNo);
+        }
+        if (orderStatus != null) {
+            params.put("orderStatus", orderStatus);
+        }
+        params.put("page", 1);
+        params.put("limit", 10);
+        PageQueryUtil pageUtil = new PageQueryUtil(params);
+        List<ExportOrder> result = zhongHeMallOrderService.getZhongHeMallOrdersExport(pageUtil);
+        // 导出数据
+        ExcelUtils.export(response, "订单列表", result,ExportOrder.class);
+    }
+
+
 
     @GetMapping("/orders/{orderId}")
     @ApiOperation(value = "订单详情接口", notes = "传参为订单号")

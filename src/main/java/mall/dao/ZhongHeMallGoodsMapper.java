@@ -18,6 +18,8 @@ public interface ZhongHeMallGoodsMapper {
 
     ZhongHeMallGoods selectByCategoryIdAndName(@Param("goodsName") String goodsName, @Param("goodsCategoryId") Long goodsCategoryId);
 
+    ZhongHeMallGoods selectByName(@Param("goodsName") String goodsName);
+
     int updateByPrimaryKeySelective(ZhongHeMallGoods record);
 
     int updateByPrimaryKeyWithBLOBs(ZhongHeMallGoods record);

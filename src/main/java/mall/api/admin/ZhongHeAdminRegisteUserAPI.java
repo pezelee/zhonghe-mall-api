@@ -8,16 +8,24 @@ import mall.api.admin.param.UserAddParam;
 import mall.common.ServiceResultEnum;
 import mall.config.annotation.TokenToAdminUser;
 import mall.entity.AdminUserToken;
+import mall.entity.excel.ExportGoods;
+import mall.entity.excel.ExportUser;
+import mall.entity.excel.ImportError;
+import mall.entity.excel.ImportUser;
 import mall.service.AdminLogService;
 import mall.service.ZhongHeMallUserService;
 import mall.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -98,7 +106,7 @@ public class ZhongHeAdminRegisteUserAPI {
     @ApiOperation(value = "新增用户", notes = "")
     public Result add(@RequestBody @Valid UserAddParam userAddParam,
                            @TokenToAdminUser AdminUserToken adminUser) {
-        logger.info("新增用户接口  loginName={},loginResult={}", userAddParam.toString(), adminUser.toString());
+        logger.info("新增用户接口  userAddParam={},adminUser={}", userAddParam.toString(), adminUser.toString());
         if (!NumberUtil.isPhone(userAddParam.getLoginUserName())){
             return ResultGenerator.genFailResult(ServiceResultEnum.LOGIN_NAME_IS_NOT_PHONE.getResult());
         }
@@ -111,15 +119,54 @@ public class ZhongHeAdminRegisteUserAPI {
             }
         }
         String addResult = zhongHeMallUserService.addUser(userAddParam,adminUser);
-
         logger.info("新增用户结果 api,loginResult={}", addResult);
-
-
         //注册成功
         if (ServiceResultEnum.SUCCESS.getResult().equals(addResult)) {
             adminLogService.addSuccessLog(adminUser,"新增用户接口",userAddParam.toString(),"SUCCESS");
             return ResultGenerator.genSuccessResult();
         }
         return ResultGenerator.genFailResult(addResult);
+    }
+
+    /**
+     * 用户导入
+     */
+    @PostMapping(value = "/users/import")
+    @ApiOperation(value = "用户导入", notes = "用户导入")
+    public Result userImport(@RequestPart("file") MultipartFile file, @TokenToAdminUser AdminUserToken adminUser) throws Exception {
+        logger.info("用户导入接口  ,adminUser={}", adminUser.toString());
+        List<ImportUser> users = ExcelUtils.readMultipartFile(file,ImportUser.class);
+        logger.info("users{}",users.toString());
+        List<ImportError> errors = new ArrayList<>();
+        for(ImportUser user :users){
+            if (user.getRowTips().equals("")) {//通过导入格式校验
+                logger.info(user.toString());
+                UserAddParam userAddParam = new UserAddParam();
+                userAddParam.setLoginUserName(user.getLoginUserName());//登录名
+                userAddParam.setLoginPassword(user.getLoginPassword());//登录密码
+                userAddParam.setNickName(user.getNickName());//用户昵称
+                userAddParam.setOrganizationId(adminUser.getOrganizationId());//组织ID
+                String addResult = zhongHeMallUserService.addUser(userAddParam,adminUser);
+                if (!ServiceResultEnum.SUCCESS.getResult().equals(addResult)) {
+                    //新增错误
+                    errors.add(ExcelUtils.newError(user.getRowNum(),addResult));
+                }
+            }else {
+                //新增错误
+                errors.add(ExcelUtils.newError(user.getRowNum(),user.getRowTips()));
+            }
+        }
+        adminLogService.addSuccessLog(adminUser,"用户导入接口","","SUCCESS");
+        return ResultGenerator.genSuccessResult(errors);
+    }
+
+    /**
+     * 下载用户导入模板
+     */
+    @GetMapping(value = "/users/template")
+    @ApiOperation(value = "下载用户导入模板", notes = "下载用户导入模板")
+    public void template(HttpServletResponse response){
+        // 导出数据
+        ExcelUtils.exportTemplate(response, "用户导入模板", ExportUser.class,true);
     }
 }

@@ -12,6 +12,8 @@ public class ZhongHeMallOrder {
 
     private String orderNo;
 
+    private Long organizationId;
+
     private Long userId;
 
     private String nickName;

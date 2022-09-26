@@ -1,6 +1,7 @@
 package mall.dao;
 
 import mall.entity.ZhongHeMallOrder;
+import mall.entity.excel.ExportOrder;
 import mall.util.PageQueryUtil;
 import org.apache.ibatis.annotations.Param;
 
@@ -24,6 +25,8 @@ public interface ZhongHeMallOrderMapper {
     List<ZhongHeMallOrder> findZhongHeMallOrderList(PageQueryUtil pageUtil);
 
     int getTotalZhongHeMallOrders(PageQueryUtil pageUtil);
+
+    List<ExportOrder> findZhongHeMallOrderExport(PageQueryUtil pageUtil);
 
     List<ZhongHeMallOrder> selectByPrimaryKeys(@Param("orderIds") List<Long> orderIds);
 

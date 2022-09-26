@@ -6,6 +6,7 @@ import mall.api.mall.vo.*;
 import mall.common.*;
 import mall.dao.*;
 import mall.entity.*;
+import mall.entity.excel.ExportOrder;
 import mall.service.ZhongHeMallOrderService;
 import mall.service.ZhongHeMallUserService;
 import mall.util.*;
@@ -268,6 +269,9 @@ public class ZhongHeMallOrderServiceImpl implements ZhongHeMallOrderService {
                 ZhongHeMallOrder zhongHeMallOrder = new ZhongHeMallOrder();
                 zhongHeMallOrder.setOrderNo(orderNo);
                 zhongHeMallOrder.setUserId(loginMallUser.getUserId());
+                zhongHeMallOrder.setLoginName(loginMallUser.getLoginName());
+                zhongHeMallOrder.setNickName(loginMallUser.getNickName());
+                zhongHeMallOrder.setOrganizationId(loginMallUser.getOrganizationId());
                 //总价
                 for (ZhongHeMallShoppingCartItemVO zhongHeMallShoppingCartItemVO : myShoppingCartItems) {
                     pointTotal += zhongHeMallShoppingCartItemVO.getGoodsCount() * zhongHeMallShoppingCartItemVO.getSellingPoint();
@@ -321,6 +325,23 @@ public class ZhongHeMallOrderServiceImpl implements ZhongHeMallOrderService {
         int total = zhongHeMallOrderMapper.getTotalZhongHeMallOrders(pageUtil);
         PageResult pageResult = new PageResult(zhongHeMallOrders, total, pageUtil.getLimit(), pageUtil.getPage());
         return pageResult;
+    }
+
+    @Override
+    public List<ExportOrder> getZhongHeMallOrdersExport(PageQueryUtil pageUtil) {
+        List<ExportOrder> zhongHeMallOrders = zhongHeMallOrderMapper.findZhongHeMallOrderExport(pageUtil);
+//        List<ExportOrder> result = new ArrayList<>();
+        for(ExportOrder order : zhongHeMallOrders){
+//            ExportOrder exportOrder = new ExportOrder();
+            order.setOrderStatusString(ZhongHeMallOrderStatusEnum.getZhongHeMallOrderStatusEnumByStatus(order.getOrderStatus()).getName());
+            order.setPayTypeString(PayTypeEnum.getPayTypeEnumByType(order.getPayType()).getName());
+            order.setPayStatusString(PayStatusEnum.getPayStatusEnumByStatus(order.getPayStatus()).getName());
+//            BeanUtil.copyProperties(order, exportOrder);
+//            result.add(order);
+        }
+
+
+        return zhongHeMallOrders;
     }
 
     @Override
