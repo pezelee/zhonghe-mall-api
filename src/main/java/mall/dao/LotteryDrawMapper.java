@@ -1,6 +1,7 @@
 package mall.dao;
 
 import mall.entity.*;
+import mall.entity.excel.ExportLotterydraw;
 import mall.util.PageQueryUtil;
 import org.apache.ibatis.annotations.Param;
 
@@ -27,6 +28,8 @@ public interface LotteryDrawMapper {
     List<LotteryDraw> getPointList(PageQueryUtil pageUtil);
 
     int getTotalPointList(PageQueryUtil pageUtil);
+
+    List<ExportLotterydraw> findLotteryDrawExport(PageQueryUtil pageUtil);
 
     List<LotteryDraw> findLotteryDrawList(PageQueryUtil pageUtil);
 

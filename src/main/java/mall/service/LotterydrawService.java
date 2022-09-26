@@ -3,8 +3,11 @@ package mall.service;
 
 import mall.api.admin.param.LotterydrawMailParam;
 import mall.entity.*;
+import mall.entity.excel.ExportLotterydraw;
 import mall.util.PageQueryUtil;
 import mall.util.PageResult;
+
+import java.util.List;
 
 public interface LotterydrawService {
     /**
@@ -14,6 +17,14 @@ public interface LotterydrawService {
      * @return
      */
     PageResult getLotteryDrawPage(PageQueryUtil pageUtil);
+
+    /**
+     * 后台分页
+     *
+     * @param pageUtil
+     * @return
+     */
+    List<ExportLotterydraw> getLotteryDrawExport(PageQueryUtil pageUtil);
 
     /**
      * 积分收入列表

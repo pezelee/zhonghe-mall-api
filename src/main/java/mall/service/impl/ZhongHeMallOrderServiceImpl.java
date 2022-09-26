@@ -331,14 +331,14 @@ public class ZhongHeMallOrderServiceImpl implements ZhongHeMallOrderService {
     public List<ExportOrder> getZhongHeMallOrdersExport(PageQueryUtil pageUtil) {
         List<ExportOrder> zhongHeMallOrders = zhongHeMallOrderMapper.findZhongHeMallOrderExport(pageUtil);
 //        List<ExportOrder> result = new ArrayList<>();
-        for(ExportOrder order : zhongHeMallOrders){
-//            ExportOrder exportOrder = new ExportOrder();
-            order.setOrderStatusString(ZhongHeMallOrderStatusEnum.getZhongHeMallOrderStatusEnumByStatus(order.getOrderStatus()).getName());
-            order.setPayTypeString(PayTypeEnum.getPayTypeEnumByType(order.getPayType()).getName());
-            order.setPayStatusString(PayStatusEnum.getPayStatusEnumByStatus(order.getPayStatus()).getName());
-//            BeanUtil.copyProperties(order, exportOrder);
-//            result.add(order);
-        }
+//        for(ExportOrder order : zhongHeMallOrders){
+////            ExportOrder exportOrder = new ExportOrder();
+//            order.setOrderStatusString(ZhongHeMallOrderStatusEnum.getZhongHeMallOrderStatusEnumByStatus(order.getOrderStatus()).getName());
+//            order.setPayTypeString(PayTypeEnum.getPayTypeEnumByType(order.getPayType()).getName());
+//            order.setPayStatusString(PayStatusEnum.getPayStatusEnumByStatus(order.getPayStatus()).getName());
+////            BeanUtil.copyProperties(order, exportOrder);
+////            result.add(order);
+//        }
 
 
         return zhongHeMallOrders;

@@ -11,6 +11,8 @@ public class LotteryDraw {
 
     private Long userId;
 
+    private String loginName;
+
     private String nickName;
 
     private String sponsor;//客户经理号

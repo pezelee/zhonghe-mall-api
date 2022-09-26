@@ -5,6 +5,7 @@ import mall.common.ServiceResultEnum;
 import mall.common.ZhongHeMallException;
 import mall.dao.*;
 import mall.entity.*;
+import mall.entity.excel.ExportLotterydraw;
 import mall.service.LotterydrawService;
 import mall.util.BeanUtil;
 import mall.util.PageQueryUtil;
@@ -70,6 +71,11 @@ public class LotterydrawServiceImpl implements LotterydrawService {
     }
 
     @Override
+    public List<ExportLotterydraw> getLotteryDrawExport(PageQueryUtil pageUtil) {
+        return lotteryDrawMapper.findLotteryDrawExport(pageUtil);
+    }
+
+    @Override
     public String saveLotteryDraw(LotteryDraw lotteryDraw) {
 
         lotteryDraw.setUpdateTime(new Date());
@@ -109,6 +115,7 @@ public class LotterydrawServiceImpl implements LotterydrawService {
         //添加抽奖记录
         LotteryDraw lotteryDraw=new LotteryDraw();
         lotteryDraw.setUserId(mallUser.getUserId());
+        lotteryDraw.setLoginName(mallUser.getLoginName());
         lotteryDraw.setNickName(mallUser.getNickName());
         lotteryDraw.setSponsor(mallUser.getSponsor());
         lotteryDraw.setOrganizationId(organization.getOrganizationId());

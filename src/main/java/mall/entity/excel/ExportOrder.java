@@ -30,17 +30,17 @@ public class ExportOrder {
     private Integer totalPoint;
 
 
+    @ExcelExport(value = "订单支付状态",kv = "-1:支付失败;0:支付中;1:支付成功")
     private Byte payStatus;
-    @ExcelExport(value = "订单支付状态")
-    private String payStatusString;
+//    private String payStatusString;
 
+    @ExcelExport(value = "订单支付方式",kv = "0:无;1:支付宝;2:微信支付;3:积分支付")
     private Byte payType;
-    @ExcelExport(value = "订单支付方式")
-    private String payTypeString;
+//    private String payTypeString;
 
+    @ExcelExport(value = "订单发送状态",kv = "0:待支付;1:已支付;2:配货完成;3:出库成功;4:交易成功;-1:手动关闭;-2:超时关闭;-3:商家关闭")
     private Byte orderStatus;
-    @ExcelExport(value = "订单发送状态")
-    private String orderStatusString;
+//    private String orderStatusString;
 
     @ExcelExport(value = "订单支付时间")
     private Date payTime;

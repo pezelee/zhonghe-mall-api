@@ -5,6 +5,7 @@
     <resultMap id="BaseResultMap" type="mall.entity.LotteryDraw">
         <id column="lotterydraw_id" jdbcType="BIGINT" property="lotteryDrawId"/>
         <result column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="login_name" jdbcType="VARCHAR" property="loginName"/>
         <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
         <result column="sponsor" jdbcType="VARCHAR" property="sponsor"/>
         <result column="organization_id" jdbcType="BIGINT" property="organizationId"/>
@@ -24,20 +25,47 @@
         <result column="update_user" jdbcType="INTEGER" property="updateUser"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
+    <resultMap id="ExportResultMap" type="mall.entity.excel.ExportLotterydraw">
+        <id column="lotterydraw_id" jdbcType="BIGINT" property="lotteryDrawId"/>
+        <result column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="login_name" jdbcType="VARCHAR" property="loginName"/>
+        <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
+        <result column="sponsor" jdbcType="VARCHAR" property="sponsor"/>
+        <result column="organization_id" jdbcType="BIGINT" property="organizationId"/>
+        <result column="org_name" jdbcType="VARCHAR" property="orgName"/>
+        <result column="activity_id" jdbcType="BIGINT" property="activityId"/>
+        <result column="activity_name" jdbcType="VARCHAR" property="activityName"/>
+        <result column="draw_time" jdbcType="TIMESTAMP" property="drawTime"/>
+        <result column="expire_time" jdbcType="TIMESTAMP" property="expireTime"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="prize_id" jdbcType="BIGINT" property="prizeId"/>
+        <result column="prize_name" jdbcType="VARCHAR" property="prizeName"/>
+        <result column="prize_value" jdbcType="INTEGER" property="prizeValue"/>
+        <result column="prize_type" jdbcType="TINYINT" property="prizeType"/>
+        <result column="mail_no" jdbcType="VARCHAR" property="mailNo"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <result column="user_phone" jdbcType="VARCHAR" property="userPhone"/>
+        <result column="province_name" jdbcType="VARCHAR" property="provinceName"/>
+        <result column="city_name" jdbcType="VARCHAR" property="cityName"/>
+        <result column="region_name" jdbcType="VARCHAR" property="regionName"/>
+        <result column="detail_address" jdbcType="VARCHAR" property="detailAddress"/>
+    </resultMap>
     <sql id="Base_Column_List">
-    lotterydraw_id, user_id, nick_name,sponsor, organization_id, org_name,
+    lotterydraw_id, user_id, login_name, nick_name,sponsor, organization_id, org_name,
     activity_id, activity_name, draw_time, expire_time, status, prize_id, prize_name,prize_value,prize_type,mail_no,
     create_user, create_time, update_user, update_time
     </sql>
     <insert id="batchInsert">
-        INSERT INTO tb_zhonghe_mall_lotterydraw(user_id, nick_name,sponsor, organization_id, org_name,
+        INSERT INTO tb_zhonghe_mall_lotterydraw(user_id, login_name, nick_name,sponsor, organization_id, org_name,
         activity_id, activity_name, draw_time, expire_time, status, prize_id, prize_name,prize_value,prize_type,mail_no,
         create_user, create_time, update_user, update_time)
         VALUES
         <foreach collection="LotteryDrawList" item="lotterydraw" separator=",">
-            (#{lotterydraw.user_id},#{lotterydraw.nick_name},#{lotterydraw.sponsor},#{lotterydraw.organizationId},
+            (#{lotterydraw.user_id},#{lotterydraw.login_name},#{lotterydraw.nick_name},
+            #{lotterydraw.sponsor},#{lotterydraw.organizationId},
             #{lotterydraw.org_name},#{lotterydraw.activity_id},#{lotterydraw.activity_name},#{lotterydraw.draw_time},
-            #{lotterydraw.expire_time},#{lotterydraw.status},#{lotterydraw.prize_id},#{lotterydraw.prize_name},#{lotterydraw.prize_value},
+            #{lotterydraw.expire_time},#{lotterydraw.status},#{lotterydraw.prize_id},#{lotterydraw.prize_name},
+            #{lotterydraw.prize_value},
             #{lotterydraw.prize_type},#{lotterydraw.mail_no})
         </foreach>
     </insert>
@@ -62,11 +90,11 @@
         <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="lotteryDrawId">
             SELECT LAST_INSERT_ID()
         </selectKey>
-    insert into tb_zhonghe_mall_lotterydraw (lotterydraw_id, user_id, nick_name,sponsor, organization_id, org_name,
+    insert into tb_zhonghe_mall_lotterydraw (lotterydraw_id, user_id, login_name, nick_name,sponsor, organization_id, org_name,
       activity_id, activity_name, draw_time, expire_time, status, prize_id, prize_name,prize_value, prize_type,mail_no,
       create_user, create_time, update_user, update_time
       )
-    values (#{lotteryDrawId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{nickName,jdbcType=VARCHAR},
+    values (#{lotteryDrawId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{loginName,jdbcType=VARCHAR},#{nickName,jdbcType=VARCHAR},
       #{sponsor,jdbcType=VARCHAR}, #{organizationId,jdbcType=BIGINT}, #{orgName,jdbcType=VARCHAR},
       #{activityId,jdbcType=BIGINT}, #{activityName,jdbcType=VARCHAR}, #{drawTime,jdbcType=TIMESTAMP},
       #{expireTime,jdbcType=TIMESTAMP},      #{status,jdbcType=TINYINT}, #{prizeId,jdbcType=BIGINT},
@@ -83,6 +111,9 @@
             </if>
             <if test="userId != null">
                 user_id,
+            </if>
+            <if test="loginName != null">
+                login_name,
             </if>
             <if test="nickName != null">
                 nick_name,
@@ -146,6 +177,9 @@
             <if test="userId != null">
                 #{userId,jdbcType=BIGINT},
             </if>
+            <if test="loginName != null">
+                #{loginName,jdbcType=VARCHAR},
+            </if>
             <if test="nickName != null">
                 #{nickName,jdbcType=VARCHAR},
             </if>
@@ -204,6 +238,9 @@
         <set>
             <if test="userId != null">
                 user_id = #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="loginName != null">
+                login_name = #{loginName,jdbcType=VARCHAR},
             </if>
             <if test="nickName != null">
                 nick_name = #{nickName,jdbcType=VARCHAR},
@@ -265,6 +302,7 @@
     <update id="updateByPrimaryKey" parameterType="mall.entity.LotteryDraw">
     update tb_zhonghe_mall_lotterydraw
     set user_id = #{userId,jdbcType=BIGINT},
+      login_name = #{loginName,jdbcType=VARCHAR},
       nick_name = #{nickName,jdbcType=VARCHAR},
       sponsor = #{sponsor,jdbcType=VARCHAR},
       organization_id = #{organizationId,jdbcType=BIGINT},
@@ -309,6 +347,51 @@
             and prize_type = 2
         </where>
     </select>
+    <select id="findLotteryDrawExport" parameterType="Map" resultMap="ExportResultMap">
+        select
+            self.lotterydraw_id, user_id, login_name, nick_name,sponsor, organization_id, org_name,
+            activity_id, activity_name, draw_time, expire_time, status, prize_id, prize_name,prize_value,prize_type,
+            mail_no,
+            user_name,user_phone,province_name,city_name,region_name,detail_address
+        from tb_zhonghe_mall_lotterydraw as self
+        left join tb_zhonghe_mall_lotterydraw_address as j on self.lotterydraw_id = j.lotterydraw_id
+        <where>
+            <if test="activityId!=null and activityId!=''">
+                and activity_id = #{activityId}
+            </if>
+            <if test="activityName!=null and activityName!=''">
+                and activity_name like CONCAT('%',#{activityName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="sponsor!=null">
+                and sponsor = #{sponsor}
+            </if>
+            <if test="loginName!=null">
+                and login_name like CONCAT('%',#{loginName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="nickName!=null">
+                and nick_name like CONCAT('%',#{nickName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="prizeName!=null">
+                and prize_name like CONCAT('%',#{prizeName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="prizeType!=null">
+                and prize_type like CONCAT('%',#{prizeType,jdbcType=TINYINT},'%')
+            </if>
+            <if test="mailNo!=null">
+                and mail_no like CONCAT('%',#{mailNo,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="startDate!=null">
+                and DATE_FORMAT(draw_time,'%Y-%m-%d %H:%i:%s') &gt;= STR_TO_DATE(#{startDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="endDate!=null">
+                and DATE_FORMAT(draw_time,'%Y-%m-%d %H:%i:%s') &lt;= STR_TO_DATE(#{endDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="status!=null">
+                and status = #{status}
+            </if>
+        </where>
+        order by self.create_time desc
+    </select>
     <select id="findLotteryDrawList" parameterType="Map" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -322,6 +405,9 @@
             </if>
             <if test="sponsor!=null">
                 and sponsor = #{sponsor}
+            </if>
+            <if test="loginName!=null">
+                and login_name like CONCAT('%',#{loginName,jdbcType=VARCHAR},'%')
             </if>
             <if test="nickName!=null">
                 and nick_name like CONCAT('%',#{nickName,jdbcType=VARCHAR},'%')
@@ -377,6 +463,9 @@
             <if test="endDate!=null">
                 and DATE_FORMAT(draw_time,'%Y-%m-%d %H:%i:%s') &lt;= STR_TO_DATE(#{endDate},'%Y-%m-%d %H:%i:%s')
             </if>
+            <if test="loginName!=null">
+                and login_name like CONCAT('%',#{loginName,jdbcType=VARCHAR},'%')
+            </if>
             <if test="nickName!=null">
                 and nick_name like CONCAT('%',#{nickName,jdbcType=VARCHAR},'%')
             </if>
@@ -420,6 +509,9 @@
             <if test="nickName!=null">
                 and nick_name like CONCAT('%',#{nickName,jdbcType=VARCHAR},'%')
             </if>
+            <if test="loginName!=null">
+                and login_name like CONCAT('%',#{loginName,jdbcType=VARCHAR},'%')
+            </if>
             <if test="status!=null">
                 and status = #{status}
             </if>
@@ -461,6 +553,9 @@
             </if>
             <if test="nickName!=null">
                 and nick_name like CONCAT('%',#{nickName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="loginName!=null">
+                and login_name like CONCAT('%',#{loginName,jdbcType=VARCHAR},'%')
             </if>
             <if test="status!=null">
                 and status = #{status}

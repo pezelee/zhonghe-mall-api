@@ -7,18 +7,19 @@ import mall.api.admin.param.LotterydrawMailParam;
 import mall.common.ServiceResultEnum;
 import mall.config.annotation.TokenToAdminUser;
 import mall.entity.*;
+import mall.entity.excel.ExportLotterydraw;
+import mall.entity.excel.ExportOrder;
 import mall.service.*;
-import mall.util.CheckUtils;
-import mall.util.PageQueryUtil;
-import mall.util.Result;
-import mall.util.ResultGenerator;
+import mall.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -95,6 +96,67 @@ public class ZhongHeAdminLotterydrawAPI {
         adminLogService.addSuccessLog(adminUser,"抽奖记录列表接口",params.toString(),"");
         return ResultGenerator.genSuccessResult(lotterydrawService.getLotteryDrawPage(pageUtil));
     }
+
+    /**
+     * 列表
+     */
+    @RequestMapping(value = "/lotterydraw/export", method = RequestMethod.GET)
+    @ApiOperation(value = "导出抽奖记录", notes = "可根据活动名称、客户经理号、奖品名称、用户名称和上架状态筛选")
+    public void export(@RequestParam(required = false) @ApiParam(value = "活动名称") String activityName,
+                       @RequestParam(required = false) @ApiParam(value = "奖品名称") String prizeName,
+                       @RequestParam(required = false) @ApiParam(value = "奖品种类") Integer prizeType,
+                       @RequestParam(required = false) @ApiParam(value = "用户名称") String nickName,
+                       @RequestParam(required = false) @ApiParam(value = "开始日期") String queryStartDate,
+                       @RequestParam(required = false) @ApiParam(value = "结束日期") String queryEndDate,
+//                       @RequestParam(required = false) @ApiParam(value = "客户经理号") String sponsor,
+                       @RequestParam(required = false) @ApiParam(value = "邮寄单号") String mailNo,
+                       @RequestParam(required = false) @ApiParam(value = "状态 0.待抽奖 1.已抽奖 2.待送货 3:送货中" +
+                               " 4.送货完成  5:已接收 -1.抽奖失败 -2.用户关闭 -3.商家关闭") Integer status,
+                       @TokenToAdminUser AdminUserToken adminUser,
+                       HttpServletResponse response) {
+        logger.info("导出抽奖记录  adminUser:{}", adminUser.toString());
+
+        Map params = new HashMap(8);
+        params.put("page", 1);
+        params.put("limit", 10);
+        if (!StringUtils.isEmpty(activityName)) {
+            params.put("activityName", activityName);
+        }
+        if (!StringUtils.isEmpty(prizeName)) {
+            params.put("prizeName", prizeName);
+        }
+        if (!StringUtils.isEmpty(prizeType)) {
+            params.put("prizeType", prizeType);
+        }
+        if (!StringUtils.isEmpty(nickName)) {
+            params.put("nickName", nickName);
+        }
+        if (!StringUtils.isEmpty(mailNo)) {
+            params.put("mailNo", mailNo);
+        }
+        if (!StringUtils.isEmpty(queryStartDate)) {
+            params.put("startDate", queryStartDate + " 00:00:00" );
+        }
+        if (!StringUtils.isEmpty(queryEndDate)) {
+            params.put("endDate", queryEndDate + " 23:59:59" );
+        }
+//        if (sponsor != null) {
+//            params.put("sponsor", sponsor);
+//        }
+        if (status != null) {
+            params.put("status", status);
+        }
+        Byte role = adminUser.getRole();
+        Long organizationId = adminUser.getOrganizationId();
+        params.put("role", role);
+        params.put("organizationId", organizationId);
+        PageQueryUtil pageUtil = new PageQueryUtil(params);
+        adminLogService.addSuccessLog(adminUser,"抽奖记录列表接口",params.toString(),"");
+        List<ExportLotterydraw> result = lotterydrawService.getLotteryDrawExport(pageUtil);// 导出数据
+        ExcelUtils.export(response, "抽奖记录列表", result,ExportLotterydraw.class);
+//        return ResultGenerator.genSuccessResult(lotterydrawService.getLotteryDrawPage(pageUtil));
+    }
+
 
     /**
      * 详情
