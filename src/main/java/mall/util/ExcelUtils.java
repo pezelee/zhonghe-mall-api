@@ -546,7 +546,7 @@ public class ExcelUtils {
             return kvMap;
         }
         for (String each : kvs) {
-            String[] eachKv = getString(each).split("-");
+            String[] eachKv = getString(each).split(":");
             if (eachKv.length != 2) {
                 continue;
             }

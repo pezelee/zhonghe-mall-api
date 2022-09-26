@@ -91,8 +91,11 @@
             <if test="organizationId!=null">
                 and organization_id = #{organizationId}
             </if>
-            <if test="userId!=null and userId!=''">
-                and self.user_id = #{userId}
+            <if test="nickName!=null and nickName!=''">
+                and self.nick_name = #{nickName}
+            </if>
+            <if test="loginName!=null and loginName!=''">
+                and self.login_name = #{loginName}
             </if>
             <if test="payType!=null and payType!=''">
                 and pay_type = #{payType}
@@ -127,6 +130,12 @@
             </if>
             <if test="userId!=null and userId!=''">
                 and self.user_id = #{userId}
+            </if>
+            <if test="nickName!=null and nickName!=''">
+                and self.nick_name = #{nickName}
+            </if>
+            <if test="loginName!=null and loginName!=''">
+                and self.login_name = #{loginName}
             </if>
             <if test="payType!=null and payType!=''">
                 and pay_type = #{payType}
@@ -164,6 +173,12 @@
             </if>
             <if test="userId!=null and userId!=''">
                 and user_id = #{userId}
+            </if>
+            <if test="nickName!=null and nickName!=''">
+                and self.nick_name = #{nickName}
+            </if>
+            <if test="loginName!=null and loginName!=''">
+                and self.login_name = #{loginName}
             </if>
             <if test="payType!=null and payType!=''">
                 and pay_type = #{payType}

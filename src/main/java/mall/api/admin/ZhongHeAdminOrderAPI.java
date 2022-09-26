@@ -51,6 +51,10 @@ public class ZhongHeAdminOrderAPI {
     public Result list(@RequestParam(required = false) @ApiParam(value = "页码，最小1 ") Integer pageNumber,
                        @RequestParam(required = false) @ApiParam(value = "每页条数，最小10条") Integer pageSize,
                        @RequestParam(required = false) @ApiParam(value = "订单号") String orderNo,
+                       @RequestParam(required = false) @ApiParam(value = "组织ID") Long organizationId,
+                       @RequestParam(required = false) @ApiParam(value = "用户手机号") String loginName,
+                       @RequestParam(required = false) @ApiParam(value = "用户昵称") String nickName,
+                       @RequestParam(required = false) @ApiParam(value = "邮寄单号") String mailNo,
                        @RequestParam(required = false) @ApiParam(value = "订单状态") Integer orderStatus,
                        @TokenToAdminUser AdminUserToken adminUser) {
         logger.info("订单列表接口  adminUser:{}", adminUser.toString());
@@ -61,18 +65,33 @@ public class ZhongHeAdminOrderAPI {
         Map params = new HashMap(8);
         params.put("page", pageNumber);
         params.put("limit", pageSize);
+        Byte role=adminUser.getRole();
+        params.put("role", role);
+        if (role == 0) {//总管理员
+            if (organizationId != null) {// 填入组织ID
+                params.put("organizationId", organizationId);
+            }
+        }
+        else {
+            params.put("organizationId", adminUser.getOrganizationId());
+        }
+        if (!StringUtils.isEmpty(loginName)) {
+            params.put("loginName", loginName);
+        }
+        if (!StringUtils.isEmpty(nickName)) {
+            params.put("nickName", nickName);
+        }
+        if (!StringUtils.isEmpty(mailNo)) {
+            params.put("mailNo", mailNo);
+        }
         if (!StringUtils.isEmpty(orderNo)) {
             params.put("orderNo", orderNo);
         }
         if (orderStatus != null) {
             params.put("orderStatus", orderStatus);
         }
-        Byte role=adminUser.getRole();
-        Long organizationId=adminUser.getOrganizationId();
-        params.put("role", role);
-        if (role != 0) {
-            params.put("organizationId", organizationId);
-        }
+//        Long organizationId=adminUser.getOrganizationId();
+
         PageQueryUtil pageUtil = new PageQueryUtil(params);
         adminLogService.addSuccessLog(adminUser,"订单列表接口",params.toString(),"");
         return ResultGenerator.genSuccessResult(zhongHeMallOrderService.getZhongHeMallOrdersPage(pageUtil));
@@ -83,20 +102,51 @@ public class ZhongHeAdminOrderAPI {
      */
     @RequestMapping(value = "/orders/export", method = RequestMethod.GET)
     @ApiOperation(value = "导出订单列表", notes = "可根据订单号和订单状态筛选")
-    public void export(@RequestParam(required = false) @ApiParam(value = "订单号") String orderNo,
+    public void export(@RequestParam(required = false) @ApiParam(value = "组织ID") Long organizationId,
+                       @RequestParam(required = false) @ApiParam(value = "用户手机号") String loginName,
+                       @RequestParam(required = false) @ApiParam(value = "用户昵称") String nickName,
+                       @RequestParam(required = false) @ApiParam(value = "邮寄单号") String mailNo,
+                       @RequestParam(required = false) @ApiParam(value = "订单号") String orderNo,
                        @RequestParam(required = false) @ApiParam(value = "订单状态") Integer orderStatus,
+                       @RequestParam(required = false) @ApiParam(value = "开始日期") String queryStartDate,
+                       @RequestParam(required = false) @ApiParam(value = "结束日期") String queryEndDate,
                        @TokenToAdminUser AdminUserToken adminUser,
                        HttpServletResponse response) {
         logger.info("导出订单列表  adminUser:{}", adminUser.toString());
         Map params = new HashMap(8);
+        params.put("page", 1);
+        params.put("limit", 10);
+        Byte role=adminUser.getRole();
+        params.put("role", role);
+        if (role == 0) {//总管理员
+            if (organizationId != null) {// 填入组织ID
+                params.put("organizationId", organizationId);
+            }
+        }
+        else {
+            params.put("organizationId", adminUser.getOrganizationId());
+        }
+        if (!StringUtils.isEmpty(loginName)) {
+            params.put("loginName", loginName);
+        }
+        if (!StringUtils.isEmpty(nickName)) {
+            params.put("nickName", nickName);
+        }
+        if (!StringUtils.isEmpty(mailNo)) {
+            params.put("mailNo", mailNo);
+        }
         if (!StringUtils.isEmpty(orderNo)) {
             params.put("orderNo", orderNo);
         }
         if (orderStatus != null) {
             params.put("orderStatus", orderStatus);
         }
-        params.put("page", 1);
-        params.put("limit", 10);
+        if (!StringUtils.isEmpty(queryStartDate)) {
+            params.put("startDate", queryStartDate + " 00:00:00" );
+        }
+        if (!StringUtils.isEmpty(queryEndDate)) {
+            params.put("endDate", queryEndDate + " 23:59:59" );
+        }
         PageQueryUtil pageUtil = new PageQueryUtil(params);
         List<ExportOrder> result = zhongHeMallOrderService.getZhongHeMallOrdersExport(pageUtil);
         // 导出数据
