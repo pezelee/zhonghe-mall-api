@@ -7,10 +7,7 @@ import mall.dao.ActivityDrawMapper;
 import mall.dao.ActivityMapper;
 import mall.dao.ModelMapper;
 import mall.dao.RuleMapper;
-import mall.entity.Activity;
-import mall.entity.ActivityDraw;
-import mall.entity.Model;
-import mall.entity.Rule;
+import mall.entity.*;
 import mall.service.ActivityService;
 import mall.util.CheckUtils;
 import mall.util.PageQueryUtil;
@@ -24,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Service
 public class ActivityServiceImpl implements ActivityService {
@@ -81,6 +79,25 @@ public class ActivityServiceImpl implements ActivityService {
             //name和分行id相同且不同id 不能继续修改
             return ServiceResultEnum.SAME_ACTIVITY_EXIST.getResult();
         }
+        String prizes=activity.getPrizes();
+        String[] prizeIdList;
+        StringBuilder newPrizes = new StringBuilder();
+        if (!prizes.equals("")) {
+            prizeIdList = prizes.split(",");
+            for (String s : prizeIdList) {
+                if (!s.equals("")) {
+                    Pattern pattern = Pattern.compile("[0-9]*");
+                    if(!pattern.matcher(s).matches()){//不是数字
+                        return ServiceResultEnum.PARAM_ERROR.getResult();
+                    }
+                    if (!newPrizes.toString().equals("")) {
+                        newPrizes.append(",");
+                    }
+                    newPrizes.append(s);
+                }
+            }
+        }
+        activity.setPrizes(newPrizes.toString());
         activity.setUpdateTime(new Date());
         if (activityMapper.updateByPrimaryKeySelective(activity) > 0) {
             return ServiceResultEnum.SUCCESS.getResult();
