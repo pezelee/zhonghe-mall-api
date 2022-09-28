@@ -10,6 +10,7 @@ import mall.entity.MallUser;
 import mall.entity.MallUserAddress;
 import mall.entity.ZhongHeMallOrder;
 import mall.entity.excel.ExportOrder;
+import mall.entity.excel.ImportOrder;
 import mall.util.PageQueryUtil;
 import mall.util.PageResult;
 
@@ -128,4 +129,12 @@ public interface ZhongHeMallOrderService {
     String closeOrder(Long[] ids);
 
     List<ZhongHeMallOrderItemVO> getOrderItems(Long orderId);
+
+    /**
+     * 从导入批量添加邮寄单号
+     *
+     * @param order
+     * @return
+     */
+    String setMailNoImport(ImportOrder order);
 }

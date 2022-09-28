@@ -179,25 +179,48 @@ public class ExcelUtils {
 
             // 判断是否为手机号
             boolean phone = annotation.phone();
-            if (phone) {//字段为手机号时,从科学计数法转为字符串
+            // 判断是否为非科学计数法字符串
+            boolean notE = annotation.notE();
+            if (phone || notE) {//从科学计数法转为字符串
                 String tempVal=getString(obj.getString(cname));
 
-                String regEx="^([\\+|-]?\\d+(.{0}|.\\d+))[Ee]{1}([\\+|-]?\\d+)$";
+                String regEx1 ="^([\\+|-]?\\d+(.{0}|.\\d+))[Ee]{1}([\\+|-]?\\d+)$";//科学计数法
                 // 编译正则表达式
-                Pattern pattern = Pattern.compile(regEx);
+                Pattern pattern1 = Pattern.compile(regEx1);
                 // 忽略大小写的写法
                 // Pattern pat = Pattern.compile(regEx, Pattern.CASE_INSENSITIVE);
-                Matcher matcher = pattern.matcher(tempVal);
+                Matcher matcher1 = pattern1.matcher(tempVal);
                 // 字符串是否与正则表达式相匹配
-                boolean rs = matcher.matches();
-                if (rs) {
-                    BigDecimal temp = new BigDecimal(tempVal);
-                    val = temp.toPlainString();
-                }else {
-                    errMsgList.add(String.format("[%s]的值格式不正确", cname));
-                    return;
+                boolean rs1 = matcher1.matches();
+                if(notE){
+                    if(rs1){//符合科学计数法，转换为长数字字符串
+                        BigDecimal temp = new BigDecimal(tempVal);
+                        val = temp.toPlainString();
+                    }else {
+                        val = getString(obj.getString(cname));
+                    }
                 }
-            }else {//字段不是手机号时,正常赋值
+                if(phone){
+                    String tempphone;
+                    if(rs1){//符合科学计数法，转换为长数字字符串
+                        BigDecimal temp = new BigDecimal(tempVal);
+                        tempphone = temp.toPlainString();
+                    }else {
+                        tempphone = getString(obj.getString(cname));
+                    }
+                    String regEx2 ="^1\\d{10}$";//手机号
+                    Pattern pattern2 = Pattern.compile(regEx2);
+                    Matcher matcher2 = pattern2.matcher(tempphone);
+                    boolean rs2 = matcher2.matches();
+                    if (rs2){//符合手机号
+                        val = tempphone;
+                    }
+                    else {
+                        errMsgList.add(String.format("[%s]的值格式不正确", cname));
+                        return;
+                    }
+                }
+            }else {//字段不会出现科学计数法时,正常赋值
                 val = getString(obj.getString(cname));
             }
         }

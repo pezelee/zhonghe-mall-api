@@ -12,7 +12,7 @@ import mall.config.annotation.TokenToAdminUser;
 import mall.entity.AdminUserToken;
 import mall.entity.GoodsCategory;
 import mall.entity.ZhongHeMallGoods;
-import mall.entity.excel.ExportGoods;
+import mall.entity.excel.ExampleGoods;
 import mall.entity.excel.ImportError;
 import mall.entity.excel.ImportGoods;
 import mall.service.AdminLogService;
@@ -205,7 +205,7 @@ public class ZhongHeAdminGoodsInfoAPI {
     @ApiOperation(value = "下载商品导入模板", notes = "下载商品导入模板")
     public void template(HttpServletResponse response){
         // 导出数据
-        ExcelUtils.exportTemplate(response, "商品导入模板", ExportGoods.class,true);
+        ExcelUtils.exportTemplate(response, "商品导入模板", ExampleGoods.class,true);
     }
 
 }

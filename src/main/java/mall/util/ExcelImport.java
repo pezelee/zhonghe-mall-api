@@ -22,8 +22,11 @@ public @interface ExcelImport {
     /** 是否为必填字段（默认为非必填） */
     boolean required() default false;
 
-    /** 是否为必填字段（默认为非必填） */
+    /** 是否为长数字字符串（默认为否） */
     boolean phone() default false;
+
+    /** 是否为非科学计数法字符串（默认为否） */
+    boolean notE() default false;
 
     /** 最大长度（默认255） */
     int maxLength() default 255;

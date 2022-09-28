@@ -7,6 +7,7 @@ import mall.common.*;
 import mall.dao.*;
 import mall.entity.*;
 import mall.entity.excel.ExportOrder;
+import mall.entity.excel.ImportOrder;
 import mall.service.ZhongHeMallOrderService;
 import mall.service.ZhongHeMallUserService;
 import mall.util.*;
@@ -330,17 +331,6 @@ public class ZhongHeMallOrderServiceImpl implements ZhongHeMallOrderService {
     @Override
     public List<ExportOrder> getZhongHeMallOrdersExport(PageQueryUtil pageUtil) {
         List<ExportOrder> zhongHeMallOrders = zhongHeMallOrderMapper.findZhongHeMallOrderExport(pageUtil);
-//        List<ExportOrder> result = new ArrayList<>();
-//        for(ExportOrder order : zhongHeMallOrders){
-////            ExportOrder exportOrder = new ExportOrder();
-//            order.setOrderStatusString(ZhongHeMallOrderStatusEnum.getZhongHeMallOrderStatusEnumByStatus(order.getOrderStatus()).getName());
-//            order.setPayTypeString(PayTypeEnum.getPayTypeEnumByType(order.getPayType()).getName());
-//            order.setPayStatusString(PayStatusEnum.getPayStatusEnumByStatus(order.getPayStatus()).getName());
-////            BeanUtil.copyProperties(order, exportOrder);
-////            result.add(order);
-//        }
-
-
         return zhongHeMallOrders;
     }
 
@@ -499,5 +489,20 @@ public class ZhongHeMallOrderServiceImpl implements ZhongHeMallOrderService {
             }
         }
         return null;
+    }
+
+    @Override
+    public String setMailNoImport(ImportOrder order) {
+        ZhongHeMallOrder temp =zhongHeMallOrderMapper.selectByOrderNo(order.getOrderNo());
+        if (temp != null && temp.getOrderStatus() >= 2 && temp.getOrderStatus() <= 3) {
+            temp.setUpdateTime(new Date());
+            temp.setOrderStatus((byte) 3);
+            temp.setMailNo(order.getMailNo());
+            if (zhongHeMallOrderMapper.updateByPrimaryKeySelective(temp) > 0) {
+                return ServiceResultEnum.SUCCESS.getResult();
+            }
+            return ServiceResultEnum.DB_ERROR.getResult();
+        }
+        return ServiceResultEnum.DATA_NOT_EXIST.getResult();
     }
 }

@@ -4,6 +4,8 @@ package mall.service;
 import mall.api.admin.param.LotterydrawMailParam;
 import mall.entity.*;
 import mall.entity.excel.ExportLotterydraw;
+import mall.entity.excel.ImportLotterydraw;
+import mall.entity.excel.ImportOrder;
 import mall.util.PageQueryUtil;
 import mall.util.PageResult;
 
@@ -127,6 +129,14 @@ public interface LotterydrawService {
      * @return
      */
     Boolean received(Long id);
+
+    /**
+     * 从导入批量添加邮寄单号
+     *
+     * @param lotterydraw
+     * @return
+     */
+    String setMailNoImport(ImportLotterydraw lotterydraw);
 
 
 

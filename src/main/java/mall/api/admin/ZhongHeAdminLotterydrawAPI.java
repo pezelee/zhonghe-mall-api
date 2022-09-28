@@ -7,17 +7,18 @@ import mall.api.admin.param.LotterydrawMailParam;
 import mall.common.ServiceResultEnum;
 import mall.config.annotation.TokenToAdminUser;
 import mall.entity.*;
-import mall.entity.excel.ExportLotterydraw;
-import mall.entity.excel.ExportOrder;
+import mall.entity.excel.*;
 import mall.service.*;
 import mall.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,7 +99,7 @@ public class ZhongHeAdminLotterydrawAPI {
     }
 
     /**
-     * 列表
+     * 导出抽奖记录
      */
     @RequestMapping(value = "/lotterydraw/export", method = RequestMethod.GET)
     @ApiOperation(value = "导出抽奖记录", notes = "可根据活动名称、客户经理号、奖品名称、用户名称和上架状态筛选")
@@ -277,6 +278,43 @@ public class ZhongHeAdminLotterydrawAPI {
             return ResultGenerator.genSuccessResult();
         }
         return ResultGenerator.genFailResult(ServiceResultEnum.LOTTERY_STATUS_ERROR.getResult());
+    }
+
+    /**
+     * 订单导入邮寄单号表
+     */
+    @PostMapping(value = "/lotterydraw/import")
+    @ApiOperation(value = "抽奖记录导入邮寄单号表", notes = "抽奖记录导入邮寄单号表")
+    public Result mailNoImport(@RequestPart("file") MultipartFile file,
+                             @TokenToAdminUser AdminUserToken adminUser) throws Exception {
+        logger.info("抽奖记录导入邮寄单号表  ,adminUser={}", adminUser.toString());
+        List<ImportLotterydraw> lotterydraws = ExcelUtils.readMultipartFile(file,ImportLotterydraw.class);
+        logger.info("lotterydraws{}",lotterydraws.toString());
+        List<ImportError> errors = new ArrayList<>();
+        for(ImportLotterydraw lotterydraw:lotterydraws){
+            if (lotterydraw.getRowTips().equals("")) {//通过导入格式校验
+                logger.info(lotterydraw.toString());
+                String addResult = lotterydrawService.setMailNoImport(lotterydraw);
+                if (!ServiceResultEnum.SUCCESS.getResult().equals(addResult)) {
+                    //新增错误
+                    errors.add(ExcelUtils.newError(lotterydraw.getRowNum(),addResult));
+                }
+            }else {
+                //新增错误
+                errors.add(ExcelUtils.newError(lotterydraw.getRowNum(),lotterydraw.getRowTips()));
+            }
+        }
+        return ResultGenerator.genSuccessResult(errors);
+    }
+
+    /**
+     * 下载抽奖记录导入邮寄单号模板
+     */
+    @GetMapping(value = "/lotterydraw/template")
+    @ApiOperation(value = "下载抽奖记录导入邮寄单号模板", notes = "下载抽奖记录导入邮寄单号模板")
+    public void template(HttpServletResponse response){
+        // 导出数据
+        ExcelUtils.exportTemplate(response, "抽奖记录邮寄单号导入模板", ExampleLotterydraw.class,true);
     }
 
 }

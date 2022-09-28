@@ -6,6 +6,8 @@ import mall.common.ZhongHeMallException;
 import mall.dao.*;
 import mall.entity.*;
 import mall.entity.excel.ExportLotterydraw;
+import mall.entity.excel.ImportLotterydraw;
+import mall.entity.excel.ImportOrder;
 import mall.service.LotterydrawService;
 import mall.util.BeanUtil;
 import mall.util.PageQueryUtil;
@@ -219,6 +221,21 @@ public class LotterydrawServiceImpl implements LotterydrawService {
     public Boolean received(Long id) {
         int lotteryDraw = lotteryDrawMapper.received(id);
         return lotteryDraw > 0;
+    }
+
+    @Override
+    public String setMailNoImport(ImportLotterydraw lotterydraw) {
+        LotteryDraw temp =lotteryDrawMapper.selectByPrimaryKey(lotterydraw.getLotteryDrawId());
+        if (temp != null && temp.getStatus() >= 2 && temp.getStatus() <= 3) {
+            temp.setUpdateTime(new Date());
+            temp.setStatus((byte) 3);
+            temp.setMailNo(lotterydraw.getMailNo());
+            if (lotteryDrawMapper.updateByPrimaryKeySelective(temp) > 0) {
+                return ServiceResultEnum.SUCCESS.getResult();
+            }
+            return ServiceResultEnum.DB_ERROR.getResult();
+        }
+        return ServiceResultEnum.DATA_NOT_EXIST.getResult();
     }
 
 

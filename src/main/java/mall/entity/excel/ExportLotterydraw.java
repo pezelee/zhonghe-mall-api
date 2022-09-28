@@ -8,6 +8,7 @@ import java.util.Date;
 @Data
 public class ExportLotterydraw {
 
+    @ExcelExport(value = "抽奖编号")
     private Long lotteryDrawId;
 
     private Long userId;

@@ -4,7 +4,7 @@ import lombok.Data;
 import mall.util.ExcelExport;
 
 @Data
-public class ExportUser {
+public class ExampleUser {
 
     @ExcelExport(value = "登录名(手机号)",example = "12309877890")
     private String loginUserName;

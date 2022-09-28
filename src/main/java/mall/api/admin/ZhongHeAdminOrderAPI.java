@@ -11,9 +11,7 @@ import mall.api.mall.vo.ZhongHeMallUserVO;
 import mall.common.ServiceResultEnum;
 import mall.config.annotation.TokenToAdminUser;
 import mall.entity.AdminUserToken;
-import mall.entity.excel.ExportGoods;
-import mall.entity.excel.ExportOrder;
-import mall.entity.excel.ExportUser;
+import mall.entity.excel.*;
 import mall.service.AdminLogService;
 import mall.service.ZhongHeMallOrderService;
 import mall.service.ZhongHeMallUserService;
@@ -22,9 +20,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -249,5 +249,42 @@ public class ZhongHeAdminOrderAPI {
         } else {
             return ResultGenerator.genFailResult(result);
         }
+    }
+
+    /**
+     * 订单导入邮寄单号表
+     */
+    @PostMapping(value = "/orders/import")
+    @ApiOperation(value = "订单导入邮寄单号表", notes = "订单导入邮寄单号表")
+    public Result mailNoImport(@RequestPart("file") MultipartFile file,
+                             @TokenToAdminUser AdminUserToken adminUser) throws Exception {
+        logger.info("订单导入邮寄单号表  ,adminUser={}", adminUser.toString());
+        List<ImportOrder> orders = ExcelUtils.readMultipartFile(file,ImportOrder.class);
+        logger.info("orders{}",orders.toString());
+        List<ImportError> errors = new ArrayList<>();
+        for(ImportOrder order:orders){
+            if (order.getRowTips().equals("")) {//通过导入格式校验
+                logger.info(order.toString());
+                String addResult = zhongHeMallOrderService.setMailNoImport(order);
+                if (!ServiceResultEnum.SUCCESS.getResult().equals(addResult)) {
+                    //新增错误
+                    errors.add(ExcelUtils.newError(order.getRowNum(),addResult));
+                }
+            }else {
+                //新增错误
+                errors.add(ExcelUtils.newError(order.getRowNum(),order.getRowTips()));
+            }
+        }
+        return ResultGenerator.genSuccessResult(errors);
+    }
+
+    /**
+     * 下载订单导入邮寄单号模板
+     */
+    @GetMapping(value = "/orders/template")
+    @ApiOperation(value = "下载订单导入邮寄单号模板", notes = "下载订单导入邮寄单号模板")
+    public void template(HttpServletResponse response){
+        // 导出数据
+        ExcelUtils.exportTemplate(response, "订单邮寄单号导入模板", ExportOrder.class,true);
     }
 }

@@ -4,7 +4,7 @@ import lombok.Data;
 import mall.util.ExcelExport;
 
 @Data
-public class ExportGoods {
+public class ExampleGoods {
 
     @ExcelExport(value = "商品名称",example = "导入商品1")
     private String goodsName;

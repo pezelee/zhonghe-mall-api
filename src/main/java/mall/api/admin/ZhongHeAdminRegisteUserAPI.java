@@ -8,8 +8,7 @@ import mall.api.admin.param.UserAddParam;
 import mall.common.ServiceResultEnum;
 import mall.config.annotation.TokenToAdminUser;
 import mall.entity.AdminUserToken;
-import mall.entity.excel.ExportGoods;
-import mall.entity.excel.ExportUser;
+import mall.entity.excel.ExampleUser;
 import mall.entity.excel.ImportError;
 import mall.entity.excel.ImportUser;
 import mall.service.AdminLogService;
@@ -133,7 +132,8 @@ public class ZhongHeAdminRegisteUserAPI {
      */
     @PostMapping(value = "/users/import")
     @ApiOperation(value = "用户导入", notes = "用户导入")
-    public Result userImport(@RequestPart("file") MultipartFile file, @TokenToAdminUser AdminUserToken adminUser) throws Exception {
+    public Result userImport(@RequestPart("file") MultipartFile file,
+                             @TokenToAdminUser AdminUserToken adminUser) throws Exception {
         logger.info("用户导入接口  ,adminUser={}", adminUser.toString());
         List<ImportUser> users = ExcelUtils.readMultipartFile(file,ImportUser.class);
         logger.info("users{}",users.toString());
@@ -167,6 +167,6 @@ public class ZhongHeAdminRegisteUserAPI {
     @ApiOperation(value = "下载用户导入模板", notes = "下载用户导入模板")
     public void template(HttpServletResponse response){
         // 导出数据
-        ExcelUtils.exportTemplate(response, "用户导入模板", ExportUser.class,true);
+        ExcelUtils.exportTemplate(response, "用户导入模板", ExampleUser.class,true);
     }
 }
