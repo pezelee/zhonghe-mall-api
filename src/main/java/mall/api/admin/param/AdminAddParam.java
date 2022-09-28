@@ -31,6 +31,6 @@ public class AdminAddParam implements Serializable {
     @NotNull(message = "角色不能为空")
     private Byte role;
 
-    @ApiModelProperty("手机号")
-    private String phone;
+//    @ApiModelProperty("手机号")
+//    private String phone;
 }

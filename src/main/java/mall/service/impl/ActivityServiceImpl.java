@@ -82,7 +82,7 @@ public class ActivityServiceImpl implements ActivityService {
         String prizes=activity.getPrizes();
         String[] prizeIdList;
         StringBuilder newPrizes = new StringBuilder();
-        if (!prizes.equals("")) {
+        if (!("".equals(prizes) || prizes ==null)) {
             prizeIdList = prizes.split(",");
             for (String s : prizeIdList) {
                 if (!s.equals("")) {

@@ -103,10 +103,11 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    public String updateName(Long Id, String loginUserName, String nickName) {
-        AdminUser adminUser = adminUserMapper.selectByPrimaryKey(Id);
+    public String updateName(Long id, String loginUserName, String nickName) {
+        AdminUser adminUser = adminUserMapper.selectByPrimaryKey(id);
         //登录名重复
-        if (adminUserMapper.selectByLoginName(loginUserName) != null) {
+        AdminUser temp =adminUserMapper.selectByLoginName(loginUserName);
+        if ( temp!= null && !id.equals(temp.getAdminUserId())) {
             return ServiceResultEnum.SAME_LOGIN_NAME_EXIST.getResult();
         }
         //当前用户非空才可以进行更改
@@ -196,6 +197,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         String sponsor;
         sponsor=adminUser.getLoginUserName();
         adminUser.setSponsor(sponsor);
+        adminUser.setPhone(sponsor);
 
         if (adminUserMapper.insertSelective(adminUser) > 0) {
             return ServiceResultEnum.SUCCESS.getResult();
