@@ -88,6 +88,9 @@ public class ZhongHeMallPrizeServiceImpl implements ZhongHeMallPrizeService {
         if (temp == null) {
             return ServiceResultEnum.DATA_NOT_EXIST.getResult();
         }
+        if (temp.getActivityId() != 0) {
+            return ServiceResultEnum.PRIZE_PUT_UP.getResult();
+        }
 //        ZhongHeMallPrize temp2 = prizeMapper.selectByCategoryIdAndName(prize.getPrizeName(), prize.getPrizeCategoryId(),prize.getOrganizationId());
 //        if (temp2 != null && !temp2.getPrizeId().equals(prize.getPrizeId())) {
 //            //name和分类id相同且不同id 不能继续修改
@@ -110,9 +113,20 @@ public class ZhongHeMallPrizeServiceImpl implements ZhongHeMallPrizeService {
     }
 
     @Override
-    public Boolean batchUpdateStatus(Long[] ids, int sellStatus, Long adminId, Long organizationId, Byte role) {
-
-        return prizeMapper.batchUpdateStatus(ids, sellStatus, adminId,organizationId) > 0;
+    public String batchUpdateStatus(Long[] ids, int sellStatus, Long adminId, Long organizationId, Byte role) {
+        for(Long prizeId:ids){
+            ZhongHeMallPrize temp = prizeMapper.selectByPrimaryKey(prizeId);
+            if (temp == null) {
+                return ServiceResultEnum.DATA_NOT_EXIST.getResult();
+            }
+            if (temp.getActivityId() != 0) {
+                return ServiceResultEnum.PRIZE_PUT_UP.getResult();
+            }
+        }
+        if (prizeMapper.batchUpdateStatus(ids, sellStatus, adminId,organizationId) > 0) {
+            return ServiceResultEnum.SUCCESS.getResult();
+        }
+        return ServiceResultEnum.DB_ERROR.getResult();
     }
 
     @Override

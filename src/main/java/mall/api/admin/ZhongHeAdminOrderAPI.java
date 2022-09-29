@@ -285,6 +285,6 @@ public class ZhongHeAdminOrderAPI {
     @ApiOperation(value = "下载订单导入邮寄单号模板", notes = "下载订单导入邮寄单号模板")
     public void template(HttpServletResponse response){
         // 导出数据
-        ExcelUtils.exportTemplate(response, "订单邮寄单号导入模板", ExportOrder.class,true);
+        ExcelUtils.exportTemplate(response, "订单邮寄单号导入模板", ExampleOrder.class,true);
     }
 }

@@ -48,7 +48,7 @@ public interface ZhongHeMallPrizeService {
      * @param role
      * @return
      */
-    Boolean batchUpdateStatus(Long[] ids, int Status, Long adminId, Long organizationId,Byte role);
+    String batchUpdateStatus(Long[] ids, int Status, Long adminId, Long organizationId,Byte role);
 
     /**
      * 获取商品详情

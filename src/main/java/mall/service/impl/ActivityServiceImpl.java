@@ -97,16 +97,16 @@ public class ActivityServiceImpl implements ActivityService {
         if (newPrizeIds.length != 0 ) {
             for (Long newPrizeId : newPrizeIds) {
                 ZhongHeMallPrize temp = prizeMapper.selectByPrimaryKey(newPrizeId);
-                if (temp == null) {
+                if (temp == null) {//奖品不存在
                     return ServiceResultEnum.PRIZE_NOT_EXIST.getResult();
                 }
-                if (temp.getPrizeSellStatus() == 1) {
+                if (temp.getPrizeSellStatus() == 1) {//奖品已下架
                     return ServiceResultEnum.PRIZE_PUT_DOWN.getResult();
                 }
-                if (temp.getActivityId() != 0 && !temp.getActivityId().equals(activity.getActivityId())) {
+                if (temp.getActivityId() != 0 && !temp.getActivityId().equals(activity.getActivityId())) {//奖品已使用
                     return ServiceResultEnum.PRIZE_USED.getResult();
                 }
-                if (!temp.getOrganizationId().equals(activity.getOrganizationId())) {
+                if (!temp.getOrganizationId().equals(activity.getOrganizationId())) {//奖品属于其他组织
                     return ServiceResultEnum.PRIZE_OTHER_ORG.getResult();
                 }
                 if (!newPrizes.toString().equals("")) {

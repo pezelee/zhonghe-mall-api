@@ -224,12 +224,14 @@ public class ZhongHeAdminPrizeInfoAPI {
             //非管理员没有权限
             return ResultGenerator.genFailResult(ServiceResultEnum.PERMISSION_DENIED.getResult());
         }
-        if (zhongHeMallPrizeService.batchUpdateStatus(batchIdParam.getIds(), sellStatus, adminUser.getAdminUserId(),adminUser.getOrganizationId(),adminUser.getRole())) {
+        String result = zhongHeMallPrizeService.batchUpdateStatus(batchIdParam.getIds(), sellStatus,
+                adminUser.getAdminUserId(),adminUser.getOrganizationId(),adminUser.getRole());
+        if (ServiceResultEnum.SUCCESS.getResult().equals(result)) {
             adminLogService.addSuccessLog(adminUser,"批量修改奖品状态接口",
                     "ids:"+batchIdParam.toString()+",status:"+sellStatus,"SUCCESS");
             return ResultGenerator.genSuccessResult();
         } else {
-            return ResultGenerator.genFailResult("修改失败");
+            return ResultGenerator.genFailResult(result);
         }
     }
 
