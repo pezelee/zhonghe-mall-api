@@ -1,6 +1,7 @@
  
 package mall.service;
 
+import mall.api.admin.param.BatchPrizesParam;
 import mall.entity.Activity;
 import mall.entity.ActivityDraw;
 import mall.entity.Model;
@@ -36,6 +37,15 @@ public interface ActivityService {
      * @return
      */
     String updateActivity(Activity activity);
+
+    /**
+     * 修改活动奖池
+     *
+     * @param activity
+     * @param activityEditParam
+     * @return
+     */
+    String updatePrizes(Activity activity, BatchPrizesParam activityEditParam);
 
     /**
      * 批量修改状态(上架下架)

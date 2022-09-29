@@ -44,6 +44,10 @@ public interface ZhongHeMallPrizeMapper {
 
     boolean updateStockNum( PrizeStockNumDTO stockNumDTO);
 
+    boolean updateActivityIdByPrimaryKey(@Param("activityId") Long activityId,@Param("prizeId") Long prizeId);
+
     int batchUpdateStatus(@Param("prizeIds")Long[] prizeIds,@Param("sellStatus") int sellStatus,@Param("adminId")  Long adminId, @Param("organizationId")  Long organizationId);
+
+    int batchUpdateActivityId(@Param("prizeIds")Long[] prizeIds,@Param("activityId") Long activityId,@Param("adminId")  Long adminId);
 
 }

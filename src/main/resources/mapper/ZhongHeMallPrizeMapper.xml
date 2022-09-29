@@ -21,6 +21,7 @@
         <result column="prize_weight" jdbcType="INTEGER" property="prizeWeight"/>
         <result column="prize_level" jdbcType="TINYINT" property="prizeLevel"/>
         <result column="prize_interval" jdbcType="INTEGER" property="prizeInterval"/>
+        <result column="activity_id" jdbcType="BIGINT" property="activityId"/>
         <result column="create_user" jdbcType="BIGINT" property="createUser"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="update_user" jdbcType="BIGINT" property="updateUser"/>
@@ -32,13 +33,13 @@
     <sql id="Base_Column_List">
         prize_id, organization_id, prize_name, prize_intro,prize_category_id, prize_type,
         prize_cover_img, prize_carousel, prize_value, original_stock, stock_num, total_num, tag,
-        prize_sell_status, prize_weight, prize_level, prize_interval,
+        prize_sell_status, prize_weight, prize_level, prize_interval,activity_id,
         create_user, create_time, update_user, update_time
   </sql>
     <sql id="Join_Column_List">
         prize_id, self.organization_id,join1.org_name, prize_name, prize_intro,prize_category_id, prize_type,
         prize_cover_img, prize_carousel, prize_value, original_stock, stock_num, total_num, tag,
-        prize_sell_status, prize_weight, prize_level, prize_interval,
+        prize_sell_status, prize_weight, prize_level, prize_interval,activity_id,
         self.create_time, self.create_user, self.update_time, self.update_user
   </sql>
     <sql id="Blob_Column_List">
@@ -49,13 +50,13 @@
         INSERT INTO tb_zhonghe_mall_prize_info(organization_id, prize_name, prize_intro, prize_category_id, prize_type,
         prize_cover_img, prize_carousel, prize_value,
         prize_detail_content,prize_value, original_stock,stock_num,total_num
-        prize_weight,prize_level,prize_interval)
+        prize_weight,prize_level,prize_interval,activity_id)
         VALUES
         <foreach collection="zhongHeMallPrizeList" item="prize" separator=",">
             (#{prize.organizationId},#{prize.prizeIntro},#{prize.prizeCategoryId},
             #{prize.prizeCoverImg},#{prize.prizeCarousel},#{prize.prizeValue},#{prize.prizeDetailContent},
             #{prize.prizeValue},#{prize.originalStock},#{prize.stockNum},#{prize.totalNum},
-            #{prize.prizeWeight},#{prize.prizeLevel},#{prize.prizeInterval})
+            #{prize.prizeWeight},#{prize.prizeLevel},#{prize.prizeInterval},#{prize.activityId})
         </foreach>
     </insert>
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
@@ -83,6 +84,15 @@
     <update id="batchUpdateStatus">
         update tb_zhonghe_mall_prize_info
         set prize_sell_status=#{sellStatus},update_time=now(),update_user =#{adminId}  where 1=1
+        and prize_id in
+        <foreach item="id" collection="prizeIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+    <update id="batchUpdateActivityId">
+        update tb_zhonghe_mall_prize_info
+        set activity_id=#{activityId},update_time=now(),update_user =#{adminId}
+        where 1=1
         and prize_id in
         <foreach item="id" collection="prizeIds" open="(" separator="," close=")">
             #{id}
@@ -288,7 +298,7 @@
     <insert id="insert" parameterType="mall.entity.ZhongHeMallPrize">
     insert into tb_zhonghe_mall_prize_info (prize_id,organization_id, prize_name, prize_intro,prize_category_id, prize_type,
       prize_cover_img, prize_carousel, prize_value, original_stock,
-      stock_num, total_num, tag, prize_sell_status, prize_weight, prize_level, prize_interval,
+      stock_num, total_num, tag, prize_sell_status, prize_weight, prize_level, prize_interval,activity_id,
       create_user, create_time,
       update_user, update_time, prize_detail_content
       )
@@ -297,7 +307,7 @@
       #{prizeCoverImg,jdbcType=VARCHAR}, #{prizeCarousel,jdbcType=VARCHAR}, #{prizeValue,jdbcType=INTEGER},
       #{originalStock,jdbcType=INTEGER}, #{stockNum,jdbcType=INTEGER}, #{totalNum,jdbcType=INTEGER},
       #{tag,jdbcType=VARCHAR}, #{prizeSellStatus,jdbcType=TINYINT}, #{prizeWeight,jdbcType=INTEGER},
-      #{prizeLevel,jdbcType=TINYINT}, #{prizeInterval,jdbcType=INTEGER},
+      #{prizeLevel,jdbcType=TINYINT}, #{prizeInterval,jdbcType=INTEGER}, #{activityId,jdbcType=BIGINT},
       #{createUser,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP},
       #{updateUser,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, #{prizeDetailContent,jdbcType=LONGVARCHAR}
       )
@@ -358,6 +368,9 @@
             </if>
             <if test="createUser != null">
                 create_user,
+            </if>
+            <if test="activityId != null">
+                activity_id,
             </if>
             <if test="createTime != null">
                 create_time,
@@ -423,6 +436,9 @@
             </if>
             <if test="prizeInterval != null">
                 #{prizeInterval,jdbcType=INTEGER},
+            </if>
+            <if test="activityId != null">
+                #{activityId,jdbcType=BIGINT},
             </if>
             <if test="createUser != null">
                 #{createUser,jdbcType=BIGINT},
@@ -492,6 +508,9 @@
             <if test="prizeInterval != null">
                 prize_interval = #{prizeInterval,jdbcType=INTEGER},
             </if>
+            <if test="activityId != null">
+                activity_id = #{activityId,jdbcType=BIGINT},
+            </if>
             <if test="createUser != null">
                 create_user = #{createUser,jdbcType=BIGINT},
             </if>
@@ -528,6 +547,7 @@
       prize_weight = #{prizeWeight,jdbcType=INTEGER},
       prize_level = #{prizeLevel,jdbcType=TINYINT},
       prize_interval = #{prizeInterval,jdbcType=INTEGER},
+      activity_id = #{activityId,jdbcType=BIGINT},
       create_user = #{createUser,jdbcType=BIGINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_user = #{updateUser,jdbcType=BIGINT},
@@ -553,10 +573,17 @@
       prize_weight = #{prizeWeight,jdbcType=INTEGER},
       prize_level = #{prizeLevel,jdbcType=TINYINT},
       prize_interval = #{prizeInterval,jdbcType=INTEGER},
+      activity_id = #{activityId,jdbcType=BIGINT},
       create_user = #{createUser,jdbcType=BIGINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_user = #{updateUser,jdbcType=BIGINT},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where prize_id = #{prizeId,jdbcType=BIGINT}
+  </update>
+  <update id="updateActivityIdByPrimaryKey">
+    update tb_zhonghe_mall_prize_info
+    set
+      activity_id = #{activityId,jdbcType=BIGINT}
     where prize_id = #{prizeId,jdbcType=BIGINT}
   </update>
 </mapper>

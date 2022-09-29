@@ -1,12 +1,10 @@
  
 package mall.service.impl;
 
+import mall.api.admin.param.BatchPrizesParam;
 import mall.common.ServiceResultEnum;
 import mall.common.ZhongHeMallException;
-import mall.dao.ActivityDrawMapper;
-import mall.dao.ActivityMapper;
-import mall.dao.ModelMapper;
-import mall.dao.RuleMapper;
+import mall.dao.*;
 import mall.entity.*;
 import mall.service.ActivityService;
 import mall.util.CheckUtils;
@@ -19,6 +17,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -30,6 +29,8 @@ public class ActivityServiceImpl implements ActivityService {
     private ActivityMapper activityMapper;
     @Autowired
     private ActivityDrawMapper activityDrawMapper;
+    @Autowired
+    private ZhongHeMallPrizeMapper prizeMapper;
     @Autowired
     private RuleMapper ruleMapper;
     @Autowired
@@ -79,24 +80,64 @@ public class ActivityServiceImpl implements ActivityService {
             //name和分行id相同且不同id 不能继续修改
             return ServiceResultEnum.SAME_ACTIVITY_EXIST.getResult();
         }
-        String prizes=activity.getPrizes();
-        String[] prizeIdList;
+
+        activity.setUpdateTime(new Date());
+        if (activityMapper.updateByPrimaryKeySelective(activity) > 0) {
+            return ServiceResultEnum.SUCCESS.getResult();
+        }
+        return ServiceResultEnum.DB_ERROR.getResult();
+    }
+
+    @Override
+    public String updatePrizes(Activity activity, BatchPrizesParam activityEditParam) {
+
+        Long[] newPrizeIds = activityEditParam.getPrizeIds();
         StringBuilder newPrizes = new StringBuilder();
-        if (!("".equals(prizes) || prizes ==null)) {
-            prizeIdList = prizes.split(",");
-            for (String s : prizeIdList) {
-                if (!s.equals("")) {
-                    Pattern pattern = Pattern.compile("[0-9]*");
-                    if(!pattern.matcher(s).matches()){//不是数字
-                        return ServiceResultEnum.PARAM_ERROR.getResult();
-                    }
-                    if (!newPrizes.toString().equals("")) {
-                        newPrizes.append(",");
-                    }
-                    newPrizes.append(s);
+        //检验新配置奖池，生成新奖池字段
+        if (newPrizeIds.length != 0 ) {
+            for (Long newPrizeId : newPrizeIds) {
+                ZhongHeMallPrize temp = prizeMapper.selectByPrimaryKey(newPrizeId);
+                if (temp == null) {
+                    return ServiceResultEnum.PRIZE_NOT_EXIST.getResult();
                 }
+                if (temp.getPrizeSellStatus() == 1) {
+                    return ServiceResultEnum.PRIZE_PUT_DOWN.getResult();
+                }
+                if (temp.getActivityId() != 0 && !temp.getActivityId().equals(activity.getActivityId())) {
+                    return ServiceResultEnum.PRIZE_USED.getResult();
+                }
+                if (!temp.getOrganizationId().equals(activity.getOrganizationId())) {
+                    return ServiceResultEnum.PRIZE_OTHER_ORG.getResult();
+                }
+                if (!newPrizes.toString().equals("")) {
+                    newPrizes.append(",");
+                }
+                newPrizes.append(newPrizeId);
+            }
+        }else newPrizes.append("");
+//        }else return ServiceResultEnum.PARAM_ERROR.getResult();
+        //清理旧奖池
+        String oldPrizes=activity.getPrizes();
+        if (!("".equals(oldPrizes) || oldPrizes ==null)) {
+            String[] oldPrizeIdList;
+            oldPrizeIdList = oldPrizes.split(",");
+            Long[] temp = new Long[oldPrizeIdList.length];
+            for (int i = 0; i < oldPrizeIdList.length; i++) {
+                temp[i]= Long.valueOf(oldPrizeIdList[i]);
+            }
+            //旧奖池清空活动ID
+//            prizeMapper.batchUpdateActivityId(temp, (long) 0,activity.getUpdateUser());
+            if (!(prizeMapper.batchUpdateActivityId(temp, (long) 0,activity.getUpdateUser())>0)){
+                return ServiceResultEnum.DB_ERROR.getResult();
             }
         }
+        //设置新奖池奖品
+        if (newPrizeIds.length  != 0) {
+            if (!(prizeMapper.batchUpdateActivityId(newPrizeIds, activity.getActivityId(),activity.getUpdateUser())>0)){
+                return ServiceResultEnum.DB_ERROR.getResult();
+            }
+        }
+        //修改活动奖池字段
         activity.setPrizes(newPrizes.toString());
         activity.setUpdateTime(new Date());
         if (activityMapper.updateByPrimaryKeySelective(activity) > 0) {

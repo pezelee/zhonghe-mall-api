@@ -130,6 +130,32 @@ public class ZhongHeAdminActivityAPI {
         }
     }
 
+    @RequestMapping(value = "/activity/prizes", method = RequestMethod.PUT)
+    @ApiOperation(value = "修改活动奖池", notes = "修改活动信息")
+    public Result updatePrizes(@RequestBody @Valid BatchPrizesParam activityEditParam, @TokenToAdminUser AdminUserToken adminUser) {
+        logger.info("修改活动奖池接口  adminUser:{}", adminUser.toString());
+        //判定权限是否符合--总管理员或相应的分行管理员
+        Activity activity = activityService.getActivityById(activityEditParam.getActivityId());
+        if (activity == null) {
+            return ResultGenerator.genFailResult(ServiceResultEnum.DATA_NOT_EXIST.getResult());
+        }
+        Long organizationId = activity.getOrganizationId();
+        String isAdmin = CheckUtils.isAdmin(adminUser,organizationId);
+        if (!isAdmin.equals(ServiceResultEnum.SUCCESS.getResult())) {
+            logger.info("修改活动信息 错误:{}", isAdmin);
+            return ResultGenerator.genFailResult(isAdmin);
+        }
+        activity.setUpdateUser(adminUser.getAdminUserId());
+        String result = activityService.updatePrizes(activity,activityEditParam);
+        logger.info("修改活动奖池:{}", result);
+        adminLogService.addSuccessLog(adminUser,"修改活动奖池接口",activityEditParam.toString(),result.toString());
+        if (ServiceResultEnum.SUCCESS.getResult().equals(result)) {
+            return ResultGenerator.genSuccessResult();
+        } else {
+            return ResultGenerator.genFailResult(result);
+        }
+    }
+
     @GetMapping("/activity/{id}")
     @ApiOperation(value = "获取单条活动信息", notes = "根据id查询")
     public Result info(@PathVariable("id") Long id, @TokenToAdminUser AdminUserToken adminUser) {

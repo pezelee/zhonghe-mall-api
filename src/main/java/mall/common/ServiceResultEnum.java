@@ -53,6 +53,10 @@ public enum ServiceResultEnum {
 
     ACTIVITY_PUT_DOWN("活动已下架！"),
 
+    PRIZE_USED("奖品已在其他活动！"),
+
+    PRIZE_OTHER_ORG("奖品不属于活动分行！"),
+
     SHOPPING_CART_ITEM_LIMIT_NUMBER_ERROR("超出单个商品的最大购买数量！"),
 
     SHOPPING_CART_ITEM_NUMBER_ERROR("商品数量不能小于 1 ！"),

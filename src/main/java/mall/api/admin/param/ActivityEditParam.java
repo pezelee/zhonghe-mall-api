@@ -52,8 +52,8 @@ public class ActivityEditParam {
     @NotNull(message = "奖品过期时间不能为空")
     private Date expiretime;
 
-    @ApiModelProperty("待修改奖品列表")
-    private String prizes;//活动奖品池:[1,2,5]
+//    @ApiModelProperty("待修改奖品列表")
+//    private String prizes;//活动奖品池:[1,2,5]
 
     @ApiModelProperty("待修改规则id")
     private Long rule;

@@ -61,6 +61,7 @@ public class ZhongHeMallPrizeServiceImpl implements ZhongHeMallPrizeService {
 //        if (prizeMapper.selectByCategoryIdAndName(prize.getPrizeName(), prize.getPrizeCategoryId(),prize.getOrganizationId()) != null) {
 //            return ServiceResultEnum.SAME_PRIZE_EXIST.getResult();
 //        }
+        prize.setActivityId((long) 0);
         prize.setUpdateTime(new Date());
         prize.setCreateTime(new Date());
         if (prizeMapper.insertSelective(prize) > 0) {

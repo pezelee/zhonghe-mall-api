@@ -44,6 +44,8 @@ public class ZhongHeMallPrize {
 
     private Integer prizeInterval;//中奖间隔（小时）
 
+    private Long activityId;//所属活动，默认0，无活动
+
     private Long createUser;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
