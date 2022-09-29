@@ -10,7 +10,7 @@ public class ImportUser {
 
     private int rowNum;
 
-    @ExcelImport(value = "登录名",maxLength = 11, required = true,unique = true,phone = true)
+    @ExcelImport(value = "登录名(手机号)",maxLength = 11, required = true,unique = true,phone = true)
     private String loginUserName;
 
     @ExcelImport(value = "用户昵称" ,required = true,unique = true)

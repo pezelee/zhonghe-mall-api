@@ -39,27 +39,27 @@ public class GoodsEditParam {
 
     @ApiModelProperty("原价")
     @NotNull(message = "原价不能为空")
-    @Min(value = 1, message = "原价最低为1")
+    @Min(value = 0, message = "原价最低为0")
     @Max(value = 1000000, message = "原价最高为1000000")
     private Integer originalPrice;
 
     @ApiModelProperty("售价")
     @NotNull(message = "售价不能为空")
-    @Min(value = 1, message = "售价最低为1")
+    @Min(value = 0, message = "售价最低为0")
     @Max(value = 1000000, message = "售价最高为1000000")
     private Integer sellingPrice;
 
     @ApiModelProperty("积分售价")
+    @NotNull(message = "积分售价不能为空")
     private String sellingPoint;
 
     @ApiModelProperty("库存")
     @NotNull(message = "库存不能为空")
-    @Min(value = 1, message = "库存最低为1")
+    @Min(value = 0, message = "库存最低为0")
     @Max(value = 100000, message = "库存最高为100000")
     private Integer stockNum;
 
     @ApiModelProperty("商品标签")
-    @NotEmpty(message = "商品标签不能为空")
     @Length(max = 16,message = "商品标签内容过长")
     private String tag;
 

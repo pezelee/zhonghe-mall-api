@@ -46,7 +46,6 @@ public class GoodsAddParam {
 
     @ApiModelProperty("积分售价")
     @NotNull(message = "积分售价不能为空")
-//    @Min(value = 0, message = "积分售价最低为0")
     private String sellingPoint;
 
     @ApiModelProperty("库存")
@@ -56,7 +55,6 @@ public class GoodsAddParam {
     private Integer stockNum;
 
     @ApiModelProperty("商品标签")
-    @NotEmpty(message = "商品标签不能为空")
     @Length(max = 16,message = "商品标签内容过长")
     private String tag;
 
