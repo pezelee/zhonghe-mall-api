@@ -366,11 +366,11 @@
             <if test="prizeInterval != null">
                 prize_interval,
             </if>
-            <if test="createUser != null">
-                create_user,
-            </if>
             <if test="activityId != null">
                 activity_id,
+            </if>
+            <if test="createUser != null">
+                create_user,
             </if>
             <if test="createTime != null">
                 create_time,
