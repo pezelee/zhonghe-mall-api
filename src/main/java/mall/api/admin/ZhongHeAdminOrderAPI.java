@@ -194,22 +194,22 @@ public class ZhongHeAdminOrderAPI {
     /**
      * 出库
      */
-    @RequestMapping(value = "/orders/checkOut", method = RequestMethod.PUT)
-    @ApiOperation(value = "修改订单状态为已出库", notes = "批量修改")
-    public Result checkOut(@RequestBody BatchIdParam batchIdParam, @TokenToAdminUser AdminUserToken adminUser) {
-        logger.info("修改订单状态为已出库接口  adminUser:{}", adminUser.toString());
-        if (batchIdParam==null||batchIdParam.getIds().length < 1) {
-            return ResultGenerator.genFailResult("参数异常！");
-        }
-        String result = zhongHeMallOrderService.checkOut(batchIdParam.getIds());
-        if (ServiceResultEnum.SUCCESS.getResult().equals(result)) {
-            adminLogService.addSuccessLog(adminUser,"修改订单状态为已出库接口",
-                    "ids:"+batchIdParam.toString(),"SUCCESS");
-            return ResultGenerator.genSuccessResult();
-        } else {
-            return ResultGenerator.genFailResult(result);
-        }
-    }
+//    @RequestMapping(value = "/orders/checkOut", method = RequestMethod.PUT)
+//    @ApiOperation(value = "修改订单状态为已出库", notes = "批量修改")
+//    public Result checkOut(@RequestBody BatchIdParam batchIdParam, @TokenToAdminUser AdminUserToken adminUser) {
+//        logger.info("修改订单状态为已出库接口  adminUser:{}", adminUser.toString());
+//        if (batchIdParam==null||batchIdParam.getIds().length < 1) {
+//            return ResultGenerator.genFailResult("参数异常！");
+//        }
+//        String result = zhongHeMallOrderService.checkOut(batchIdParam.getIds());
+//        if (ServiceResultEnum.SUCCESS.getResult().equals(result)) {
+//            adminLogService.addSuccessLog(adminUser,"修改订单状态为已出库接口",
+//                    "ids:"+batchIdParam.toString(),"SUCCESS");
+//            return ResultGenerator.genSuccessResult();
+//        } else {
+//            return ResultGenerator.genFailResult(result);
+//        }
+//    }
 
     /**
      * 出库

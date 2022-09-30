@@ -358,13 +358,13 @@ public class ZhongHeMallOrderServiceImpl implements ZhongHeMallOrderService {
         String errorOrderNos = "";
         if (!CollectionUtils.isEmpty(orders)) {
             for (ZhongHeMallOrder zhongHeMallOrder : orders) {
-                if (zhongHeMallOrder.getIsDeleted() == 1) {
+                if (zhongHeMallOrder.getIsDeleted() == 1 || zhongHeMallOrder.getOrderStatus() != 1) {
                     errorOrderNos += zhongHeMallOrder.getOrderNo() + " ";
-                    continue;
+                    break;
                 }
-                if (zhongHeMallOrder.getOrderStatus() != 1) {
-                    errorOrderNos += zhongHeMallOrder.getOrderNo() + " ";
-                }
+//                if (zhongHeMallOrder.getOrderStatus() != 1) {
+//                    errorOrderNos += zhongHeMallOrder.getOrderNo() + " ";
+//                }
             }
             if (StringUtils.isEmpty(errorOrderNos)) {
                 //订单状态正常 可以执行配货完成操作 修改订单状态和更新时间
@@ -375,11 +375,12 @@ public class ZhongHeMallOrderServiceImpl implements ZhongHeMallOrderService {
                 }
             } else {
                 //订单此时不可执行出库操作
-                if (errorOrderNos.length() > 0 && errorOrderNos.length() < 100) {
-                    return errorOrderNos + "订单的状态不是支付成功无法执行出库操作";
-                } else {
-                    return "你选择了太多状态不是支付成功的订单，无法执行配货完成操作";
-                }
+                return errorOrderNos + "订单的状态不是支付成功无法执行配货操作";
+//                if (errorOrderNos.length() > 0 && errorOrderNos.length() < 100) {
+//                    return errorOrderNos + "订单的状态不是支付成功无法执行出库操作";
+//                } else {
+//                    return "你选择了太多状态不是支付成功的订单，无法执行配货完成操作";
+//                }
             }
         }
         //未查询到数据 返回错误提示
@@ -394,13 +395,14 @@ public class ZhongHeMallOrderServiceImpl implements ZhongHeMallOrderService {
         String errorOrderNos = "";
         if (!CollectionUtils.isEmpty(orders)) {
             for (ZhongHeMallOrder zhongHeMallOrder : orders) {
-                if (zhongHeMallOrder.getIsDeleted() == 1) {
+                if (zhongHeMallOrder.getIsDeleted() == 1
+                        || (zhongHeMallOrder.getOrderStatus() != 2 && zhongHeMallOrder.getOrderStatus() != 3)) {
                     errorOrderNos += zhongHeMallOrder.getOrderNo() + " ";
-                    continue;
+                    break;
                 }
-                if (zhongHeMallOrder.getOrderStatus() != 1 && zhongHeMallOrder.getOrderStatus() != 2) {
-                    errorOrderNos += zhongHeMallOrder.getOrderNo() + " ";
-                }
+//                if (zhongHeMallOrder.getOrderStatus() != 1 && zhongHeMallOrder.getOrderStatus() != 2) {
+//                    errorOrderNos += zhongHeMallOrder.getOrderNo() + " ";
+//                }
             }
             if (StringUtils.isEmpty(errorOrderNos)) {
                 //订单状态正常 可以执行出库操作 修改订单状态和更新时间
@@ -411,11 +413,12 @@ public class ZhongHeMallOrderServiceImpl implements ZhongHeMallOrderService {
                 }
             } else {
                 //订单此时不可执行出库操作
-                if (errorOrderNos.length() > 0 && errorOrderNos.length() < 100) {
-                    return errorOrderNos + "订单的状态不是支付成功或配货完成无法执行出库操作";
-                } else {
-                    return "你选择了太多状态不是支付成功或配货完成的订单，无法执行出库操作";
-                }
+                return errorOrderNos + "订单的状态不是配货完成或出库成功无法执行出库操作";
+//                if (errorOrderNos.length() > 0 && errorOrderNos.length() < 100) {
+//                    return errorOrderNos + "订单的状态不是配货完成或出库成功无法执行出库操作";
+//                } else {
+//                    return "你选择了太多状态不是支付成功或配货完成的订单，无法执行出库操作";
+//                }
             }
         }
         //未查询到数据 返回错误提示
@@ -425,16 +428,32 @@ public class ZhongHeMallOrderServiceImpl implements ZhongHeMallOrderService {
     @Override
     @Transactional
     public String setMailNo(OrderMailParam orderMailParam) {
-        ZhongHeMallOrder temp = zhongHeMallOrderMapper.selectByPrimaryKey(orderMailParam.getOrderId());
+        String result = checkOut(orderMailParam.getOrderId(),orderMailParam.getMailNo());
+        return result;
+    }
+
+
+    @Override
+    public String setMailNoImport(ImportOrder order) {
+        String result = checkOut(order.getOrderId(),order.getMailNo());
+        return result;
+    }
+
+    private String checkOut(Long orderId,String mailNo){
+        ZhongHeMallOrder temp = zhongHeMallOrderMapper.selectByPrimaryKey(orderId);
         //不为空且orderStatus>=0且状态为完成之前可以修改部分信息
-        if (temp != null && temp.getOrderStatus() >= 2 && temp.getOrderStatus() <= 3) {
-            temp.setUpdateTime(new Date());
-            temp.setOrderStatus((byte) 3);
-            temp.setMailNo(orderMailParam.getMailNo());
-            if (zhongHeMallOrderMapper.updateByPrimaryKeySelective(temp) > 0) {
-                return ServiceResultEnum.SUCCESS.getResult();
+        if (temp != null && temp.getIsDeleted() == 0 ) {
+            if (temp.getOrderStatus() >= 2 && temp.getOrderStatus() <= 3) {
+                temp.setUpdateTime(new Date());
+                temp.setOrderStatus((byte) 3);
+                temp.setMailNo(mailNo);
+                if (zhongHeMallOrderMapper.updateByPrimaryKeySelective(temp) > 0) {
+                    return ServiceResultEnum.SUCCESS.getResult();
+                }
+                return ServiceResultEnum.DB_ERROR.getResult();
+            }else {
+                return "订单状态不是配货完成或出库成功无法执行出库操作";
             }
-            return ServiceResultEnum.DB_ERROR.getResult();
         }
         return ServiceResultEnum.DATA_NOT_EXIST.getResult();
     }
@@ -491,18 +510,4 @@ public class ZhongHeMallOrderServiceImpl implements ZhongHeMallOrderService {
         return null;
     }
 
-    @Override
-    public String setMailNoImport(ImportOrder order) {
-        ZhongHeMallOrder temp =zhongHeMallOrderMapper.selectByOrderNo(order.getOrderNo());
-        if (temp != null && temp.getOrderStatus() >= 2 && temp.getOrderStatus() <= 3) {
-            temp.setUpdateTime(new Date());
-            temp.setOrderStatus((byte) 3);
-            temp.setMailNo(order.getMailNo());
-            if (zhongHeMallOrderMapper.updateByPrimaryKeySelective(temp) > 0) {
-                return ServiceResultEnum.SUCCESS.getResult();
-            }
-            return ServiceResultEnum.DB_ERROR.getResult();
-        }
-        return ServiceResultEnum.DATA_NOT_EXIST.getResult();
-    }
 }
