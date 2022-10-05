@@ -4,6 +4,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import mall.api.admin.param.LotterydrawMailParam;
+import mall.api.admin.param.NoticeAddParam;
+import mall.api.mall.vo.ZhongHeMallUserVO;
 import mall.common.ServiceResultEnum;
 import mall.config.annotation.TokenToAdminUser;
 import mall.entity.*;
@@ -34,6 +36,10 @@ public class ZhongHeAdminLotterydrawAPI {
     private LotterydrawService lotterydrawService;
     @Resource
     private AdminLogService adminLogService;
+    @Resource
+    private ZhongHeMallUserService userService;
+    @Resource
+    private NoticeService noticeService;
 
 
     /**
@@ -189,15 +195,17 @@ public class ZhongHeAdminLotterydrawAPI {
      */
     @RequestMapping(value = "/lotterydraw/sendVIP", method = RequestMethod.PUT)
     @ApiOperation(value = "管理员发送VIP会员卡号", notes = "管理员发送VIP会员卡号")
-    public Result sendVIP(@RequestBody Long id,
+    public Result sendVIP(
+            @RequestParam @ApiParam(value = "抽奖记录ID") Long id,
+            @RequestParam @ApiParam(value = "会员卡号") String VIPKEY,
                        @TokenToAdminUser AdminUserToken adminUser) {
-        logger.info("管理员发送VIP会员卡号接口    id:{},adminUser:{}", id.toString(),adminUser.toString());
+        logger.info("管理员发送VIP会员卡号接口    id:{},VIPKEY:{},adminUser:{}", id.toString(),VIPKEY,adminUser.toString());
 
         LotteryDraw lotterydraw = lotterydrawService.getLotteryDrawById(id);
         if (lotterydraw == null) {
             return ResultGenerator.genFailResult(ServiceResultEnum.DATA_NOT_EXIST.getResult());
         }
-        if (lotterydraw.getPrizeType() != 2) {
+        if (lotterydraw.getPrizeType() != 3) {
             //非VIP卡类奖品
             return ResultGenerator.genFailResult(ServiceResultEnum.PRIZE_TYPE_ERROR.getResult());
         }
@@ -207,6 +215,14 @@ public class ZhongHeAdminLotterydrawAPI {
         if (!isAdmin.equals(ServiceResultEnum.SUCCESS.getResult())) {
             return ResultGenerator.genFailResult(isAdmin);
         }
+        ZhongHeMallUserVO user = userService.info(lotterydraw.getUserId());
+        NoticeAddParam addParam = new NoticeAddParam();
+        addParam.setTitle("会员卡号领取");
+        addParam.setSender("会员卡发放中心");
+        addParam.setNotice("您在"+ lotterydraw.getActivityName() +"活动中获得的 " + lotterydraw.getPrizeName() +
+                " 已发送： "+VIPKEY+"，请及时领取。");
+        addParam.setNoticeType((byte)0);
+        noticeService.saveNotice(addParam,lotterydraw.getUserId());
         //修改状态已接收
         if (lotterydrawService.received(id)) {
             adminLogService.addSuccessLog(adminUser,"管理员发送VIP会员卡号接口","id:"+id.toString(),"SUCCESS");
@@ -287,7 +303,7 @@ public class ZhongHeAdminLotterydrawAPI {
     @ApiOperation(value = "抽奖记录导入邮寄单号表", notes = "抽奖记录导入邮寄单号表")
     public Result mailNoImport(@RequestPart("file") MultipartFile file,
                              @TokenToAdminUser AdminUserToken adminUser) throws Exception {
-        logger.info("抽奖记录导入邮寄单号表  ,adminUser={}", adminUser.toString());
+        logger.info("抽奖记录导入邮寄单号表接口  ,adminUser={}", adminUser.toString());
         List<ImportLotterydraw> lotterydraws = ExcelUtils.readMultipartFile(file,ImportLotterydraw.class);
         logger.info("lotterydraws{}",lotterydraws.toString());
         List<ImportError> errors = new ArrayList<>();

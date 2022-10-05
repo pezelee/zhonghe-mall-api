@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiParam;
 import mall.api.admin.param.BatchIdParam;
 import mall.api.mall.param.MallUserLoginParam;
 import mall.api.mall.param.MallUserUpdateParam;
+import mall.api.mall.vo.ZhongHeMallNoticeVO;
 import mall.api.mall.vo.ZhongHeMallUserVO;
 import mall.common.Constants;
 import mall.common.ServiceResultEnum;
@@ -13,11 +14,9 @@ import mall.config.annotation.TokenToMallUser;
 import mall.entity.MallUser;
 import mall.entity.TotalPoint;
 import mall.entity.ZhongHeMallGoods;
+import mall.service.NoticeService;
 import mall.service.ZhongHeMallUserService;
-import mall.util.BeanUtil;
-import mall.util.NumberUtil;
-import mall.util.Result;
-import mall.util.ResultGenerator;
+import mall.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -25,7 +24,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Api(value = "v1", tags = "2-0.众鹤商城用户操作相关接口")
@@ -34,6 +35,8 @@ public class ZhongHeMallPersonalAPI {
 
     @Resource
     private ZhongHeMallUserService zhongHeMallUserService;
+    @Resource
+    private NoticeService noticeService;
 
     private static final Logger logger = LoggerFactory.getLogger(ZhongHeMallPersonalAPI.class);
 
@@ -116,10 +119,42 @@ public class ZhongHeMallPersonalAPI {
     @ApiOperation(value = "获取用户信息", notes = "")
     public Result<ZhongHeMallUserVO> getUserDetail(@TokenToMallUser MallUser loginMallUser) {
         logger.info("获取用户信息接口  MallUser:{}", loginMallUser.toString());
-        //已登录则直接返回
         ZhongHeMallUserVO mallUserVO = new ZhongHeMallUserVO();
         BeanUtil.copyProperties(loginMallUser, mallUserVO);
         return ResultGenerator.genSuccessResult(mallUserVO);
+    }
+
+
+
+    @GetMapping("/user/noticelist")
+    @ApiOperation(value = "获取用户通知列表", notes = "")
+    public Result<ZhongHeMallUserVO> getUserNotice(
+            @ApiParam(value = "页码") @RequestParam(required = false) Integer pageNumber,
+            @TokenToMallUser MallUser loginMallUser) {
+        logger.info("获取用户通知列表接口  MallUser:{}", loginMallUser.toString());
+        if (pageNumber == null || pageNumber < 1 ) {
+            return ResultGenerator.genFailResult("分页参数异常！");
+        }
+        logger.info("列表参数 pageNumber:{}", pageNumber.toString());
+
+        Map params = new HashMap(8);
+        params.put("page", pageNumber);
+        params.put("limit", 10);
+        params.put("userId", loginMallUser.getUserId());
+        //封装分页请求参数
+        PageQueryUtil pageUtil = new PageQueryUtil(params);
+        PageResult result = noticeService.getUserNoticeList(pageUtil);
+        return ResultGenerator.genSuccessResult(result);
+    }
+
+    @GetMapping("/user/noticeinfo/{id}")
+    @ApiOperation(value = "获取通知详情", notes = "")
+    public Result<ZhongHeMallUserVO> getNoticeDetail(@PathVariable("id") Long id,
+            @TokenToMallUser MallUser loginMallUser) {
+        logger.info("获取通知详情接口  id:{}, MallUser:{}", id.toString(), loginMallUser.toString());
+        ZhongHeMallNoticeVO noticeVO = noticeService.getNoticeDetailById(id);
+        noticeService.readed(id);//标记为已读
+        return ResultGenerator.genSuccessResult(noticeVO);
     }
 
     @GetMapping("/user/point")

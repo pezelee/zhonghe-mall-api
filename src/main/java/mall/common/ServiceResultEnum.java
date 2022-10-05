@@ -39,6 +39,8 @@ public enum ServiceResultEnum {
 
     PRIZE_NOT_EXIST("奖品不存在！"),
 
+    NOTICE_NOT_EXIST("通知不存在！"),
+
     ACTIVITY_NOT_EXIST("活动不存在！"),
 
     DRAW_NOT_EXIST("抽奖记录不存在！"),

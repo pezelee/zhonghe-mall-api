@@ -16,4 +16,7 @@ public class ZhongHeMallUserVO implements Serializable {
 
     @ApiModelProperty("个性签名")
     private String introduceSign;
+
+    @ApiModelProperty("手机号")
+    private String phone;
 }

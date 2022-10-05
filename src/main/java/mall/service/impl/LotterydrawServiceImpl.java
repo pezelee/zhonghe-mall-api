@@ -1,6 +1,7 @@
 package mall.service.impl;
 
 import mall.api.admin.param.LotterydrawMailParam;
+import mall.api.admin.param.NoticeAddParam;
 import mall.common.ServiceResultEnum;
 import mall.common.ZhongHeMallException;
 import mall.dao.*;
@@ -9,12 +10,14 @@ import mall.entity.excel.ExportLotterydraw;
 import mall.entity.excel.ImportLotterydraw;
 import mall.entity.excel.ImportOrder;
 import mall.service.LotterydrawService;
+import mall.service.NoticeService;
 import mall.util.BeanUtil;
 import mall.util.PageQueryUtil;
 import mall.util.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
@@ -38,6 +41,9 @@ public class LotterydrawServiceImpl implements LotterydrawService {
 
     @Autowired
     private LotteryDrawAddressMapper lotteryDrawAddressMapper;
+
+    @Resource
+    private NoticeService noticeService;
 
     @Override
     public PageResult getLotteryDrawPage(PageQueryUtil pageUtil) {
@@ -203,12 +209,19 @@ public class LotterydrawServiceImpl implements LotterydrawService {
 
     @Override
     public Boolean sending(LotterydrawMailParam param) {
-        LotteryDrawMail mail = new LotteryDrawMail();
-        mail.setMailNo(param.getMailNo());
-        mail.setLotteryDrawId(param.getLotteryDrawId());
-        mail.setUpdateTime(new Date());
-        int lotteryDraw = lotteryDrawMapper.sending(mail);
-        return lotteryDraw > 0;
+        LotteryDraw temp =lotteryDrawMapper.selectByPrimaryKey(param.getLotteryDrawId());
+        if (temp != null && temp.getStatus() >= 2 && temp.getStatus() <= 3) {
+            LotteryDrawMail mail = new LotteryDrawMail();
+            mail.setMailNo(param.getMailNo());
+            mail.setLotteryDrawId(param.getLotteryDrawId());
+            mail.setUpdateTime(new Date());
+            int lotteryDraw = lotteryDrawMapper.sending(mail);
+            if (lotteryDraw > 0) {
+                String mailresult = mailNoNotice(temp,param.getMailNo());//发送通知
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -231,11 +244,23 @@ public class LotterydrawServiceImpl implements LotterydrawService {
             temp.setStatus((byte) 3);
             temp.setMailNo(lotterydraw.getMailNo());
             if (lotteryDrawMapper.updateByPrimaryKeySelective(temp) > 0) {
+                String mailresult = mailNoNotice(temp,lotterydraw.getMailNo());//发送通知
                 return ServiceResultEnum.SUCCESS.getResult();
             }
             return ServiceResultEnum.DB_ERROR.getResult();
         }
         return ServiceResultEnum.DATA_NOT_EXIST.getResult();
+    }
+
+    private String mailNoNotice(LotteryDraw lotterydraw,String mailNo){
+        NoticeAddParam addParam = new NoticeAddParam();
+        addParam.setTitle("您的奖品已发出");
+        addParam.setSender("奖品发放中心");
+        addParam.setNotice("您在"+ lotterydraw.getActivityName() +"活动中获得的 " + lotterydraw.getPrizeName() +
+                " 已发出，邮寄单号: "+mailNo+"，请注意收取。");
+        addParam.setNoticeType((byte)0);
+        String result = noticeService.saveNotice(addParam,lotterydraw.getUserId());
+        return result;
     }
 
 

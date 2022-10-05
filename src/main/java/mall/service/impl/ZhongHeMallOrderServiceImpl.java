@@ -1,6 +1,7 @@
  
 package mall.service.impl;
 
+import mall.api.admin.param.NoticeAddParam;
 import mall.api.admin.param.OrderMailParam;
 import mall.api.mall.vo.*;
 import mall.common.*;
@@ -8,6 +9,7 @@ import mall.dao.*;
 import mall.entity.*;
 import mall.entity.excel.ExportOrder;
 import mall.entity.excel.ImportOrder;
+import mall.service.NoticeService;
 import mall.service.ZhongHeMallOrderService;
 import mall.service.ZhongHeMallUserService;
 import mall.util.*;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.Resource;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -45,6 +48,8 @@ public class ZhongHeMallOrderServiceImpl implements ZhongHeMallOrderService {
     private MallUserMapper mallUserMapper;
     @Autowired
     private ZhongHeMallUserService zhongHeMallUserService;
+    @Resource
+    private NoticeService noticeService;
 
 
     @Override
@@ -448,6 +453,7 @@ public class ZhongHeMallOrderServiceImpl implements ZhongHeMallOrderService {
                 temp.setOrderStatus((byte) 3);
                 temp.setMailNo(mailNo);
                 if (zhongHeMallOrderMapper.updateByPrimaryKeySelective(temp) > 0) {
+                    String mailresult = mailNoNotice(temp,mailNo);
                     return ServiceResultEnum.SUCCESS.getResult();
                 }
                 return ServiceResultEnum.DB_ERROR.getResult();
@@ -456,6 +462,17 @@ public class ZhongHeMallOrderServiceImpl implements ZhongHeMallOrderService {
             }
         }
         return ServiceResultEnum.DATA_NOT_EXIST.getResult();
+    }
+
+    private String mailNoNotice(ZhongHeMallOrder order,String mailNo){
+        NoticeAddParam addParam = new NoticeAddParam();
+        addParam.setTitle("您购买的商品已发出");
+        addParam.setSender("商品发放中心");
+        addParam.setNotice("您订单号为： " + order.getOrderNo() +
+                " 的商品已发出，邮寄单号: "+mailNo+"，请注意收取。");
+        addParam.setNoticeType((byte)0);
+        String result = noticeService.saveNotice(addParam,order.getUserId());
+        return result;
     }
 
     @Override
