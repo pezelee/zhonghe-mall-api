@@ -86,16 +86,19 @@
         left join tb_zhonghe_mall_order_address as j on self.order_id = j.order_id
         <where>
             <if test="orderNo!=null and orderNo!=''">
-                and order_no = #{orderNo}
+                and order_no like CONCAT('%',#{orderNo},'%')
             </if>
             <if test="organizationId!=null">
                 and organization_id = #{organizationId}
             </if>
+            <if test="userId!=null and userId!=''">
+                and self.user_id = #{userId}
+            </if>
             <if test="nickName!=null and nickName!=''">
-                and self.nick_name = #{nickName}
+                and self.nick_name like CONCAT('%',#{nickName},'%')
             </if>
             <if test="loginName!=null and loginName!=''">
-                and self.login_name = #{loginName}
+                and self.login_name like CONCAT('%',#{loginName},'%')
             </if>
             <if test="payType!=null and payType!=''">
                 and pay_type = #{payType}
@@ -104,7 +107,10 @@
                 and order_status = #{orderStatus}
             </if>
             <if test="mailNo!=null">
-                and mail_no = #{mailNo}
+                and mail_no like CONCAT('%',#{mailNo},'%')
+            </if>
+            <if test="isDeleted!=null and isDeleted!=''">
+                and self.is_deleted = #{isDeleted}
             </if>
             <if test="startTime != null and startTime.trim() != ''">
                 and self.create_time &gt; #{startTime}
@@ -123,7 +129,7 @@
 --         left join tb_zhonghe_mall_user as j on self.user_id = j.user_id
         <where>
             <if test="orderNo!=null and orderNo!=''">
-                and order_no = #{orderNo}
+                and order_no like CONCAT('%',#{orderNo},'%')
             </if>
             <if test="organizationId!=null">
                 and organization_id = #{organizationId}
@@ -132,10 +138,10 @@
                 and self.user_id = #{userId}
             </if>
             <if test="nickName!=null and nickName!=''">
-                and self.nick_name = #{nickName}
+                and self.nick_name like CONCAT('%',#{nickName},'%')
             </if>
             <if test="loginName!=null and loginName!=''">
-                and self.login_name = #{loginName}
+                and self.login_name like CONCAT('%',#{loginName},'%')
             </if>
             <if test="payType!=null and payType!=''">
                 and pay_type = #{payType}
@@ -144,7 +150,7 @@
                 and order_status = #{orderStatus}
             </if>
             <if test="mailNo!=null">
-                and mail_no = #{mailNo}
+                and mail_no like CONCAT('%',#{mailNo},'%')
             </if>
             <if test="isDeleted!=null and isDeleted!=''">
                 and self.is_deleted = #{isDeleted}
@@ -155,6 +161,7 @@
             <if test="endTime != null and endTime.trim() != ''">
                 and self.create_time &lt; #{endTime}
             </if>
+                and self.is_deleted = 0
         </where>
         order by self.create_time desc
         <if test="start!=null and limit!=null">
@@ -163,22 +170,22 @@
     </select>
 
     <select id="getTotalZhongHeMallOrders" parameterType="Map" resultType="int">
-        select count(*) from tb_zhonghe_mall_order
+        select count(*) from tb_zhonghe_mall_order  as self
         <where>
             <if test="orderNo!=null and orderNo!=''">
-                and order_no = #{orderNo}
+                and order_no like CONCAT('%',#{orderNo},'%')
             </if>
             <if test="organizationId!=null">
                 and organization_id = #{organizationId}
             </if>
             <if test="userId!=null and userId!=''">
-                and user_id = #{userId}
+                and self.user_id = #{userId}
             </if>
             <if test="nickName!=null and nickName!=''">
-                and self.nick_name = #{nickName}
+                and self.nick_name like CONCAT('%',#{nickName},'%')
             </if>
             <if test="loginName!=null and loginName!=''">
-                and self.login_name = #{loginName}
+                and self.login_name like CONCAT('%',#{loginName},'%')
             </if>
             <if test="payType!=null and payType!=''">
                 and pay_type = #{payType}
@@ -187,17 +194,18 @@
                 and order_status = #{orderStatus}
             </if>
             <if test="mailNo!=null">
-                and mail_no = #{mailNo}
+                and mail_no like CONCAT('%',#{mailNo},'%')
             </if>
             <if test="isDeleted!=null and isDeleted!=''">
-                and is_deleted = #{isDeleted}
+                and self.is_deleted = #{isDeleted}
             </if>
             <if test="startTime != null and startTime.trim() != ''">
-                and create_time &gt; #{startTime}
+                and self.create_time &gt; #{startTime}
             </if>
             <if test="endTime != null and endTime.trim() != ''">
-                and create_time &lt; #{endTime}
+                and self.create_time &lt; #{endTime}
             </if>
+                and self.is_deleted = 0
         </where>
     </select>
     <update id="deleteByPrimaryKey" parameterType="java.lang.Long">

@@ -62,6 +62,7 @@ public class ZhongHeMallPrizeServiceImpl implements ZhongHeMallPrizeService {
 //            return ServiceResultEnum.SAME_PRIZE_EXIST.getResult();
 //        }
         prize.setActivityId((long) 0);
+        prize.setStockNum(prize.getOriginalStock());//剩余库存等于初始库存
         prize.setUpdateTime(new Date());
         prize.setCreateTime(new Date());
         if (prizeMapper.insertSelective(prize) > 0) {

@@ -48,7 +48,7 @@ public class PrizeEditParam {
 
     @ApiModelProperty("初始库存")
     @NotNull(message = "初始库存不能为空")
-    @Min(value = 1, message = "初始库存最低为1")
+    @Min(value = 0, message = "初始库存最低为0")
     @Max(value = 1000000, message = "初始库存最高为1000000")
     private Integer originalStock;
 
@@ -59,7 +59,6 @@ public class PrizeEditParam {
     private Integer stockNum;
 
     @ApiModelProperty("奖品标签")
-    @NotEmpty(message = "奖品标签不能为空")
     @Length(max = 16,message = "奖品标签内容过长")
     private String tag;
 
