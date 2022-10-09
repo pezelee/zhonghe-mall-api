@@ -12,9 +12,7 @@ import mall.config.annotation.TokenToAdminUser;
 import mall.entity.AdminUserToken;
 import mall.entity.GoodsCategory;
 import mall.entity.ZhongHeMallGoods;
-import mall.entity.excel.ExampleGoods;
-import mall.entity.excel.ImportError;
-import mall.entity.excel.ImportGoods;
+import mall.entity.excel.*;
 import mall.service.AdminLogService;
 import mall.service.ZhongHeMallCategoryService;
 import mall.service.ZhongHeMallGoodsService;
@@ -206,6 +204,24 @@ public class ZhongHeAdminGoodsInfoAPI {
     public void template(HttpServletResponse response){
         // 导出数据
         ExcelUtils.exportTemplate(response, "商品导入模板", ExampleGoods.class,true);
+    }
+
+    /**
+     * 导出商品分类列表
+     */
+    @RequestMapping(value = "/goods/exportCategory", method = RequestMethod.GET)
+    @ApiOperation(value = "导出商品分类列表", notes = "导出商品分类列表")
+    public void exportCategory(@TokenToAdminUser AdminUserToken adminUser,
+                       HttpServletResponse response) {
+        logger.info("导出商品分类列表接口  adminUser:{}", adminUser.toString());
+        Map params = new HashMap(8);
+        params.put("page", 1);
+        params.put("limit", 10);
+        PageQueryUtil pageUtil = new PageQueryUtil(params);
+        List<ExportCategory> result = zhongHeMallCategoryService.getCategorisExport();
+        logger.info("result  result:{}", result.toString());
+        // 导出数据
+        ExcelUtils.export(response, "商品分类表", result,ExportCategory.class);
     }
 
 }

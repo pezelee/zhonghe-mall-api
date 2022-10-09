@@ -14,7 +14,7 @@ public class ImportGoods {
     @ExcelImport(value = "商品简介" ,required = true)
     private String goodsIntro;
 
-    @ExcelImport(value = "分类名称" ,required = true)
+    @ExcelImport(value = "分类名称(三级)" ,required = true)
     private String categoryName;
 
 //    @ExcelImport(value = "商品主图" ,required = true)

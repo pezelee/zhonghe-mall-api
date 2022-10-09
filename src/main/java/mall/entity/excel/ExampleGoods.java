@@ -12,7 +12,7 @@ public class ExampleGoods {
     @ExcelExport(value = "商品简介" ,example = "导入商品1简介")
     private String goodsIntro;
 
-    @ExcelExport(value = "分类名称" ,example = "电脑")
+    @ExcelExport(value = "分类名称(三级)" ,example = "电脑")
     private String categoryName;
 
     @ExcelExport(value = "原价" ,example = "0")

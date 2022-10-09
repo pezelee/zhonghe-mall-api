@@ -14,10 +14,30 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_user" jdbcType="INTEGER" property="updateUser"/>
     </resultMap>
+    <resultMap id="ExportResultMap" type="mall.entity.excel.ExportCategory">
+        <id column="category_id" jdbcType="BIGINT" property="categoryId"/>
+        <result column="category_level" jdbcType="TINYINT" property="categoryLevel"/>
+        <result column="parent_id" jdbcType="BIGINT" property="parentId"/>
+        <result column="category_name" jdbcType="VARCHAR" property="categoryName"/>
+        <result column="is_deleted" jdbcType="TINYINT" property="isDeleted"/>
+    </resultMap>
     <sql id="Base_Column_List">
     category_id, category_level, parent_id, category_name, category_rank, is_deleted, 
     create_time, create_user, update_time, update_user
-  </sql>
+    </sql>
+    <sql id="Export_Column_List">
+    category_id, category_level, parent_id, category_name, is_deleted
+    </sql>
+    <select id="findGoodsCategoryExport" resultMap="ExportResultMap">
+        select
+        <include refid="Export_Column_List"/>
+        from tb_zhonghe_mall_goods_category
+        <where>
+            category_level = #{categoryLevel,jdbcType=TINYINT} and
+            is_deleted = 0
+        </where>
+        order by parent_id
+    </select>
     <select id="findGoodsCategoryList" parameterType="Map" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>

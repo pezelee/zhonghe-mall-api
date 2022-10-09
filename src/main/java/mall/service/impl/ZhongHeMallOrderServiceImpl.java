@@ -444,6 +444,7 @@ public class ZhongHeMallOrderServiceImpl implements ZhongHeMallOrderService {
         return result;
     }
 
+    //订单出库
     private String checkOut(Long orderId,String mailNo){
         ZhongHeMallOrder temp = zhongHeMallOrderMapper.selectByPrimaryKey(orderId);
         //不为空且orderStatus>=0且状态为完成之前可以修改部分信息
@@ -461,7 +462,7 @@ public class ZhongHeMallOrderServiceImpl implements ZhongHeMallOrderService {
                 return "订单状态不是配货完成或出库成功无法执行出库操作";
             }
         }
-        return ServiceResultEnum.DATA_NOT_EXIST.getResult();
+        return ServiceResultEnum.ORDER_NOT_EXIST_ERROR.getResult();
     }
 
     private String mailNoNotice(ZhongHeMallOrder order,String mailNo){

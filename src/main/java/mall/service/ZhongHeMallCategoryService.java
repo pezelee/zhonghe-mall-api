@@ -3,6 +3,8 @@ package mall.service;
 
 import mall.api.mall.vo.ZhongHeMallIndexCategoryVO;
 import mall.entity.GoodsCategory;
+import mall.entity.excel.ExportCategory;
+import mall.entity.excel.ExportOrder;
 import mall.util.PageQueryUtil;
 import mall.util.PageResult;
 
@@ -32,6 +34,13 @@ public interface ZhongHeMallCategoryService {
      * @return
      */
     PageResult getCategorisPage(PageQueryUtil pageUtil);
+
+    /**
+     * 后台导出
+     *
+     * @return
+     */
+    List<ExportCategory> getCategorisExport();
 
     /**
      * 根据parentId和level获取分类列表

@@ -9,6 +9,7 @@ import mall.common.ServiceResultEnum;
 import mall.common.ZhongHeMallCategoryLevelEnum;
 import mall.dao.GoodsCategoryMapper;
 import mall.entity.GoodsCategory;
+import mall.entity.excel.ExportCategory;
 import mall.service.ZhongHeMallCategoryService;
 import mall.util.BeanUtil;
 import mall.util.PageQueryUtil;
@@ -131,6 +132,41 @@ public class ZhongHeMallCategoryServiceImpl implements ZhongHeMallCategoryServic
         int total = goodsCategoryMapper.getTotalGoodsCategories(pageUtil);
         PageResult pageResult = new PageResult(goodsCategories, total, pageUtil.getLimit(), pageUtil.getPage());
         return pageResult;
+    }
+
+    @Override
+    public List<ExportCategory> getCategorisExport() {
+        List<ExportCategory> lv1Categories = goodsCategoryMapper.findGoodsCategoryExport((byte) 1);//一级分类
+        List<ExportCategory> lv2Categories = goodsCategoryMapper.findGoodsCategoryExport((byte) 2);//二级分类
+        List<ExportCategory> lv3Categories = goodsCategoryMapper.findGoodsCategoryExport((byte) 3);//三级分类
+        List<ExportCategory> result = new ArrayList<>();
+        for(ExportCategory category1:lv1Categories){
+            category1.setRootId((long) 0);
+            result.add(category1);
+            Long rootId = category1.getCategoryId();
+            for(ExportCategory category2:lv2Categories){
+                if(category2.getParentId().equals(rootId)){
+                    category2.setRootId(rootId);
+                    result.add(category2);
+                    Long parentId = category2.getCategoryId();
+                    for(ExportCategory category3 : lv3Categories){
+                        if(category3.getParentId().equals(parentId)){
+                            category3.setRootId(rootId);
+                            result.add(category3);
+//                            lv3Categories.remove(category3);
+                        }
+                    }
+//                    lv2Categories.remove(category2);
+                }
+            }
+        }
+        return result;
+    }
+    private Long getRootId(ExportCategory category,List<ExportCategory> lv1Categories,List<ExportCategory> lv2Categories){
+        if(category.getCategoryLevel() == 1){
+            return category.getCategoryId();
+        }
+        return (long) 0;
     }
 
     @Override

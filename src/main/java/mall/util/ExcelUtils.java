@@ -793,6 +793,20 @@ public class ExcelUtils {
             CellStyle rowStyle = book.createCellStyle();
             rowStyle.setAlignment(HorizontalAlignment.CENTER);
             rowStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            // 设置表身背景色（商品一级分类）
+            CellStyle categoryStyle1 = book.createCellStyle();
+            CellStyle categoryStyle2 = book.createCellStyle();
+            CellStyle categoryStyle3 = book.createCellStyle();
+            categoryStyle1.setFillForegroundColor(IndexedColors.SKY_BLUE.index);
+            categoryStyle1.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            categoryStyle1.setAlignment(HorizontalAlignment.CENTER);
+            categoryStyle1.setVerticalAlignment(VerticalAlignment.CENTER);
+            categoryStyle2.setFillForegroundColor(IndexedColors.LIGHT_GREEN.index);
+            categoryStyle2.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            categoryStyle2.setAlignment(HorizontalAlignment.CENTER);
+            categoryStyle2.setVerticalAlignment(VerticalAlignment.CENTER);
+            categoryStyle3.setAlignment(HorizontalAlignment.CENTER);
+            categoryStyle3.setVerticalAlignment(VerticalAlignment.CENTER);
             // 设置表格列宽度（默认为15个字节）
             sheet.setDefaultColumnWidth(15);
             // 创建合并算法数组
@@ -812,12 +826,21 @@ public class ExcelUtils {
                         setCellPicture(book, row, patriarch, i, j, (URL) o);
                     } else {
                         Cell cell = row.createCell(j);
+
                         if (i == 0) {
                             // 第一行为表头行，采用灰色底背景
                             v = setCellValue(cell, o, headStyle);
-                        } else {
+                        }
+                        else {
                             // 其他行为数据行，默认白底色
-                            v = setCellValue(cell, o, rowStyle);
+                            if(fileName.equals("商品分类表") && "一级分类".equals(rowList.get(0).toString())){
+                                v = setCellValue(cell, o, categoryStyle1);
+                            }else if(fileName.equals("商品分类表") && "二级分类".equals(rowList.get(0).toString())){
+                                v = setCellValue(cell, o, categoryStyle2);
+                            }else {
+                                v = setCellValue(cell, o, rowStyle);
+                            }
+
                         }
                     }
                     mergeArray[i][j] = v;

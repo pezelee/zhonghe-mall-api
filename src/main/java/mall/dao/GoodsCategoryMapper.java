@@ -1,6 +1,7 @@
 package mall.dao;
 
 import mall.entity.GoodsCategory;
+import mall.entity.excel.ExportCategory;
 import mall.util.PageQueryUtil;
 import org.apache.ibatis.annotations.Param;
 
@@ -22,6 +23,8 @@ public interface GoodsCategoryMapper {
     int updateByPrimaryKey(GoodsCategory record);
 
     List<GoodsCategory> findGoodsCategoryList(PageQueryUtil pageUtil);
+
+    List<ExportCategory> findGoodsCategoryExport(@Param("categoryLevel")Byte categoryLevel);
 
     int getTotalGoodsCategories(PageQueryUtil pageUtil);
 
