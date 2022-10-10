@@ -61,6 +61,8 @@ public enum ServiceResultEnum {
 
     PRIZE_PUT_UP("活动中奖品不可修改！"),
 
+    PRIZE_OUT_TIME("奖品已过期！"),
+
     SHOPPING_CART_ITEM_LIMIT_NUMBER_ERROR("超出单个商品的最大购买数量！"),
 
     SHOPPING_CART_ITEM_NUMBER_ERROR("商品数量不能小于 1 ！"),

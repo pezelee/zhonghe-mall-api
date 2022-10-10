@@ -89,7 +89,6 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     public Integer getNoticeNoReadCount(Long userId) {
-
         int total;
         total = noticeMapper.getNoticeNoReadCount(userId);
         return total;
@@ -97,7 +96,6 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     public String saveNotice(NoticeAddParam addParam, Long userId) {
-
 
         MallUser user = userMapper.selectByPrimaryKey(userId);
         if (user == null) {

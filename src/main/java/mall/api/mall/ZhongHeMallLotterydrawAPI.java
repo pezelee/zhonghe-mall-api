@@ -16,6 +16,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.xml.crypto.Data;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -335,6 +336,10 @@ public class ZhongHeMallLotterydrawAPI {
         if (!CheckUtils.isSameId(loginMallUser.getUserId(),lotterydraw.getUserId())) {//用户ID不符合
             return ResultGenerator.genFailResult(ServiceResultEnum.OTHER_USER.getResult());
         }
+        Date now = new Date();
+        if (lotterydraw.getExpireTime().before(now)) {//奖品过期
+            return ResultGenerator.genFailResult(ServiceResultEnum.PRIZE_OUT_TIME.getResult());
+        }
         MallUserAddress address = zhongHeMallUserAddressService.getMallUserAddressById(saveLotteryDrawParam.getAddressId());
         if (!loginMallUser.getUserId().equals(address.getUserId())) {
             return ResultGenerator.genFailResult(ServiceResultEnum.OTHER_USER.getResult());
@@ -364,6 +369,10 @@ public class ZhongHeMallLotterydrawAPI {
         if (lotterydraw.getPrizeType() != 2) {
             //非VIP卡类奖品
             return ResultGenerator.genFailResult(ServiceResultEnum.PRIZE_TYPE_ERROR.getResult());
+        }
+        Date now = new Date();
+        if (lotterydraw.getExpireTime().before(now)) {//奖品过期
+            return ResultGenerator.genFailResult(ServiceResultEnum.PRIZE_OUT_TIME.getResult());
         }
         //添加地址
         String result = lotterydrawService.receiveVIP(lotteryDrawId);
