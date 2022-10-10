@@ -214,10 +214,6 @@ public class ZhongHeAdminGoodsInfoAPI {
     public void exportCategory(@TokenToAdminUser AdminUserToken adminUser,
                        HttpServletResponse response) {
         logger.info("导出商品分类列表接口  adminUser:{}", adminUser.toString());
-        Map params = new HashMap(8);
-        params.put("page", 1);
-        params.put("limit", 10);
-        PageQueryUtil pageUtil = new PageQueryUtil(params);
         List<ExportCategory> result = zhongHeMallCategoryService.getCategorisExport();
         logger.info("result  result:{}", result.toString());
         // 导出数据

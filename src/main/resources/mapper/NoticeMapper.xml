@@ -24,6 +24,16 @@
     is_deleted, create_time,read_time
   </sql>
 
+    <select id="getNoticeNoReadCount" parameterType="java.lang.Long" resultType="int">
+        select count(*) from tb_zhonghe_mall_notice
+        where 1=1
+        <if test="userId!=null and userId!=''">
+            and user_id = #{userId}
+        </if>
+            and read_flag = 0
+        and is_deleted = 0
+    </select>
+
     <select id="findNoticeList" parameterType="Map" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>

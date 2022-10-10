@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface NoticeMapper {
 
+    int getNoticeNoReadCount(@Param("userId") Long userId);
+
     List<Notice> findNoticeList(PageQueryUtil pageUtil);
 
     int getTotalNotices(PageQueryUtil pageUtil);

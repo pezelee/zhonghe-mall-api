@@ -162,12 +162,6 @@ public class ZhongHeMallCategoryServiceImpl implements ZhongHeMallCategoryServic
         }
         return result;
     }
-    private Long getRootId(ExportCategory category,List<ExportCategory> lv1Categories,List<ExportCategory> lv2Categories){
-        if(category.getCategoryLevel() == 1){
-            return category.getCategoryId();
-        }
-        return (long) 0;
-    }
 
     @Override
     public List<GoodsCategory> selectByLevelAndParentIdsAndNumber(List<Long> parentIds, int categoryLevel) {

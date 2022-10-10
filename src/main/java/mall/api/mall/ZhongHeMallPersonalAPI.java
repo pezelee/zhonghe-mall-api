@@ -15,6 +15,7 @@ import mall.entity.MallUser;
 import mall.entity.TotalPoint;
 import mall.entity.ZhongHeMallGoods;
 import mall.service.NoticeService;
+import mall.service.ZhongHeMallShoppingCartService;
 import mall.service.ZhongHeMallUserService;
 import mall.util.*;
 import org.slf4j.Logger;
@@ -35,6 +36,8 @@ public class ZhongHeMallPersonalAPI {
 
     @Resource
     private ZhongHeMallUserService zhongHeMallUserService;
+    @Resource
+    private ZhongHeMallShoppingCartService zhongHeMallShoppingCartService;
     @Resource
     private NoticeService noticeService;
 
@@ -125,7 +128,6 @@ public class ZhongHeMallPersonalAPI {
     }
 
 
-
     @GetMapping("/user/noticelist")
     @ApiOperation(value = "获取用户通知列表", notes = "")
     public Result<ZhongHeMallUserVO> getUserNotice(
@@ -165,6 +167,18 @@ public class ZhongHeMallPersonalAPI {
         totalPoint = zhongHeMallUserService.getTotalPoint(loginMallUser.getUserId());
         logger.info("用户积分信息：{}", totalPoint.toString());
         return ResultGenerator.genSuccessResult(totalPoint);
+    }
+
+    @GetMapping("/user/flagcount")
+    @ApiOperation(value = "获取用户信息标记数量", notes = "未读通知数量，购物车数量")
+    public Result<ZhongHeMallUserVO> getUserFlag(@TokenToMallUser MallUser loginMallUser) {
+        logger.info("获取用户信息接口  MallUser:{}", loginMallUser.toString());
+        Integer noticeCount = noticeService.getNoticeNoReadCount(loginMallUser.getUserId());
+        Integer cartCount = zhongHeMallShoppingCartService.getMyShoppingCartItems(loginMallUser.getUserId()).size();
+        Map params = new HashMap(8);
+        params.put("noticeCount", noticeCount);
+        params.put("cartCount", cartCount);
+        return ResultGenerator.genSuccessResult(params);
     }
 
 //    @GetMapping("/user/payPoint")

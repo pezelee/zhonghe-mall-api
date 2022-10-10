@@ -793,7 +793,7 @@ public class ExcelUtils {
             CellStyle rowStyle = book.createCellStyle();
             rowStyle.setAlignment(HorizontalAlignment.CENTER);
             rowStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-            // 设置表身背景色（商品一级分类）
+            // 设置表身背景色（商品分类）
             CellStyle categoryStyle1 = book.createCellStyle();
             CellStyle categoryStyle2 = book.createCellStyle();
             CellStyle categoryStyle3 = book.createCellStyle();

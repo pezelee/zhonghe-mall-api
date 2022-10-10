@@ -51,6 +51,14 @@ public interface NoticeService {
     PageResult getUserNoticeList(PageQueryUtil pageUtil);
 
     /**
+     * 用户通知列表
+     *
+     * @param userId
+     * @return
+     */
+    Integer getNoticeNoReadCount(Long userId);
+
+    /**
      * 新增通知信息
      *
      *
