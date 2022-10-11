@@ -186,7 +186,11 @@ public class ActivityServiceImpl implements ActivityService {
                 };
             }
         }
-        return activityDrawMapper.batchInsertDraws(ActivityDrawList) > 0;
+        if(ActivityDrawList.size()>0){
+            return activityDrawMapper.batchInsertDraws(ActivityDrawList) > 0;
+        }else {
+            return true;
+        }
     }
 
     @Override
