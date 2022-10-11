@@ -183,7 +183,7 @@ public class ActivityServiceImpl implements ActivityService {
             }else {     //修改旧抽奖次数
                 if(updateActivityDraws(activityDraw.getId(),times)<=0){
                     ZhongHeMallException.fail(ServiceResultEnum.DB_ERROR.getResult());
-                };
+                }
             }
         }
         if(ActivityDrawList.size()>0){

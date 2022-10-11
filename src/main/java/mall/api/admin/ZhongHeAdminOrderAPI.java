@@ -260,6 +260,9 @@ public class ZhongHeAdminOrderAPI {
                              @TokenToAdminUser AdminUserToken adminUser) throws Exception {
         logger.info("订单导入邮寄单号表  ,adminUser={}", adminUser.toString());
         List<ImportOrder> orders = ExcelUtils.readMultipartFile(file,ImportOrder.class);
+        if (orders.size() == 0) {
+            return ResultGenerator.genFailResult("导入表为空");
+        }
         logger.info("orders{}",orders.toString());
         List<ImportError> errors = new ArrayList<>();
         for(ImportOrder order:orders){

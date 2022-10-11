@@ -137,6 +137,9 @@ public class ZhongHeAdminRegisteUserAPI {
         logger.info("用户导入接口  ,adminUser={}", adminUser.toString());
         List<ImportUser> users = ExcelUtils.readMultipartFile(file,ImportUser.class);
         logger.info("users{}",users.toString());
+        if (users.size() == 0) {
+            return ResultGenerator.genFailResult("导入表为空");
+        }
         List<ImportError> errors = new ArrayList<>();
         for(ImportUser user :users){
             if (user.getRowTips().equals("")) {//通过导入格式校验

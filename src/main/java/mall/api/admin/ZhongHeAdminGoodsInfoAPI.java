@@ -170,7 +170,9 @@ public class ZhongHeAdminGoodsInfoAPI {
     public Result userImport(@RequestPart("file") MultipartFile file, @TokenToAdminUser AdminUserToken adminUser) throws Exception {
         logger.info("商品导入接口 ,adminUser={}", adminUser.toString());
         List<ImportGoods> goodsList = ExcelUtils.readMultipartFile(file, ImportGoods.class);
-//        logger.info("goodsList{}",goodsList.toString());
+        if (goodsList.size() == 0) {
+            return ResultGenerator.genFailResult("导入表为空");
+        }
         List<ImportError> errors = new ArrayList<>();
         for(ImportGoods goods :goodsList){
             if (goods.getRowTips().equals("")) {//通过导入格式校验

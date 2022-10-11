@@ -305,6 +305,9 @@ public class ZhongHeAdminLotterydrawAPI {
                              @TokenToAdminUser AdminUserToken adminUser) throws Exception {
         logger.info("抽奖记录导入邮寄单号表接口  ,adminUser={}", adminUser.toString());
         List<ImportLotterydraw> lotterydraws = ExcelUtils.readMultipartFile(file,ImportLotterydraw.class);
+        if (lotterydraws.size() == 0) {
+            return ResultGenerator.genFailResult("导入表为空");
+        }
         logger.info("lotterydraws{}",lotterydraws.toString());
         List<ImportError> errors = new ArrayList<>();
         for(ImportLotterydraw lotterydraw:lotterydraws){
