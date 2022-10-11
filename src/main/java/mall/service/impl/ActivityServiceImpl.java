@@ -167,17 +167,24 @@ public class ActivityServiceImpl implements ActivityService {
         if (activity == null) {
             ZhongHeMallException.fail(ServiceResultEnum.ACTIVITY_NOT_EXIST.getResult());
         }
-        for(Long id : ids){
-            ActivityDraw temp = new ActivityDraw();
-            temp.setUserId(id);
-            temp.setActivityId(activityId);
-            temp.setOrganizationId(activity.getOrganizationId());
-            temp.setDraws(times);
-            temp.setCreateTime(new Date());
-            temp.setCreateUser(adminId);
-            temp.setUpdateTime(new Date());
-            temp.setUpdateUser(adminId);
-            ActivityDrawList.add(temp);
+        for(Long userId : ids){
+            ActivityDraw activityDraw = activityDrawMapper.selectByKeyIds(activityId,userId);
+            if (activityDraw == null) {//新增人员抽奖
+                ActivityDraw temp = new ActivityDraw();
+                temp.setUserId(userId);
+                temp.setActivityId(activityId);
+                temp.setOrganizationId(activity.getOrganizationId());
+                temp.setDraws(times);
+                temp.setCreateTime(new Date());
+                temp.setCreateUser(adminId);
+                temp.setUpdateTime(new Date());
+                temp.setUpdateUser(adminId);
+                ActivityDrawList.add(temp);
+            }else {     //修改旧抽奖次数
+                if(updateActivityDraws(activityDraw.getId(),times)<=0){
+                    ZhongHeMallException.fail(ServiceResultEnum.DB_ERROR.getResult());
+                };
+            }
         }
         return activityDrawMapper.batchInsertDraws(ActivityDrawList) > 0;
     }
