@@ -236,11 +236,11 @@ public class ZhongHeAdminActivityAPI {
             return ResultGenerator.genFailResult(isAdmin);
         }
         if (activityService.batchInsertDraws(drawsParam.getIds(),drawsParam.getActivityId(),times,adminUser.getAdminUserId())) {
-            logger.info("配置规则信息 结果:{}", ServiceResultEnum.SUCCESS.getResult());
+            logger.info("批量添加用户参加活动抽奖次数 结果:{}", ServiceResultEnum.SUCCESS.getResult());
             adminLogService.addSuccessLog(adminUser,"批量添加用户参加活动抽奖次数接口",drawsParam.toString(),"SUCCESS");
             return ResultGenerator.genSuccessResult();
         } else {
-            logger.info("配置规则信息 结果:{}", "添加失败");
+            logger.info("批量添加用户参加活动抽奖次数 结果:{}", "添加失败");
             return ResultGenerator.genFailResult("添加失败");
         }
     }

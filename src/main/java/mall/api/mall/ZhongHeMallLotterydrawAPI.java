@@ -336,8 +336,8 @@ public class ZhongHeMallLotterydrawAPI {
         if (!CheckUtils.isSameId(loginMallUser.getUserId(),lotterydraw.getUserId())) {//用户ID不符合
             return ResultGenerator.genFailResult(ServiceResultEnum.OTHER_USER.getResult());
         }
-        Date now = new Date();
-        if (lotterydraw.getExpireTime().before(now)) {//奖品过期
+//        Date now = new Date();
+        if (lotterydraw.getExpireTime().before(new Date())) {//奖品过期
             return ResultGenerator.genFailResult(ServiceResultEnum.PRIZE_OUT_TIME.getResult());
         }
         MallUserAddress address = zhongHeMallUserAddressService.getMallUserAddressById(saveLotteryDrawParam.getAddressId());
@@ -370,8 +370,8 @@ public class ZhongHeMallLotterydrawAPI {
             //非VIP卡类奖品
             return ResultGenerator.genFailResult(ServiceResultEnum.PRIZE_TYPE_ERROR.getResult());
         }
-        Date now = new Date();
-        if (lotterydraw.getExpireTime().before(now)) {//奖品过期
+//        Date now = new Date();
+        if (lotterydraw.getExpireTime().before(new Date())) {//奖品过期
             return ResultGenerator.genFailResult(ServiceResultEnum.PRIZE_OUT_TIME.getResult());
         }
         //添加地址

@@ -103,6 +103,9 @@
             <if test="payType!=null and payType!=''">
                 and pay_type = #{payType}
             </if>
+            <if test="payStatus!=null">
+                and pay_status = #{payStatus}
+            </if>
             <if test="orderStatus!=null">
                 and order_status = #{orderStatus}
             </if>
@@ -145,6 +148,9 @@
             </if>
             <if test="payType!=null and payType!=''">
                 and pay_type = #{payType}
+            </if>
+            <if test="payStatus!=null">
+                and pay_status = #{payStatus}
             </if>
             <if test="orderStatus!=null">
                 and order_status = #{orderStatus}
@@ -189,6 +195,9 @@
             </if>
             <if test="payType!=null and payType!=''">
                 and pay_type = #{payType}
+            </if>
+            <if test="payStatus!=null">
+                and pay_status = #{payStatus}
             </if>
             <if test="orderStatus!=null">
                 and order_status = #{orderStatus}

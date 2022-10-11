@@ -93,22 +93,27 @@ public class ZhongHeMallOrderAPI {
     @GetMapping("/order")
     @ApiOperation(value = "订单列表接口", notes = "传参为页码")
     public Result<PageResult<List<ZhongHeMallOrderListVO>>> orderList(@ApiParam(value = "页码") @RequestParam(required = false) Integer pageNumber,
-                                                                      @ApiParam(value = "订单状态:0.待支付 1.待确认 2.待发货 3:已发货 4.交易成功") @RequestParam(required = false) Integer status,
+                                                                      @ApiParam(value = "订单状态:0.待支付 1.待确认 2.待发货 3:已发货 4.交易成功") @RequestParam(required = false) Integer orderStatus,
+                                                                      @ApiParam(value = "支付状态:0.未支付,1.支付成功,-1:支付失败") @RequestParam(required = false) Integer payStatus,
                                                                       @TokenToMallUser MallUser loginMallUser) {
         logger.info("用户订单列表接口  MallUser:{}", loginMallUser.toString());
         if (pageNumber < 1 ) {
             return ResultGenerator.genFailResult("分页参数异常！");
         }
         logger.info("列表参数 pageNumber:{}", pageNumber.toString());
-        if (status != null) {
-            logger.info("订单状态  status:{}", status.toString());
+        if (orderStatus != null) {
+            logger.info("订单状态  orderStatus:{}", orderStatus.toString());
+        }
+        if (payStatus != null) {
+            logger.info("支付状态  payStatus:{}", payStatus.toString());
         }
         Map params = new HashMap(8);
         if (pageNumber == null || pageNumber < 1) {
             pageNumber = 1;
         }
         params.put("userId", loginMallUser.getUserId());
-        params.put("orderStatus", status);
+        params.put("orderStatus", orderStatus);
+        params.put("payStatus", payStatus);
         params.put("page", pageNumber);
         params.put("limit", Constants.ORDER_SEARCH_PAGE_LIMIT);
         //封装分页请求参数

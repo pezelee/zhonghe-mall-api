@@ -56,8 +56,8 @@ public class LotterydrawServiceImpl implements LotterydrawService {
             total = lotteryDrawMapper.getTotalLotteryDraw(pageUtil);
         }else if(role == -1){
             //客户
-            lotteryDrawList = lotteryDrawMapper.findLotteryDrawList(pageUtil);
-            total = lotteryDrawMapper.getTotalLotteryDraw(pageUtil);
+            lotteryDrawList = lotteryDrawMapper.findLotteryDrawListByUserId(pageUtil);
+            total = lotteryDrawMapper.getTotalLotteryDrawByUserId(pageUtil);
         }
         else {
             //分行人员

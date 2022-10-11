@@ -406,6 +406,9 @@
             <if test="sponsor!=null">
                 and sponsor = #{sponsor}
             </if>
+            <if test="userId!=null and userId!=''">
+                and user_id = #{userId}
+            </if>
             <if test="loginName!=null">
                 and login_name like CONCAT('%',#{loginName,jdbcType=VARCHAR},'%')
             </if>
@@ -462,6 +465,9 @@
             </if>
             <if test="endDate!=null">
                 and DATE_FORMAT(draw_time,'%Y-%m-%d %H:%i:%s') &lt;= STR_TO_DATE(#{endDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="userId!=null and userId!=''">
+                and user_id = #{userId}
             </if>
             <if test="loginName!=null">
                 and login_name like CONCAT('%',#{loginName,jdbcType=VARCHAR},'%')
