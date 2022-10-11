@@ -137,10 +137,10 @@ public class ZhongHeAdminRegisteUserAPI {
         logger.info("用户导入接口  ,adminUser={}", adminUser.toString());
         List<ImportUser> users = ExcelUtils.readMultipartFile(file,ImportUser.class);
         logger.info("users{}",users.toString());
-        if (users.size() == 0) {
-            return ResultGenerator.genFailResult("导入表为空");
-        }
         List<ImportError> errors = new ArrayList<>();
+        if (users.size() == 0) {
+            errors.add(ExcelUtils.newError(1,"导入表为空"));
+        }
         for(ImportUser user :users){
             if (user.getRowTips().equals("")) {//通过导入格式校验
                 logger.info(user.toString());
@@ -152,7 +152,7 @@ public class ZhongHeAdminRegisteUserAPI {
                 String addResult = zhongHeMallUserService.addUser(userAddParam,adminUser);
                 if (!ServiceResultEnum.SUCCESS.getResult().equals(addResult)) {
                     //新增错误
-                    errors.add(ExcelUtils.newError(user.getRowNum(),addResult));
+
                 }
             }else {
                 //新增错误
