@@ -152,7 +152,7 @@ public class ZhongHeAdminRegisteUserAPI {
                 String addResult = zhongHeMallUserService.addUser(userAddParam,adminUser);
                 if (!ServiceResultEnum.SUCCESS.getResult().equals(addResult)) {
                     //新增错误
-
+                    errors.add(ExcelUtils.newError(user.getRowNum(),addResult));
                 }
             }else {
                 //新增错误
