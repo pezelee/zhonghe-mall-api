@@ -20,13 +20,13 @@ public class ImportGoods {
 //    @ExcelImport(value = "商品主图" ,required = true)
 //    private String goodsCoverImg;
 
-    @ExcelImport(value = "原价" ,required = true,min = "0")
+    @ExcelImport(value = "原价" , integer = true,required = true,min = "0")
     private Integer originalPrice;
 
-    @ExcelImport(value = "售价" ,required = true,min = "0")
+    @ExcelImport(value = "售价" , integer = true,required = true,min = "0")
     private Integer sellingPrice;
 
-    @ExcelImport(value = "积分售价-现金" ,required = true,min = "0")
+    @ExcelImport(value = "积分售价-现金" , integer = true,required = true,min = "0")
     private Integer sellingPointC;
 
     @ExcelImport(value = "积分售价-积分" , integer = true,required = true,min = "0")
