@@ -248,6 +248,16 @@ public class ExcelUtils {
         if (maxLength > 0 && val.length() > maxLength) {
             errMsgList.add(String.format("[%s]长度不能超过%s个字符(当前%s个字符)", cname, maxLength, val.length()));
         }
+        // 判断是否为整数
+        boolean integer = annotation.integer();
+        String regEx2 ="^[-+]?[\\d]*$";//仅整数
+        Pattern pattern2 = Pattern.compile(regEx2);
+        Matcher matcher2 = pattern2.matcher(val);
+        boolean rs2 = matcher2.matches();
+        if (integer && !rs2) {
+            errMsgList.add(String.format("[%s]必须是整数", cname));
+            return;
+        }
         // 判断是否符合最小值
         String minStr = annotation.min();
         if (!minStr.equals("")) {

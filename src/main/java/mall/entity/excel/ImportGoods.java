@@ -29,10 +29,10 @@ public class ImportGoods {
     @ExcelImport(value = "积分售价-现金" ,required = true,min = "0")
     private Integer sellingPointC;
 
-    @ExcelImport(value = "积分售价-积分" ,required = true,min = "0")
+    @ExcelImport(value = "积分售价-积分" , integer = true,required = true,min = "0")
     private Integer sellingPointP;
 
-    @ExcelImport(value = "库存" ,required = true,min = "0")
+    @ExcelImport(value = "库存" , integer = true,required = true,min = "0")
     private Integer stockNum;
 
     @ExcelImport(value = "商品标签" ,required = true)

@@ -31,6 +31,9 @@ public @interface ExcelImport {
     /** 最大长度（默认255） */
     int maxLength() default 255;
 
+    /** 整数 */
+    boolean integer() default false;
+
     /** 最小值 */
     String min() default "";
 
