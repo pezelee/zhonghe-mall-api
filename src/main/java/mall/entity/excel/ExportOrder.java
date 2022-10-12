@@ -23,7 +23,7 @@ public class ExportOrder {
     @ExcelExport(value = "用户昵称")
     private String nickName;
 
-    @ExcelExport(value = "订单价格")
+    @ExcelExport(value = "订单价格(分)")
     private Integer totalPrice;
 
     @ExcelExport(value = "订单积分")

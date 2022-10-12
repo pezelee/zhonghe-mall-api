@@ -15,13 +15,13 @@ public class ExampleGoods {
     @ExcelExport(value = "分类名称(三级)" ,example = "电脑")
     private String categoryName;
 
-    @ExcelExport(value = "原价" ,example = "0")
+    @ExcelExport(value = "原价(分)" ,example = "0")
     private Integer originalPrice;
 
-    @ExcelExport(value = "售价" ,example = "0")
+    @ExcelExport(value = "售价(分)" ,example = "0")
     private Integer sellingPrice;
 
-    @ExcelExport(value = "积分售价-现金" ,example = "0")
+    @ExcelExport(value = "积分售价-现金(分)" ,example = "0")
     private Integer sellingPointC;
 
     @ExcelExport(value = "积分售价-积分" ,example = "100")
