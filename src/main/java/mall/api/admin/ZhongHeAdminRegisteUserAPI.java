@@ -49,6 +49,7 @@ public class ZhongHeAdminRegisteUserAPI {
                        @RequestParam(required = false) @ApiParam(value = "用户状态") Integer lockStatus,
                        @RequestParam(required = false) @ApiParam(value = "用户昵称") String nickName,
                        @RequestParam(required = false) @ApiParam(value = "登录名") String loginName,
+                       @RequestParam(required = false) @ApiParam(value = "组织ID") Long organizationId,
                        @TokenToAdminUser AdminUserToken adminUser) {
         logger.info("商城注册用户列表接口   adminUser:{}", adminUser.toString());
         if (pageNumber == null || pageNumber < 1 || pageSize == null || pageSize < 10) {
@@ -56,11 +57,16 @@ public class ZhongHeAdminRegisteUserAPI {
         }
         logger.info("列表参数：pageNumber:{},pageSize:{}", pageNumber.toString(),pageSize.toString());
         Map params = new HashMap(8);
+        if (organizationId == null) {
+            organizationId = adminUser.getOrganizationId();
+        }
+//        Long organizationId = adminUser.getOrganizationId();
         //判定权限是否符合--总管理员
-        Long organizationId = adminUser.getOrganizationId();
         String isAdmin = CheckUtils.isChiefAdmin(adminUser);
         if (!isAdmin.equals(ServiceResultEnum.SUCCESS.getResult())) {
             params.put("organizationId", organizationId);//非总管理员，仅能看到自己组织所属用户
+        }else {
+            params.put("organizationId", organizationId);
         }
         params.put("page", pageNumber);
         params.put("limit", pageSize);

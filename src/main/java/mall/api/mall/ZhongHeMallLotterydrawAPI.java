@@ -183,6 +183,9 @@ public class ZhongHeMallLotterydrawAPI {
         if (activity.getPrizes().equals("") || activity.getPrizes() == null) {//奖池为空
             return ResultGenerator.genFailResult(ServiceResultEnum.PRIZES_NOT_EXIST.getResult());
         }
+        if (activity.getStatus() != 0 ) {//活动不可用
+            return ResultGenerator.genFailResult(ServiceResultEnum.ACTIVITY_PUT_DOWN.getResult());
+        }
         //核对用户抽奖次数
         ActivityDraw activityDraw = activityService.getActivityDraws(loginMallUser.getUserId(),id);
         if (activityDraw == null) {

@@ -38,7 +38,7 @@
         <if test="lockedFlag!=null">
             and locked_flag = #{lockedFlag}
         </if>
-        <if test="organizationId!=null and loginName!=''">
+        <if test="organizationId!=null and organizationId!=''">
             and organization_id = #{organizationId}
         </if>
         order by create_time desc
@@ -59,7 +59,7 @@
         <if test="lockedFlag!=null">
             and locked_flag = #{lockedFlag}
         </if>
-        <if test="organizationId!=null and loginName!=''">
+        <if test="organizationId!=null and organizationId!=''">
             and organization_id = #{organizationId}
         </if>
     </select>

@@ -38,7 +38,8 @@ public class ZhongHeAdminManageUserAPI {
     @ApiOperation(value = "商城管理员列表", notes = "商城管理员列表")
     public Result list(@RequestParam(required = false) @ApiParam(value = "页码，最小1 ") Integer pageNumber,
                        @RequestParam(required = false) @ApiParam(value = "每页条数，最小10条") Integer pageSize,
-                       @RequestParam(required = false) @ApiParam(value = "用户状态") Byte lockStatus, @TokenToAdminUser AdminUserToken adminUser) {
+                       @RequestParam(required = false) @ApiParam(value = "用户状态") Byte lockStatus,
+                       @TokenToAdminUser AdminUserToken adminUser) {
         logger.info("查看管理员列表接口  adminUser:{}", adminUser.toString());
         if (pageNumber == null || pageNumber < 1 || pageSize == null || pageSize < 10) {
             return ResultGenerator.genFailResult("参数异常！");

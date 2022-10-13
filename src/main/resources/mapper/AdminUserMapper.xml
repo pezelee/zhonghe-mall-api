@@ -264,7 +264,7 @@
         <if test="lockStatus!=null">
             and locked = #{lockStatus}
         </if>
-        <if test="organizationId =null and organizationId =''">
+        <if test="organizationId !=null and organizationId !=''">
             and self.organization_id = #{organizationId}
         </if>
         order by login_user_name desc
@@ -282,7 +282,7 @@
         <if test="lockStatus!=null">
             and locked = #{lockStatus}
         </if>
-        <if test="organizationId =null and organizationId =''">
+        <if test="organizationId !=null and organizationId !=''">
             and organization_id = #{organizationId}
         </if>
     </select>
