@@ -93,10 +93,13 @@ public class AdminUserServiceImpl implements AdminUserService {
             if (originalPassword.equals(adminUser.getLoginPassword())) {
                 //设置新密码并修改
                 adminUser.setLoginPassword(newPassword);
-                if (adminUserMapper.updateByPrimaryKeySelective(adminUser) > 0 && zhongHeAdminUserTokenMapper.deleteByPrimaryKey(loginUserId) > 0) {
+                boolean update = adminUserMapper.updateByPrimaryKeySelective(adminUser) > 0;
+                boolean delete = zhongHeAdminUserTokenMapper.deleteByPrimaryKey(loginUserId) > 0;
+                if ( update && delete) {
                     //修改成功且清空当前token则返回true
-                    return ServiceResultEnum.DB_ERROR.getResult();
+                    return ServiceResultEnum.SUCCESS.getResult();
                 }
+                return ServiceResultEnum.DB_ERROR.getResult();
             }else return ServiceResultEnum.PASSWORD_ERROR.getResult();
         }
         return ServiceResultEnum.USER_NOT_EXIST.getResult();
