@@ -21,6 +21,8 @@ public enum ServiceResultEnum {
 
     LOGIN_PASSWORD_NULL("请输入密码！"),
 
+    PASSWORD_ERROR("密码错误！"),
+
     LOGIN_VERIFY_CODE_NULL("请输入验证码！"),
 
     LOGIN_VERIFY_CODE_ERROR("验证码错误！"),
@@ -83,6 +85,8 @@ public enum ServiceResultEnum {
 
     ADMIN_TOKEN_EXPIRE_ERROR("管理员登录过期！请重新登录！"),
 
+    USER_NOT_EXIST("用户不存在！"),
+
     USER_NULL_ERROR("无效用户！请重新登录！"),
 
     OTHER_USER("用户不匹配！"),
@@ -143,7 +147,7 @@ public enum ServiceResultEnum {
 
     ERROR_DRAW_STOCK("抽奖库存错误！"),
 
-    DB_ERROR("database error");
+    DB_ERROR("数据错误");
 
     private String result;
 

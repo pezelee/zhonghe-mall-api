@@ -111,11 +111,13 @@ public class ZhongHeAdminManageUserAPI {
     @RequestMapping(value = "/adminUser/password", method = RequestMethod.PUT)
     public Result passwordUpdate(@RequestBody @Valid UpdateAdminPasswordParam adminPasswordParam, @TokenToAdminUser AdminUserToken adminUser) {
         logger.info("修改管理员密码接口    adminUser:{}", adminUser.toString());
-        if (adminUserService.updatePassword(adminUser.getAdminUserId(), adminPasswordParam.getOriginalPassword(), adminPasswordParam.getNewPassword())) {
+        String result = adminUserService.updatePassword(adminUser.getAdminUserId(),
+                adminPasswordParam.getOriginalPassword(), adminPasswordParam.getNewPassword());
+        if ("success".equals(result)) {
             adminLogService.addSuccessLog(adminUser,"修改管理员密码接口",adminPasswordParam.toString(),"SUCCESS");
             return ResultGenerator.genSuccessResult();
         } else {
-            return ResultGenerator.genFailResult(ServiceResultEnum.DB_ERROR.getResult());
+            return ResultGenerator.genFailResult(result);
         }
     }
 

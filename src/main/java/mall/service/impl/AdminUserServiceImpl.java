@@ -85,7 +85,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    public Boolean updatePassword(Long loginUserId, String originalPassword, String newPassword) {
+    public String updatePassword(Long loginUserId, String originalPassword, String newPassword) {
         AdminUser adminUser = adminUserMapper.selectByPrimaryKey(loginUserId);
         //当前用户非空才可以进行更改
         if (adminUser != null) {
@@ -95,11 +95,11 @@ public class AdminUserServiceImpl implements AdminUserService {
                 adminUser.setLoginPassword(newPassword);
                 if (adminUserMapper.updateByPrimaryKeySelective(adminUser) > 0 && zhongHeAdminUserTokenMapper.deleteByPrimaryKey(loginUserId) > 0) {
                     //修改成功且清空当前token则返回true
-                    return true;
+                    return ServiceResultEnum.DB_ERROR.getResult();
                 }
-            }
+            }else return ServiceResultEnum.PASSWORD_ERROR.getResult();
         }
-        return false;
+        return ServiceResultEnum.USER_NOT_EXIST.getResult();
     }
 
     @Override

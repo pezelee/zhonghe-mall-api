@@ -31,7 +31,7 @@ public interface AdminUserService {
      * @param newPassword
      * @return
      */
-    Boolean updatePassword(Long loginUserId, String originalPassword, String newPassword);
+    String updatePassword(Long loginUserId, String originalPassword, String newPassword);
 
     /**
      * 修改当前登录用户的名称信息

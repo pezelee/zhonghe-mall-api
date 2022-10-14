@@ -57,16 +57,15 @@ public class ZhongHeAdminRegisteUserAPI {
         }
         logger.info("列表参数：pageNumber:{},pageSize:{}", pageNumber.toString(),pageSize.toString());
         Map params = new HashMap(8);
-        if (organizationId == null) {
-            organizationId = adminUser.getOrganizationId();
-        }
 //        Long organizationId = adminUser.getOrganizationId();
         //判定权限是否符合--总管理员
         String isAdmin = CheckUtils.isChiefAdmin(adminUser);
         if (!isAdmin.equals(ServiceResultEnum.SUCCESS.getResult())) {
             params.put("organizationId", organizationId);//非总管理员，仅能看到自己组织所属用户
         }else {
-            params.put("organizationId", organizationId);
+            if (organizationId != null) {//总管理员，且输入了组织ID
+                params.put("organizationId", organizationId);
+            }
         }
         params.put("page", pageNumber);
         params.put("limit", pageSize);
