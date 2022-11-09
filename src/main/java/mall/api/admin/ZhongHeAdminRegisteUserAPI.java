@@ -138,8 +138,13 @@ public class ZhongHeAdminRegisteUserAPI {
     @PostMapping(value = "/users/import")
     @ApiOperation(value = "用户导入", notes = "用户导入")
     public Result userImport(@RequestPart("file") MultipartFile file,
+                             @RequestParam(required = false) @ApiParam(value = "组织ID") Long organizationId,
                              @TokenToAdminUser AdminUserToken adminUser) throws Exception {
         logger.info("用户导入接口  ,adminUser={}", adminUser.toString());
+        Long ImportOrganizationId = adminUser.getOrganizationId();
+        if (organizationId != null && adminUser.getRole() == 0) {//总管理员添加组织ID
+            ImportOrganizationId = organizationId;
+        }
         List<ImportUser> users = ExcelUtils.readMultipartFile(file,ImportUser.class);
         logger.info("users{}",users.toString());
         List<ImportError> errors = new ArrayList<>();
@@ -153,7 +158,7 @@ public class ZhongHeAdminRegisteUserAPI {
                 userAddParam.setLoginUserName(user.getLoginUserName());//登录名
                 userAddParam.setLoginPassword(user.getLoginPassword());//登录密码
                 userAddParam.setNickName(user.getNickName());//用户昵称
-                userAddParam.setOrganizationId(adminUser.getOrganizationId());//组织ID
+                userAddParam.setOrganizationId(ImportOrganizationId);//组织ID
                 String addResult = zhongHeMallUserService.addUser(userAddParam,adminUser);
                 if (!ServiceResultEnum.SUCCESS.getResult().equals(addResult)) {
                     //新增错误

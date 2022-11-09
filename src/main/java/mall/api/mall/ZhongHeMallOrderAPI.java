@@ -7,6 +7,7 @@ import mall.api.mall.param.SaveOrderParam;
 import mall.api.mall.vo.ZhongHeMallOrderDetailVO;
 import mall.api.mall.vo.ZhongHeMallOrderListVO;
 import mall.api.mall.vo.ZhongHeMallShoppingCartItemVO;
+import mall.api.mall.vo.ZhongHeMallUserAddressVO;
 import mall.common.Constants;
 import mall.common.ServiceResultEnum;
 import mall.common.ZhongHeMallException;
@@ -85,9 +86,15 @@ public class ZhongHeMallOrderAPI {
 
     @GetMapping("/order/{orderNo}")
     @ApiOperation(value = "订单详情接口", notes = "传参为订单号")
-    public Result<ZhongHeMallOrderDetailVO> orderDetailPage(@ApiParam(value = "订单号") @PathVariable("orderNo") String orderNo, @TokenToMallUser MallUser loginMallUser) {
-        logger.info("用户订单详情接口  MallUser:{},orderNo:{}", loginMallUser.toString(), orderNo.toString());
-        return ResultGenerator.genSuccessResult(zhongHeMallOrderService.getOrderDetailByOrderNo(orderNo, loginMallUser.getUserId()));
+    public Result orderDetailPage(@ApiParam(value = "订单号") @PathVariable("orderNo") String orderNo, @TokenToMallUser MallUser loginMallUser) {
+
+        ZhongHeMallOrderDetailVO detailVO = zhongHeMallOrderService.getOrderDetailByOrderNo(orderNo, loginMallUser.getUserId());
+        ZhongHeMallUserAddressVO addressVO = zhongHeMallOrderService.getAddressByOrderId(detailVO.getOrderId());
+        Map info = new HashMap(8);
+        info.put("orderDetail", detailVO);
+        info.put("address", addressVO);
+        logger.info("用户订单详情接口  MallUser:{},orderNo:{}", loginMallUser.toString(), orderNo);
+        return ResultGenerator.genSuccessResult(info);
     }
 
     @GetMapping("/order")
