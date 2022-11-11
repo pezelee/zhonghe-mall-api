@@ -35,10 +35,10 @@ public class ImportGoods {
     @ExcelImport(value = "库存" , integer = true,required = true,min = "0")
     private Integer stockNum;
 
-    @ExcelImport(value = "商品标签" ,required = true)
+    @ExcelImport(value = "商品标签" )
     private String tag;
 
-    @ExcelImport(value = "商品详情" ,required = true)
+    @ExcelImport(value = "商品详情" )
     private String goodsDetailContent;
 
     private String rowTips;//错误提示

@@ -87,7 +87,6 @@ public class ZhongHeMallOrderAPI {
     @GetMapping("/order/{orderNo}")
     @ApiOperation(value = "订单详情接口", notes = "传参为订单号")
     public Result orderDetailPage(@ApiParam(value = "订单号") @PathVariable("orderNo") String orderNo, @TokenToMallUser MallUser loginMallUser) {
-
         ZhongHeMallOrderDetailVO detailVO = zhongHeMallOrderService.getOrderDetailByOrderNo(orderNo, loginMallUser.getUserId());
         ZhongHeMallUserAddressVO addressVO = zhongHeMallOrderService.getAddressByOrderId(detailVO.getOrderId());
         Map info = new HashMap(8);

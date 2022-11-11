@@ -148,7 +148,7 @@
                 and prize_type = #{prizeType}
             </if>
             <if test="organizationId!=null and organizationId!=''">
-                and admin.organization_id = #{organizationId}
+                and self.organization_id = #{organizationId}
             </if>
             <if test="startTime != null and startTime.trim() != ''">
                 and create_time &gt; #{startTime}

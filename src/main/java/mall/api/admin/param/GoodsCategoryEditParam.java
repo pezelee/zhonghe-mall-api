@@ -41,5 +41,5 @@ public class GoodsCategoryEditParam {
     private Integer categoryRank;
 
     @ApiModelProperty("分类图")
-    private Integer categoryImg;
+    private String categoryImg;
 }

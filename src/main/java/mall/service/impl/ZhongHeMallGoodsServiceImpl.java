@@ -75,7 +75,7 @@ public class ZhongHeMallGoodsServiceImpl implements ZhongHeMallGoodsService {
         BeanUtil.copyProperties(importGoodsgoods, goods);
         goods.setMinPoint(importGoodsgoods.getSellingPointP());//最小兑换积分
         goods.setGoodsCategoryId(goodsCategory.getCategoryId());
-        goods.setSellingPoint("("+importGoodsgoods.getSellingPointC()+"-"+importGoodsgoods.getSellingPointP()+")");
+        goods.setSellingPoint("("+importGoodsgoods.getSellingPointP()+"-"+importGoodsgoods.getSellingPointC()+")");
         goods.setGoodsCoverImg("");
         goods.setGoodsCarousel("");
         goods.setGoodsSellStatus((byte) 0);
