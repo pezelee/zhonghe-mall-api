@@ -1,4 +1,4 @@
- 
+
 package mall.api.admin.param;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -39,4 +39,7 @@ public class GoodsCategoryEditParam {
     @Max(value = 200, message = "categoryRank最高为200")
     @NotNull(message = "categoryRank不能为空")
     private Integer categoryRank;
+
+    @ApiModelProperty("分类图")
+    private Integer categoryImg;
 }

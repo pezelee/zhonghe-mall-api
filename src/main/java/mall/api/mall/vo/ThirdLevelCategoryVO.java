@@ -19,4 +19,7 @@ public class ThirdLevelCategoryVO implements Serializable {
 
     @ApiModelProperty("当前三级分类名称")
     private String categoryName;
+
+    @ApiModelProperty("当前三级分类图")
+    private String categoryImg;
 }

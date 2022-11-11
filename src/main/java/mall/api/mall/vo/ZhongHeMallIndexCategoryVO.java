@@ -21,6 +21,9 @@ public class ZhongHeMallIndexCategoryVO implements Serializable {
     @ApiModelProperty("当前一级分类名称")
     private String categoryName;
 
+    @ApiModelProperty("当前一级分类图")
+    private String categoryImg;
+
     @ApiModelProperty("二级分类列表")
     private List<SecondLevelCategoryVO> secondLevelCategoryVOS;
 }

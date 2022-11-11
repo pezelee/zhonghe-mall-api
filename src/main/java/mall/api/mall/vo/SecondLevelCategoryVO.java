@@ -24,6 +24,9 @@ public class SecondLevelCategoryVO implements Serializable {
     @ApiModelProperty("当前二级分类名称")
     private String categoryName;
 
+    @ApiModelProperty("当前二级分类图")
+    private String categoryImg;
+
     @ApiModelProperty("三级分类列表")
     private List<ThirdLevelCategoryVO> thirdLevelCategoryVOS;
 }

@@ -8,6 +8,7 @@
         <result column="parent_id" jdbcType="BIGINT" property="parentId"/>
         <result column="category_name" jdbcType="VARCHAR" property="categoryName"/>
         <result column="category_rank" jdbcType="INTEGER" property="categoryRank"/>
+        <result column="category_img" jdbcType="VARCHAR" property="categoryImg"/>
         <result column="is_deleted" jdbcType="TINYINT" property="isDeleted"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="create_user" jdbcType="INTEGER" property="createUser"/>
@@ -22,7 +23,7 @@
         <result column="is_deleted" jdbcType="TINYINT" property="isDeleted"/>
     </resultMap>
     <sql id="Base_Column_List">
-    category_id, category_level, parent_id, category_name, category_rank, is_deleted, 
+    category_id, category_level, parent_id, category_name, category_rank, category_img, is_deleted,
     create_time, create_user, update_time, update_user
     </sql>
     <sql id="Export_Column_List">
@@ -109,12 +110,13 @@
     </update>
     <insert id="insert" parameterType="mall.entity.GoodsCategory">
     insert into tb_zhonghe_mall_goods_category (category_id, category_level, parent_id,
-      category_name, category_rank, is_deleted, 
-      create_time, create_user, update_time, 
+      category_name, category_rank, category_img, is_deleted,
+      create_time, create_user, update_time,
       update_user)
-    values (#{categoryId,jdbcType=BIGINT}, #{categoryLevel,jdbcType=TINYINT}, #{parentId,jdbcType=BIGINT}, 
-      #{categoryName,jdbcType=VARCHAR}, #{categoryRank,jdbcType=INTEGER}, #{isDeleted,jdbcType=TINYINT}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, 
+    values (#{categoryId,jdbcType=BIGINT}, #{categoryLevel,jdbcType=TINYINT}, #{parentId,jdbcType=BIGINT},
+      #{categoryName,jdbcType=VARCHAR}, #{categoryRank,jdbcType=INTEGER}, #{categoryImg,jdbcType=VARCHAR},
+      #{isDeleted,jdbcType=TINYINT},
+      #{createTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP},
       #{updateUser,jdbcType=INTEGER})
   </insert>
     <insert id="insertSelective" parameterType="mall.entity.GoodsCategory">
@@ -134,6 +136,9 @@
             </if>
             <if test="categoryRank != null">
                 category_rank,
+            </if>
+            <if test="categoryImg != null">
+                category_img,
             </if>
             <if test="isDeleted != null">
                 is_deleted,
@@ -167,6 +172,9 @@
             <if test="categoryRank != null">
                 #{categoryRank,jdbcType=INTEGER},
             </if>
+            <if test="categoryImg != null">
+                #{categoryImg,jdbcType=VARCHAR},
+            </if>
             <if test="isDeleted != null">
                 #{isDeleted,jdbcType=TINYINT},
             </if>
@@ -199,6 +207,9 @@
             <if test="categoryRank != null">
                 category_rank = #{categoryRank,jdbcType=INTEGER},
             </if>
+            <if test="categoryImg != null">
+                category_img = #{categoryImg,jdbcType=VARCHAR},
+            </if>
             <if test="isDeleted != null">
                 is_deleted = #{isDeleted,jdbcType=TINYINT},
             </if>
@@ -223,6 +234,7 @@
       parent_id = #{parentId,jdbcType=BIGINT},
       category_name = #{categoryName,jdbcType=VARCHAR},
       category_rank = #{categoryRank,jdbcType=INTEGER},
+      category_img = #{categoryImg,jdbcType=VARCHAR},
       is_deleted = #{isDeleted,jdbcType=TINYINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       create_user = #{createUser,jdbcType=INTEGER},

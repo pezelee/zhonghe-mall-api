@@ -17,6 +17,8 @@ public class GoodsCategory {
 
     private Integer categoryRank;
 
+    private String categoryImg;
+
     private Byte isDeleted;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
