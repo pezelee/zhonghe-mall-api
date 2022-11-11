@@ -31,4 +31,6 @@ public class Constants {
     public final static int TOKEN_LENGTH = 32;//token字段长度
 
     public final static String USER_INTRO = "众鹤";//默认简介
+
+    public final static String CATEGORY_IMG = "/upload/category_img.png";//默认分类图
 }

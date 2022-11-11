@@ -1,4 +1,4 @@
- 
+
 package mall.service.impl;
 
 import mall.api.mall.vo.SecondLevelCategoryVO;
@@ -34,6 +34,9 @@ public class ZhongHeMallCategoryServiceImpl implements ZhongHeMallCategoryServic
         GoodsCategory temp = goodsCategoryMapper.selectByLevelAndName(goodsCategory.getCategoryLevel(), goodsCategory.getCategoryName());
         if (temp != null) {
             return ServiceResultEnum.SAME_CATEGORY_EXIST.getResult();
+        }
+        if(goodsCategory.getCategoryImg() == null) {//默认分类图标
+            goodsCategory.setCategoryImg(Constants.CATEGORY_IMG);
         }
         if (goodsCategoryMapper.insertSelective(goodsCategory) > 0) {
             return ServiceResultEnum.SUCCESS.getResult();
