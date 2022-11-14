@@ -259,9 +259,22 @@ public class ZhongHeAdminActivityAPI {
         Map params = new HashMap(8);
         params.put("page", pageNumber);
         params.put("limit", pageSize);
-        params.put("role", adminUser.getRole());
+        Byte role = adminUser.getRole();
+        params.put("role", role);
+        Activity activity = activityService.getActivityById(activityId);
+        if (activity == null) {
+            logger.info("配置规则信息 错误:{}", ServiceResultEnum.ACTIVITY_NOT_EXIST.getResult());
+            return ResultGenerator.genFailResult(ServiceResultEnum.ACTIVITY_NOT_EXIST.getResult());
+        }
+        //判定权限是否符合--总管理员或相应的分行管理员
+        Long organizationId = activity.getOrganizationId();
+        String isAdmin = CheckUtils.isAdmin(adminUser,organizationId);
+        if (!isAdmin.equals(ServiceResultEnum.SUCCESS.getResult())) {
+            logger.info("配置规则信息 错误:{}", isAdmin);
+            return ResultGenerator.genFailResult(isAdmin);
+        }
         params.put("activityId", activityId);
-        params.put("organizationId", adminUser.getOrganizationId());
+        params.put("organizationId", organizationId);
         PageQueryUtil pageUtil = new PageQueryUtil(params);
         PageResult result = activityService.getActivityDrawsPage(pageUtil);
         logger.info("活动用户可抽奖次数列表:{}", result.toString());
