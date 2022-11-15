@@ -62,6 +62,9 @@ public class UserUtils {
     public static List<PointDTO> toDTOList(String points){
 
         List<PointDTO> pointDTOS = new ArrayList<>();
+        if(points==null || points.equals("")){
+            return null;
+        }
         String[] pointList = points.split(",");
         for (String s : pointList) {
             PointDTO tempPointDTO = new PointDTO();

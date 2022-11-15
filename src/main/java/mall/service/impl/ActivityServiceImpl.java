@@ -228,7 +228,7 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public Rule getRuleByActivityId(Long activityId) {
         Activity activity = activityMapper.selectByPrimaryKey(activityId);
-        Rule rule = ruleMapper.selectByActivityId(activityId);
+        Rule rule = ruleMapper.selectByPrimaryKey(activity.getRule());
         if (rule == null) {
             ZhongHeMallException.fail(ServiceResultEnum.DATA_NOT_EXIST.getResult());
         }

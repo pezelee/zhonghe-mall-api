@@ -47,6 +47,8 @@ public enum ServiceResultEnum {
 
     DRAW_NOT_EXIST("抽奖记录不存在！"),
 
+    RULE_NOT_EXIST("规则不存在！"),
+
     SAVE_RULE_ERROR("规则保存失败！"),
 
     RULE_PERIOD_ERROR("规则时段错误！"),

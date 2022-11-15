@@ -125,7 +125,7 @@ public class LotterydrawServiceImpl implements LotterydrawService {
         lotteryDraw.setUserId(mallUser.getUserId());
         lotteryDraw.setLoginName(mallUser.getLoginName());
         lotteryDraw.setNickName(mallUser.getNickName());
-        lotteryDraw.setSponsor(mallUser.getSponsor());
+//        lotteryDraw.setSponsor(mallUser.getSponsor());
         lotteryDraw.setOrganizationId(organization.getOrganizationId());
         lotteryDraw.setOrgName(organization.getOrgName());
         lotteryDraw.setActivityId(activity.getActivityId());

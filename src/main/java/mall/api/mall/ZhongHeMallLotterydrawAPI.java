@@ -108,7 +108,7 @@ public class ZhongHeMallLotterydrawAPI {
     @ApiOperation(value = "本次活动所有人抽奖记录列表", notes = "可根据活动名称、客户经理号、奖品名称、用户名称和上架状态筛选")
     public Result allList(@RequestParam(required = false) @ApiParam(value = "页码，最小1 ") Integer pageNumber,
                        @RequestParam(required = false) @ApiParam(value = "每页条数，最小10条") Integer pageSize,
-                       @RequestParam(required = false) @ApiParam(value = "活动Id") String activityId,
+                       @RequestParam(required = false) @ApiParam(value = "活动Id") Long activityId,
                        @TokenToMallUser MallUser loginMallUser) {
         logger.info("alllist本次活动所有人抽奖记录列表接口  adminUser:{}", loginMallUser.toString());
         if (pageNumber < 1 || pageSize < 10) {
@@ -117,7 +117,7 @@ public class ZhongHeMallLotterydrawAPI {
         if (activityId ==null) {
             return ResultGenerator.genFailResult("活动ID不能为空！");
         }
-        logger.info("列表参数：pageNumber:{},pageSize:{}", pageNumber.toString(),pageSize.toString());
+        logger.info("列表参数：pageNumber:{},pageSize:{},activityId:{}", pageNumber.toString(),pageSize.toString(),activityId.toString());
         Long userId = loginMallUser.getUserId();
         Map params = new HashMap(8);
         params.put("page", pageNumber);
@@ -170,7 +170,7 @@ public class ZhongHeMallLotterydrawAPI {
         logger.info("用户抽奖接口  User:{}，activityId:{}", loginMallUser.toString(),id);
         Activity activity = activityService.getActivityById(id);
         if (activity == null) {
-            return ResultGenerator.genFailResult(ServiceResultEnum.DATA_NOT_EXIST.getResult());
+            return ResultGenerator.genFailResult(ServiceResultEnum.ACTIVITY_NOT_EXIST.getResult());
         }
         logger.info("活动信息:{}", activity.toString());
         //------------------抽奖前核对--------------------
@@ -216,7 +216,7 @@ public class ZhongHeMallLotterydrawAPI {
 
         ZhongHeMallPrize prizeResult = new ZhongHeMallPrize();
         int drawCount=0;//抽奖错误累计
-
+        Long lotteryDrawId = null;
         //抽奖
         while (true){
             ZhongHeMallPrize temp=draw(sumWeight,prizeList);
@@ -234,8 +234,8 @@ public class ZhongHeMallLotterydrawAPI {
                 prizeResult=temp;
 
                 //奖品归档
-                Boolean result = updateDrawResult(loginMallUser.getUserId(),activity,prizeResult);
-                if (result) {
+                lotteryDrawId = updateDrawResult(loginMallUser.getUserId(),activity,prizeResult);
+                if (lotteryDrawId != null) {
                     //归档成功，扣减抽奖次数，退出循环
                     int times = activityDraw.getDraws();
                     times -= 1;
@@ -259,6 +259,7 @@ public class ZhongHeMallLotterydrawAPI {
         }
         Map prizeInfo = new HashMap(8);
         prizeInfo.put("prize", prizeResult);
+        prizeInfo.put("lotteryDrawId", lotteryDrawId);
         //获得中奖词
         String notice;
         Byte prizeLevel = prizeResult.getPrizeLevel();
@@ -474,12 +475,12 @@ public class ZhongHeMallLotterydrawAPI {
     }
 
     //抽奖--奖品结果归档
-    private Boolean updateDrawResult(Long userId,Activity activity,ZhongHeMallPrize prizeResult){
+    private Long updateDrawResult(Long userId,Activity activity,ZhongHeMallPrize prizeResult){
         //更新到抽奖记录
         LotteryDraw lotteryDraw = lotterydrawService.updateDrawResult(userId,prizeResult,activity);
         if (lotteryDraw == null) {
             logger.info("添加到抽奖记录失败");
-            return false;
+            return null;
         }
         logger.info("已添加到抽奖记录:{}",lotteryDraw.toString());
 
@@ -496,7 +497,7 @@ public class ZhongHeMallLotterydrawAPI {
             //实物现场
             logger.info("奖品类型为实物（现场）");
             //设置抽奖记录状态为已完成
-            return lotterydrawService.received(lotteryDraw.getLotteryDrawId());
+            lotterydrawService.received(lotteryDraw.getLotteryDrawId());
 
         }else if(type==2){
             //积分
@@ -510,27 +511,31 @@ public class ZhongHeMallLotterydrawAPI {
                 logger.info("积分已添加到账户");
             }else {
                 logger.info("积分添加失败");
-                return false;
+                return null;
             }
             //设置抽奖记录状态为已完成
             if (lotterydrawService.received(lotteryDraw.getLotteryDrawId())) {
                 logger.info("设置抽奖记录状态为已完成");
-                return true;
             }else {
                 logger.info("设置抽奖记录状态失败");
-                return false;
+                return null;
             }
 //            return lotterydrawService.received(lotteryDraw.getLotteryDrawId());
 
         }else if(type==3){
             //会员卡
             logger.info("奖品类型为会员卡");
-            //设置抽奖记录状态为已发送
-            return lotterydrawService.sendOver(lotteryDraw.getLotteryDrawId());
+            //设置抽奖记录状态为待发送
+            String result = lotterydrawService.receiveVIP(lotteryDraw.getLotteryDrawId());
+//            return ServiceResultEnum.SUCCESS.getResult().equals(result);
+            if (ServiceResultEnum.SUCCESS.getResult().equals(result)) {
+                logger.info("设置抽奖记录状态为待发送");
+            }else {
+                logger.info("设置抽奖记录状态失败");
+                return null;
+            }
         }
-
-
-        return true;
+        return lotteryDraw.getLotteryDrawId();
     }
 
 }

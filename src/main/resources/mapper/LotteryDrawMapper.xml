@@ -600,7 +600,9 @@
             <if test="sponsor!=null">
                 and sponsor = #{sponsor}
             </if>
-                and user_id = #{userId,jdbcType=BIGINT}
+            <if test="userId!=null">
+                and user_id = #{userId}
+            </if>
                 and expire_time &gt;= now()
         </where>
         order by draw_time desc
@@ -637,7 +639,9 @@
             <if test="sponsor!=null">
                 and sponsor = #{sponsor}
             </if>
-                and user_id = #{userId,jdbcType=BIGINT}
+            <if test="userId!=null">
+                and user_id = #{userId}
+            </if>
                 and expire_time &gt;= now()
         </where>
     </select>

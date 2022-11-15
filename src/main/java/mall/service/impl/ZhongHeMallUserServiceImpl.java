@@ -222,44 +222,49 @@ public class ZhongHeMallUserServiceImpl implements ZhongHeMallUserService {
         StringBuilder newPoints = new StringBuilder();//更新积分列表
         //获得积分列表
         List<PointDTO> tempDTOS = UserUtils.toDTOList(points);
-        //按过期时间排序,合并同一个过期日期的积分
-        List<PointDTO> pointDTOS = UserUtils.sortPoints(tempDTOS);
 
-        List<PointDTO> newpointDTOS = new ArrayList<>();
         int total = 0;//总积分
         Integer expirePoint = 0;//过期积分
         Date nextExpiretime = new Date();//最近过期时间
         int nextPoint = 0;//最近过期积分
-        int nowPoint = 0;//
-        Date lastExpiretime = new Date();//上一条过期时间
-        for(PointDTO pointDTO : pointDTOS){
-            Date expiretime = pointDTO.getExpiretime();
-            Date now = new Date();
-            if (now.before(expiretime)) {
-                //未过期
-                Integer tempPoint =pointDTO.getPoint();
-                if (tempPoint > 0) {
-                    total += tempPoint;
-                    if (nextExpiretime.before(expiretime)) {//最近过期积分
-                        nextPoint = tempPoint;
-                        nextExpiretime=expiretime;
-                    }else if(expiretime.equals(nextExpiretime)){//最近过期时间相同
-                        nextPoint += tempPoint;
+        List<PointDTO> newpointDTOS = new ArrayList<>();
+
+        if (tempDTOS != null) {
+            //按过期时间排序,合并同一个过期日期的积分
+            List<PointDTO> pointDTOS = UserUtils.sortPoints(tempDTOS);
+
+            int nowPoint = 0;//
+            Date lastExpiretime = new Date();//上一条过期时间
+            for(PointDTO pointDTO : pointDTOS){
+                Date expiretime = pointDTO.getExpiretime();
+                Date now = new Date();
+                if (now.before(expiretime)) {
+                    //未过期
+                    Integer tempPoint =pointDTO.getPoint();
+                    if (tempPoint > 0) {
+                        total += tempPoint;
+                        if (nextExpiretime.before(expiretime)) {//最近过期积分
+                            nextPoint = tempPoint;
+                            nextExpiretime=expiretime;
+                        }else if(expiretime.equals(nextExpiretime)){//最近过期时间相同
+                            nextPoint += tempPoint;
+                        }
+                        if (!newPoints.toString().equals("")) {
+                            newPoints.append(",");
+                        }
+                        newPoints.append(UserUtils.DTOtoString(pointDTO));
+                        newpointDTOS.add(pointDTO);
                     }
-                    if (!newPoints.toString().equals("")) {
-                        newPoints.append(",");
-                    }
-                    newPoints.append(UserUtils.DTOtoString(pointDTO));
-                    newpointDTOS.add(pointDTO);
+                }else {
+                    //已过期
+                    expirePoint += pointDTO.getPoint();
                 }
-            }else {
-                //已过期
-                expirePoint += pointDTO.getPoint();
             }
+            //更新去掉过期积分之后的新列表
+            user.setPoint(newPoints.toString());
+            mallUserMapper.updateByPrimaryKeySelective(user);
+
         }
-        //更新去掉过期积分之后的新列表
-        user.setPoint(newPoints.toString());
-        mallUserMapper.updateByPrimaryKeySelective(user);
         //返回总积分
         totalPoint.setTotalPoint(total);
         totalPoint.setExpirePoint(expirePoint);
