@@ -280,7 +280,7 @@ public class ZhongHeMallLotterydrawAPI {
     }
 
     /**
-     * 详情
+     * 抽奖记录详情
      */
     @GetMapping("/lotterydraw/{id}")
     @ApiOperation(value = "获取单条抽奖记录", notes = "根据id查询")
@@ -295,13 +295,18 @@ public class ZhongHeMallLotterydrawAPI {
             return ResultGenerator.genFailResult(ServiceResultEnum.OTHER_USER.getResult());
         }
         logger.info("抽奖记录:{}", lotterydraw.toString());
-
+        ZhongHeMallPrize prize = zhongHeMallPrizeService.getZhongHeMallPrizeById(lotterydraw.getPrizeId());
+        LotteryDrawAddress address = lotterydrawService.getAddress(id);
+        Map lotterydrawInfo = new HashMap(8);
+        lotterydrawInfo.put("prize", prize);
+        lotterydrawInfo.put("lotterydraw", lotterydraw);
+        lotterydrawInfo.put("address", address);
 //        lotterydrawInfo.put("lotterydraw", lotterydraw);
-        return ResultGenerator.genSuccessResult(lotterydraw);
+        return ResultGenerator.genSuccessResult(lotterydrawInfo);
     }
 
     /**
-     * 详情
+     * 奖池详情
      */
     @GetMapping("/lotterydraw/jackpot/{id}")
     @ApiOperation(value = "获取活动的奖池", notes = "根据id查询")

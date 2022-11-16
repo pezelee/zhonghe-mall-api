@@ -8,7 +8,6 @@ import mall.dao.*;
 import mall.entity.*;
 import mall.entity.excel.ExportLotterydraw;
 import mall.entity.excel.ImportLotterydraw;
-import mall.entity.excel.ImportOrder;
 import mall.service.LotterydrawService;
 import mall.service.NoticeService;
 import mall.util.BeanUtil;
@@ -203,8 +202,13 @@ public class LotterydrawServiceImpl implements LotterydrawService {
             return ServiceResultEnum.LOTTERY_STATUS_ERROR.getResult();
         }
         return ServiceResultEnum.SAVE_ADDRESS_ERROR.getResult();
+    }
 
-
+    //查询奖品邮寄地址
+    @Override
+    public LotteryDrawAddress getAddress(Long id){
+        LotteryDrawAddress lotteryDrawAddress = lotteryDrawAddressMapper.selectByPrimaryKey(id);
+        return lotteryDrawAddress;
     }
 
     @Override

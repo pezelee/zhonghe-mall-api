@@ -5,7 +5,6 @@ import mall.api.admin.param.LotterydrawMailParam;
 import mall.entity.*;
 import mall.entity.excel.ExportLotterydraw;
 import mall.entity.excel.ImportLotterydraw;
-import mall.entity.excel.ImportOrder;
 import mall.util.PageQueryUtil;
 import mall.util.PageResult;
 
@@ -105,6 +104,14 @@ public interface LotterydrawService {
      * @return
      */
     String saveAddress(Long id, MallUserAddress address);
+
+    /**
+     * 查询奖品邮寄地址
+     *
+     * @param id
+     * @return
+     */
+    LotteryDrawAddress getAddress(Long id);
 
     /**
      * 变成已发送

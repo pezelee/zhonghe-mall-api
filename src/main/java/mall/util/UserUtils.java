@@ -21,6 +21,9 @@ public class UserUtils {
 
     //新获得字符串添加到最后
     public static String addString(String s, String sList){
+        if (sList == null) {//原字符串为空，直接返回新增字符串
+            return s;
+        }
         if (!sList.equals("")) {
             sList += ",";
         }
