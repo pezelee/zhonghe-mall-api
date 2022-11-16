@@ -181,7 +181,7 @@ public class LotterydrawServiceImpl implements LotterydrawService {
 
     @Override
     public String receiveVIP(Long lotteryDrawId) {
-        if (lotteryDrawMapper.toBeSent(lotteryDrawId)>0) {
+        if (lotteryDrawMapper.toBeSent(lotteryDrawId)>0) {//从已抽奖变成待发送
             return ServiceResultEnum.SUCCESS.getResult();
         }
         return ServiceResultEnum.LOTTERY_STATUS_ERROR.getResult();

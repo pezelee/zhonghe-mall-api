@@ -1,4 +1,4 @@
- 
+
 package mall.service;
 
 import mall.api.admin.param.LotterydrawMailParam;
@@ -89,7 +89,7 @@ public interface LotterydrawService {
     PageResult getLotteryDrawByUserId(PageQueryUtil pageUtil);
 
     /**
-     * 用户领取VIP卡
+     * 用户领取VIP卡,从已抽奖变成待发送
      *
      * @param lotteryDrawId
      * @return

@@ -263,14 +263,14 @@ public class ZhongHeAdminActivityAPI {
         params.put("role", role);
         Activity activity = activityService.getActivityById(activityId);
         if (activity == null) {
-            logger.info("配置规则信息 错误:{}", ServiceResultEnum.ACTIVITY_NOT_EXIST.getResult());
+            logger.info("配置抽奖次数 错误:{}", ServiceResultEnum.ACTIVITY_NOT_EXIST.getResult());
             return ResultGenerator.genFailResult(ServiceResultEnum.ACTIVITY_NOT_EXIST.getResult());
         }
         //判定权限是否符合--总管理员或相应的分行管理员
         Long organizationId = activity.getOrganizationId();
         String isAdmin = CheckUtils.isAdmin(adminUser,organizationId);
         if (!isAdmin.equals(ServiceResultEnum.SUCCESS.getResult())) {
-            logger.info("配置规则信息 错误:{}", isAdmin);
+            logger.info("配置抽奖次数 错误:{}", isAdmin);
             return ResultGenerator.genFailResult(isAdmin);
         }
         params.put("activityId", activityId);

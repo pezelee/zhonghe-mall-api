@@ -379,11 +379,13 @@ public class ZhongHeMallLotterydrawAPI {
             //非VIP卡类奖品
             return ResultGenerator.genFailResult(ServiceResultEnum.PRIZE_TYPE_ERROR.getResult());
         }
-//        Date now = new Date();
         if (lotterydraw.getExpireTime().before(new Date())) {//奖品过期
             return ResultGenerator.genFailResult(ServiceResultEnum.PRIZE_OUT_TIME.getResult());
         }
-        //添加地址
+        if (lotterydraw.getStatus() != 1) {//奖品已领取
+            return ResultGenerator.genFailResult(ServiceResultEnum.PRIZE_GETED.getResult());
+        }
+        //发出领取申请，改变记录状态
         String result = lotterydrawService.receiveVIP(lotteryDrawId);
         if (ServiceResultEnum.SUCCESS.getResult().equals(result)) {
             return ResultGenerator.genSuccessResult();
@@ -530,15 +532,15 @@ public class ZhongHeMallLotterydrawAPI {
         }else if(type==3){
             //会员卡
             logger.info("奖品类型为会员卡");
-            //设置抽奖记录状态为待发送
-            String result = lotterydrawService.receiveVIP(lotteryDraw.getLotteryDrawId());
+            //抽奖记录状态为默认的 1：已抽奖
+//            String result = lotterydrawService.receiveVIP(lotteryDraw.getLotteryDrawId());
 //            return ServiceResultEnum.SUCCESS.getResult().equals(result);
-            if (ServiceResultEnum.SUCCESS.getResult().equals(result)) {
-                logger.info("设置抽奖记录状态为待发送");
-            }else {
-                logger.info("设置抽奖记录状态失败");
-                return null;
-            }
+//            if (ServiceResultEnum.SUCCESS.getResult().equals(result)) {
+//                logger.info("设置抽奖记录状态为待发送");
+//            }else {
+//                logger.info("设置抽奖记录状态失败");
+//                return null;
+//            }
         }
         return lotteryDraw.getLotteryDrawId();
     }
