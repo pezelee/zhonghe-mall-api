@@ -364,7 +364,7 @@ public class ZhongHeMallLotterydrawAPI {
 
     @PostMapping("/lotterydraw/receiveVIP")
     @ApiOperation(value = "领取VIP卡", notes = "传参为抽奖记录id")
-    public Result receiveVIP(@ApiParam(value = "抽奖记录id") @RequestBody Long lotteryDrawId,
+    public Result receiveVIP(@RequestParam @ApiParam(value = "抽奖记录id") Long lotteryDrawId,
                                   @TokenToMallUser MallUser loginMallUser) {
         logger.info("用户领取VIP卡接口  User:{}，id:{}", loginMallUser.toString(),lotteryDrawId.toString());
 //        Long lotteryDrawId = saveLotteryDrawParam.getLotteryDrawId();
@@ -375,8 +375,7 @@ public class ZhongHeMallLotterydrawAPI {
         if (!CheckUtils.isSameId(loginMallUser.getUserId(),lotterydraw.getUserId())) {//用户ID不符合
             return ResultGenerator.genFailResult(ServiceResultEnum.OTHER_USER.getResult());
         }
-        if (lotterydraw.getPrizeType() != 2) {
-            //非VIP卡类奖品
+        if (lotterydraw.getPrizeType() != 3) {//非VIP卡类奖品
             return ResultGenerator.genFailResult(ServiceResultEnum.PRIZE_TYPE_ERROR.getResult());
         }
         if (lotterydraw.getExpireTime().before(new Date())) {//奖品过期

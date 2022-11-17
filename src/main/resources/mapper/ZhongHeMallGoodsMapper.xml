@@ -90,8 +90,14 @@
         <include refid="Base_Column_List"/>
         from tb_zhonghe_mall_goods_info
         <where>
+            <if test="goodsId!=null">
+                and goods_id = #{goodsId})
+            </if>
             <if test="goodsName!=null and goodsName!=''">
                 and goods_name like CONCAT('%',#{goodsName},'%')
+            </if>
+            <if test="goodsCategoryId!=null">
+                and goods_category_id = #{goodsCategoryId})
             </if>
             <if test="goodsSellStatus!=null">
                 and goods_sell_status = #{goodsSellStatus}
@@ -187,8 +193,14 @@
     <select id="getTotalZhongHeMallGoods" parameterType="Map" resultType="int">
         select count(*) from tb_zhonghe_mall_goods_info
         <where>
+            <if test="goodsId!=null">
+                and goods_id = #{goodsId})
+            </if>
             <if test="goodsName!=null and goodsName!=''">
                 and goods_name like CONCAT('%',#{goodsName},'%')
+            </if>
+            <if test="goodsCategoryId!=null">
+                and goods_category_id = #{goodsCategoryId})
             </if>
             <if test="goodsSellStatus!=null">
                 and goods_sell_status = #{goodsSellStatus}
@@ -207,17 +219,17 @@
   </delete>
     <insert id="insert" parameterType="mall.entity.ZhongHeMallGoods">
     insert into tb_zhonghe_mall_goods_info (goods_id, goods_name, goods_intro,
-      goods_cover_img, goods_carousel, original_price, 
+      goods_cover_img, goods_carousel, original_price,
       selling_price, selling_point, min_point, volume, stock_num, tag,
-      goods_sell_status, create_user, create_time, 
+      goods_sell_status, create_user, create_time,
       update_user, update_time, goods_detail_content
       )
-    values (#{goodsId,jdbcType=BIGINT}, #{goodsName,jdbcType=VARCHAR}, #{goodsIntro,jdbcType=VARCHAR}, 
-      #{goodsCoverImg,jdbcType=VARCHAR}, #{goodsCarousel,jdbcType=VARCHAR}, #{originalPrice,jdbcType=INTEGER}, 
+    values (#{goodsId,jdbcType=BIGINT}, #{goodsName,jdbcType=VARCHAR}, #{goodsIntro,jdbcType=VARCHAR},
+      #{goodsCoverImg,jdbcType=VARCHAR}, #{goodsCarousel,jdbcType=VARCHAR}, #{originalPrice,jdbcType=INTEGER},
       #{sellingPrice,jdbcType=INTEGER}, #{sellingPoint,jdbcType=VARCHAR},
       #{minPoint,jdbcType=INTEGER}, #{volume,jdbcType=INTEGER},
       #{stockNum,jdbcType=INTEGER}, #{tag,jdbcType=VARCHAR},
-      #{goodsSellStatus,jdbcType=TINYINT}, #{createUser,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{goodsSellStatus,jdbcType=TINYINT}, #{createUser,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
       #{updateUser,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{goodsDetailContent,jdbcType=LONGVARCHAR}
       )
   </insert>

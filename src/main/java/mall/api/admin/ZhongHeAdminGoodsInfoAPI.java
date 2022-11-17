@@ -50,6 +50,8 @@ public class ZhongHeAdminGoodsInfoAPI {
     public Result list(@RequestParam(required = false) @ApiParam(value = "页码，最小1 ") Integer pageNumber,
                        @RequestParam(required = false) @ApiParam(value = "每页条数，最小10条") Integer pageSize,
                        @RequestParam(required = false) @ApiParam(value = "商品名称") String goodsName,
+                       @RequestParam(required = false) @ApiParam(value = "商品编号") Long goodsId,
+                       @RequestParam(required = false) @ApiParam(value = "分类编号") Long goodsCategoryId,
                        @RequestParam(required = false) @ApiParam(value = "上架状态 0-上架 1-下架") Integer goodsSellStatus,
                        @TokenToAdminUser AdminUserToken adminUser) {
         logger.info("商品列表接口  adminUser:{}", adminUser.toString());
@@ -62,6 +64,12 @@ public class ZhongHeAdminGoodsInfoAPI {
         params.put("limit", pageSize);
         if (!StringUtils.isEmpty(goodsName)) {
             params.put("goodsName", goodsName);
+        }
+        if (goodsId != null) {
+            params.put("goodsId", goodsId);
+        }
+        if (goodsCategoryId != null) {
+            params.put("goodsCategoryId", goodsCategoryId);
         }
         if (goodsSellStatus != null) {
             params.put("goodsSellStatus", goodsSellStatus);
