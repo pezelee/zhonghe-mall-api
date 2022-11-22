@@ -603,7 +603,7 @@
             <if test="userId!=null">
                 and user_id = #{userId}
             </if>
-                and expire_time &gt;= now()
+--                 and expire_time &gt;= now()
         </where>
         order by draw_time desc
     </select>
@@ -642,7 +642,7 @@
             <if test="userId!=null">
                 and user_id = #{userId}
             </if>
-                and expire_time &gt;= now()
+--                 and expire_time &gt;= now()
         </where>
     </select>
 <!-- 从已抽奖变成待发送  -->

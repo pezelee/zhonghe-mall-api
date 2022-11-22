@@ -220,7 +220,7 @@ public class ZhongHeAdminLotterydrawAPI {
         addParam.setTitle("会员卡号领取");
         addParam.setSender("会员卡发放中心");
         addParam.setNotice("您在"+ lotterydraw.getActivityName() +"活动中获得的 " + lotterydraw.getPrizeName() +
-                " 已发送： "+VIPKEY+"，请及时领取。");
+                " 已发送, 兑换码： "+VIPKEY+"，请及时领取。");
         addParam.setNoticeType((byte)0);
         noticeService.saveNotice(addParam,lotterydraw.getUserId());
         //修改状态已接收

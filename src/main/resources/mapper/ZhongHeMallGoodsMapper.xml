@@ -91,13 +91,13 @@
         from tb_zhonghe_mall_goods_info
         <where>
             <if test="goodsId!=null">
-                and goods_id = #{goodsId})
+                and goods_id = #{goodsId}
             </if>
             <if test="goodsName!=null and goodsName!=''">
                 and goods_name like CONCAT('%',#{goodsName},'%')
             </if>
             <if test="goodsCategoryId!=null">
-                and goods_category_id = #{goodsCategoryId})
+                and goods_category_id = #{goodsCategoryId}
             </if>
             <if test="goodsSellStatus!=null">
                 and goods_sell_status = #{goodsSellStatus}
@@ -194,13 +194,13 @@
         select count(*) from tb_zhonghe_mall_goods_info
         <where>
             <if test="goodsId!=null">
-                and goods_id = #{goodsId})
+                and goods_id = #{goodsId}
             </if>
             <if test="goodsName!=null and goodsName!=''">
                 and goods_name like CONCAT('%',#{goodsName},'%')
             </if>
             <if test="goodsCategoryId!=null">
-                and goods_category_id = #{goodsCategoryId})
+                and goods_category_id = #{goodsCategoryId}
             </if>
             <if test="goodsSellStatus!=null">
                 and goods_sell_status = #{goodsSellStatus}
