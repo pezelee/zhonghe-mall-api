@@ -13,6 +13,8 @@ public interface LotteryDrawMapper {
 
     LotteryDraw selectByPrimaryKey(Long lotteryDrawId);
 
+    LotteryDraw selectByMailNo(String mailNo);
+
     int batchUpdateStatus(@Param("lotteryDrawIds")Long[] lotteryDrawIds,@Param("status") int status);
 
     int deleteByPrimaryKey(Long lotteryDrawId);

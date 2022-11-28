@@ -61,6 +61,13 @@
         from tb_zhonghe_mall_order
         where order_id = #{orderId,jdbcType=BIGINT}
     </select>
+    <select id="selectByMailNo" parameterType="java.lang.VARCHAR" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_zhonghe_mall_order
+        where mail_no = #{mailNo,jdbcType=VARCHAR}
+        limit 1
+    </select>
     <select id="selectByOrderNo" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>

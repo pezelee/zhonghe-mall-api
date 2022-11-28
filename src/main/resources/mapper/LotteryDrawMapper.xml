@@ -75,6 +75,13 @@
         from tb_zhonghe_mall_lotterydraw
         where lotterydraw_id = #{lotteryDrawId,jdbcType=BIGINT}
     </select>
+    <select id="selectByMailNo" parameterType="java.lang.VARCHAR" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_zhonghe_mall_lotterydraw
+        where mail_no = #{mailNo,jdbcType=VARCHAR}
+        limit 1
+    </select>
     <update id="batchUpdateStatus">
         update tb_zhonghe_mall_lotterydraw
         set status=#{status},update_time=now() where lotterydraw_id in

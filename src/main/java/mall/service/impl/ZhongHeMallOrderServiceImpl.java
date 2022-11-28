@@ -1,4 +1,4 @@
- 
+
 package mall.service.impl;
 
 import mall.api.admin.param.NoticeAddParam;
@@ -450,6 +450,10 @@ public class ZhongHeMallOrderServiceImpl implements ZhongHeMallOrderService {
         //不为空且orderStatus>=0且状态为完成之前可以修改部分信息
         if (temp != null && temp.getIsDeleted() == 0 ) {
             if (temp.getOrderStatus() >= 2 && temp.getOrderStatus() <= 3) {
+                ZhongHeMallOrder temp2 =zhongHeMallOrderMapper.selectByMailNo(mailNo);
+                if (temp2 != null) {
+                    return ServiceResultEnum.SAME_MAIL_NO.getResult();
+                }
                 temp.setUpdateTime(new Date());
                 temp.setOrderStatus((byte) 3);
                 temp.setMailNo(mailNo);

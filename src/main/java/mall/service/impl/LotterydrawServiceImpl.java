@@ -215,6 +215,10 @@ public class LotterydrawServiceImpl implements LotterydrawService {
     public Boolean sending(LotterydrawMailParam param) {
         LotteryDraw temp =lotteryDrawMapper.selectByPrimaryKey(param.getLotteryDrawId());
         if (temp != null && temp.getStatus() >= 2 && temp.getStatus() <= 3) {
+            LotteryDraw temp2 =lotteryDrawMapper.selectByMailNo(param.getMailNo());
+            if (temp2 != null) {
+                return false;
+            }
             LotteryDrawMail mail = new LotteryDrawMail();
             mail.setMailNo(param.getMailNo());
             mail.setLotteryDrawId(param.getLotteryDrawId());
@@ -244,6 +248,10 @@ public class LotterydrawServiceImpl implements LotterydrawService {
     public String setMailNoImport(ImportLotterydraw lotterydraw) {
         LotteryDraw temp =lotteryDrawMapper.selectByPrimaryKey(lotterydraw.getLotteryDrawId());
         if (temp != null && temp.getStatus() >= 2 && temp.getStatus() <= 3) {
+            LotteryDraw temp2 =lotteryDrawMapper.selectByMailNo(lotterydraw.getMailNo());
+            if (temp2 != null) {
+                return ServiceResultEnum.SAME_MAIL_NO.getResult();
+            }
             temp.setUpdateTime(new Date());
             temp.setStatus((byte) 3);
             temp.setMailNo(lotterydraw.getMailNo());

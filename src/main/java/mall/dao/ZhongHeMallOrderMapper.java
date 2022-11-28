@@ -1,5 +1,6 @@
 package mall.dao;
 
+import mall.entity.LotteryDraw;
 import mall.entity.ZhongHeMallOrder;
 import mall.entity.excel.ExportOrder;
 import mall.util.PageQueryUtil;
@@ -15,6 +16,8 @@ public interface ZhongHeMallOrderMapper {
     int insertSelective(ZhongHeMallOrder record);
 
     ZhongHeMallOrder selectByPrimaryKey(Long orderId);
+
+    ZhongHeMallOrder selectByMailNo(String mailNo);
 
     ZhongHeMallOrder selectByOrderNo(String orderNo);
 

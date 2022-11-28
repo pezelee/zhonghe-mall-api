@@ -47,7 +47,7 @@ public class ZhongHeMallGoodsAPI {
             @RequestParam(required = false) @ApiParam(value = "我能兑换") boolean isEnough,
             @RequestParam(required = false) @ApiParam(value = "页码") Integer pageNumber,
             @TokenToMallUser MallUser loginMallUser) {
-        
+
 //        logger.info("商品搜索接口,keyword={},goodsCategoryId={},orderBy={},pageNumber={},userId={}", keyword, goodsCategoryId, orderBy, pageNumber, loginMallUser.getUserId());
         logger.info("用户商品搜索接口    loginMallUser={}", loginMallUser);
         Map params = new HashMap(8);
@@ -85,7 +85,8 @@ public class ZhongHeMallGoodsAPI {
 
     @GetMapping("/goods/detail/{goodsId}")
     @ApiOperation(value = "用户商品详情接口", notes = "传参为商品id")
-    public Result<ZhongHeMallGoodsDetailVO> goodsDetail(@ApiParam(value = "商品id") @PathVariable("goodsId") Long goodsId, @TokenToMallUser MallUser loginMallUser) {
+    public Result<ZhongHeMallGoodsDetailVO> goodsDetail(@ApiParam(value = "商品id") @PathVariable("goodsId") Long goodsId,
+                                                        @TokenToMallUser MallUser loginMallUser) {
         logger.info("用户商品详情接口     goodsId={},userId={}", goodsId, loginMallUser.getUserId());
         if (goodsId < 1) {
             return ResultGenerator.genFailResult("参数异常");
