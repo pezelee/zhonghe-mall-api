@@ -433,20 +433,24 @@ public class ZhongHeMallOrderServiceImpl implements ZhongHeMallOrderService {
     @Override
     @Transactional
     public String setMailNo(OrderMailParam orderMailParam) {
-        String result = checkOut(orderMailParam.getOrderId(),orderMailParam.getMailNo());
+        ZhongHeMallOrder temp = zhongHeMallOrderMapper.selectByPrimaryKey(orderMailParam.getOrderId());
+        if (temp == null) {
+            return ServiceResultEnum.ORDER_NOT_EXIST_ERROR.getResult();
+        }
+        String result = checkOut(temp.getOrderNo(),orderMailParam.getMailNo());
         return result;
     }
 
 
     @Override
     public String setMailNoImport(ImportOrder order) {
-        String result = checkOut(order.getOrderId(),order.getMailNo());
+        String result = checkOut(order.getOrderNo(),order.getMailNo());
         return result;
     }
 
     //订单出库
-    private String checkOut(Long orderId,String mailNo){
-        ZhongHeMallOrder temp = zhongHeMallOrderMapper.selectByPrimaryKey(orderId);
+    private String checkOut(String orderNo,String mailNo){
+        ZhongHeMallOrder temp = zhongHeMallOrderMapper.selectByOrderNo(orderNo);
         //不为空且orderStatus>=0且状态为完成之前可以修改部分信息
         if (temp != null && temp.getIsDeleted() == 0 ) {
             if (temp.getOrderStatus() >= 2 && temp.getOrderStatus() <= 3) {

@@ -61,7 +61,7 @@ public class ZhongHeAdminRegisteUserAPI {
         //判定权限是否符合--总管理员
         String isAdmin = CheckUtils.isChiefAdmin(adminUser);
         if (!isAdmin.equals(ServiceResultEnum.SUCCESS.getResult())) {
-            params.put("organizationId", organizationId);//非总管理员，仅能看到自己组织所属用户
+            params.put("organizationId", adminUser.getOrganizationId());//非总管理员，仅能看到自己组织所属用户
         }else {
             if (organizationId != null) {//总管理员，且输入了组织ID
                 params.put("organizationId", organizationId);
