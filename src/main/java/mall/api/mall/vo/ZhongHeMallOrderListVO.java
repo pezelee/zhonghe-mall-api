@@ -19,6 +19,9 @@ public class ZhongHeMallOrderListVO implements Serializable {
     @ApiModelProperty("订单号")
     private String orderNo;
 
+    @ApiModelProperty("订单号")
+    private String mailNo;
+
     @ApiModelProperty("订单价格")
     private Integer totalPrice;
 
