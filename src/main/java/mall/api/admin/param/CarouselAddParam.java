@@ -1,4 +1,4 @@
- 
+
 package mall.api.admin.param;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -17,7 +17,7 @@ public class CarouselAddParam {
     private String carouselUrl;
 
     @ApiModelProperty("轮播图跳转地址")
-    @NotEmpty(message = "轮播图跳转地址不能为空")
+//    @NotEmpty(message = "轮播图跳转地址不能为空")
     private String redirectUrl;
 
     @ApiModelProperty("排序值")
