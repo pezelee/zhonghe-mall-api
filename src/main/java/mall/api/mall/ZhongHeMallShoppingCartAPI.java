@@ -107,9 +107,9 @@ public class ZhongHeMallShoppingCartAPI {
         return ResultGenerator.genFailResult(ServiceResultEnum.OPERATE_ERROR.getResult());
     }
 
-    @DeleteMapping("/shop-cart/{zhongHeMallShoppingCartItemId}")
+    @DeleteMapping("/shop-cart/batchDelete")
     @ApiOperation(value = "批量删除购物项", notes = "传参为购物项ids")
-    public Result updateZhongHeMallShoppingCartItems(@PathVariable("zhongHeMallShoppingCartItemId") Long[] zhongHeMallShoppingCartItemIds,
+    public Result updateZhongHeMallShoppingCartItems(@RequestBody Long[] zhongHeMallShoppingCartItemIds,
                                                     @TokenToMallUser MallUser loginMallUser) {
         logger.info("用户批量购物项数据接口     MallUser:{},ItemParam:{}", loginMallUser.toString(),zhongHeMallShoppingCartItemIds.toString());
         Boolean deleteResult = true;
