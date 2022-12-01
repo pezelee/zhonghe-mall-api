@@ -150,10 +150,10 @@ public class ZhongHeMallOrderServiceImpl implements ZhongHeMallOrderService {
                 ZhongHeMallException.fail(ServiceResultEnum.NO_PERMISSION_ERROR.getResult());
             }
             //订单状态判断
-            if (zhongHeMallOrder.getOrderStatus().intValue() == ZhongHeMallOrderStatusEnum.ORDER_SUCCESS.getOrderStatus()
-                    || zhongHeMallOrder.getOrderStatus().intValue() == ZhongHeMallOrderStatusEnum.ORDER_PAID.getOrderStatus()
+            if (zhongHeMallOrder.getOrderStatus().intValue() == ZhongHeMallOrderStatusEnum.ORDER_PAID.getOrderStatus()
                     || zhongHeMallOrder.getOrderStatus().intValue() == ZhongHeMallOrderStatusEnum.ORDER_PACKAGED.getOrderStatus()
                     || zhongHeMallOrder.getOrderStatus().intValue() == ZhongHeMallOrderStatusEnum.ORDER_EXPRESS.getOrderStatus()
+                    || zhongHeMallOrder.getOrderStatus().intValue() == ZhongHeMallOrderStatusEnum.ORDER_SUCCESS.getOrderStatus()
                     || zhongHeMallOrder.getOrderStatus().intValue() == ZhongHeMallOrderStatusEnum.ORDER_CLOSED_BY_MALLUSER.getOrderStatus()
                     || zhongHeMallOrder.getOrderStatus().intValue() == ZhongHeMallOrderStatusEnum.ORDER_CLOSED_BY_EXPIRED.getOrderStatus()
                     || zhongHeMallOrder.getOrderStatus().intValue() == ZhongHeMallOrderStatusEnum.ORDER_CLOSED_BY_JUDGE.getOrderStatus()) {

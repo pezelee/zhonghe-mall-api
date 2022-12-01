@@ -9,8 +9,8 @@ public enum ZhongHeMallOrderStatusEnum {
     ORDER_PRE_PAY(0, "待支付"),
     ORDER_PAID(1, "已支付"),
     ORDER_PACKAGED(2, "配货完成"),
-    ORDER_EXPRESS(3, "出库成功"),
-    ORDER_SUCCESS(4, "交易成功"),
+    ORDER_EXPRESS(3, "出库完成"),
+    ORDER_SUCCESS(4, "交易完成"),
     ORDER_CLOSED_BY_MALLUSER(-1, "手动关闭"),
     ORDER_CLOSED_BY_EXPIRED(-2, "超时关闭"),
     ORDER_CLOSED_BY_JUDGE(-3, "商家关闭");
