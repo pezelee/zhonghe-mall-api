@@ -93,12 +93,33 @@ public class ZhongHeMallShoppingCartAPI {
     @ApiOperation(value = "删除购物项", notes = "传参为购物项id")
     public Result updateZhongHeMallShoppingCartItem(@PathVariable("zhongHeMallShoppingCartItemId") Long zhongHeMallShoppingCartItemId,
                                                    @TokenToMallUser MallUser loginMallUser) {
-        logger.info("用户修改购物项数据接口     MallUser:{},ItemParam:{}", loginMallUser.toString(),zhongHeMallShoppingCartItemId.toString());
+        logger.info("用户删除购物项数据接口     MallUser:{},ItemParam:{}", loginMallUser.toString(),zhongHeMallShoppingCartItemId.toString());
         ZhongHeMallShoppingCartItem zhongHeMallCartItemById = zhongHeMallShoppingCartService.getZhongHeMallCartItemById(zhongHeMallShoppingCartItemId);
         if (!loginMallUser.getUserId().equals(zhongHeMallCartItemById.getUserId())) {
             return ResultGenerator.genFailResult(ServiceResultEnum.REQUEST_FORBIDEN_ERROR.getResult());
         }
         Boolean deleteResult = zhongHeMallShoppingCartService.deleteById(zhongHeMallShoppingCartItemId,loginMallUser.getUserId());
+        //删除成功
+        if (deleteResult) {
+            return ResultGenerator.genSuccessResult();
+        }
+        //删除失败
+        return ResultGenerator.genFailResult(ServiceResultEnum.OPERATE_ERROR.getResult());
+    }
+
+    @DeleteMapping("/shop-cart/{zhongHeMallShoppingCartItemId}")
+    @ApiOperation(value = "批量删除购物项", notes = "传参为购物项ids")
+    public Result updateZhongHeMallShoppingCartItems(@PathVariable("zhongHeMallShoppingCartItemId") Long[] zhongHeMallShoppingCartItemIds,
+                                                    @TokenToMallUser MallUser loginMallUser) {
+        logger.info("用户批量购物项数据接口     MallUser:{},ItemParam:{}", loginMallUser.toString(),zhongHeMallShoppingCartItemIds.toString());
+        Boolean deleteResult = true;
+        for(Long zhongHeMallShoppingCartItemId : zhongHeMallShoppingCartItemIds){
+            ZhongHeMallShoppingCartItem zhongHeMallCartItemById = zhongHeMallShoppingCartService.getZhongHeMallCartItemById(zhongHeMallShoppingCartItemId);
+            if (!loginMallUser.getUserId().equals(zhongHeMallCartItemById.getUserId())) {
+                return ResultGenerator.genFailResult(ServiceResultEnum.REQUEST_FORBIDEN_ERROR.getResult());
+            }
+            deleteResult = zhongHeMallShoppingCartService.deleteById(zhongHeMallShoppingCartItemId,loginMallUser.getUserId());
+        }
         //删除成功
         if (deleteResult) {
             return ResultGenerator.genSuccessResult();
