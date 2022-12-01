@@ -1,9 +1,10 @@
- 
+
 package mall.service;
 
 import mall.api.admin.param.BatchIdParam;
 import mall.api.admin.param.UserAddParam;
 import mall.api.mall.param.MallUserUpdateParam;
+import mall.api.mall.param.PasswordUpdateParam;
 import mall.api.mall.vo.ZhongHeMallUserVO;
 import mall.entity.*;
 import mall.util.PageQueryUtil;
@@ -57,6 +58,14 @@ public interface ZhongHeMallUserService {
      * @return
      */
     Boolean updateUserInfo(MallUserUpdateParam mallUser, Long userId);
+
+    /**
+     * 用户密码修改
+     *
+     * @param password
+     * @return
+     */
+    Boolean updatePassword(PasswordUpdateParam password, Long userId);
 
     /**
      * 登出接口

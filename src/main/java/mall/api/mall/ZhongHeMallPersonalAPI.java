@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiParam;
 import mall.api.admin.param.BatchIdParam;
 import mall.api.mall.param.MallUserLoginParam;
 import mall.api.mall.param.MallUserUpdateParam;
+import mall.api.mall.param.PasswordUpdateParam;
 import mall.api.mall.vo.ZhongHeMallNoticeVO;
 import mall.api.mall.vo.ZhongHeMallUserVO;
 import mall.common.Constants;
@@ -100,13 +101,35 @@ public class ZhongHeMallPersonalAPI {
 
     @PutMapping("/user/info")
     @ApiOperation(value = "修改用户信息", notes = "")
-    public Result updateInfo(@RequestBody @ApiParam("用户信息") MallUserUpdateParam mallUserUpdateParam, @TokenToMallUser MallUser loginMallUser) {
+    public Result updateInfo(@RequestBody @ApiParam("用户信息") MallUserUpdateParam mallUserUpdateParam,
+                             @TokenToMallUser MallUser loginMallUser) {
         logger.info("用户修改用户信息接口   MallUser:{},UpdateParam:{}", loginMallUser.toString(), mallUserUpdateParam.toString());
-        if (mallUserUpdateParam.getPasswordMd5() == null || mallUserUpdateParam.getPasswordMd5().equals("")) {
-            Result result = ResultGenerator.genFailResult("新密码不能为空");
+//        if (mallUserUpdateParam.getPasswordMd5() == null || mallUserUpdateParam.getPasswordMd5().equals("")) {
+//            Result result = ResultGenerator.genFailResult("新密码不能为空");
+//            return result;
+//        }
+        Boolean flag = zhongHeMallUserService.updateUserInfo(mallUserUpdateParam, loginMallUser.getUserId());
+        if (flag) {
+            //返回成功
+            Result result = ResultGenerator.genSuccessResult();
+            return result;
+        } else {
+            //返回失败
+            Result result = ResultGenerator.genFailResult("修改失败");
             return result;
         }
-        Boolean flag = zhongHeMallUserService.updateUserInfo(mallUserUpdateParam, loginMallUser.getUserId());
+    }
+
+    @PutMapping("/user/password")
+    @ApiOperation(value = "修改用户密码", notes = "")
+    public Result updatePassword(@RequestBody @ApiParam("用户信息") PasswordUpdateParam passwordUpdateParam,
+                             @TokenToMallUser MallUser loginMallUser) {
+        logger.info("用户修改密码接口   MallUser:{},UpdateParam:{}", loginMallUser.toString(), passwordUpdateParam.toString());
+//        if (mallUserUpdateParam.getPasswordMd5() == null || mallUserUpdateParam.getPasswordMd5().equals("")) {
+//            Result result = ResultGenerator.genFailResult("新密码不能为空");
+//            return result;
+//        }
+        Boolean flag = zhongHeMallUserService.updatePassword(passwordUpdateParam, loginMallUser.getUserId());
         if (flag) {
             //返回成功
             Result result = ResultGenerator.genSuccessResult();

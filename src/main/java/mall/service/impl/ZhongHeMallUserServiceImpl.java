@@ -1,9 +1,10 @@
- 
+
 package mall.service.impl;
 
 import mall.api.admin.param.BatchIdParam;
 import mall.api.admin.param.UserAddParam;
 import mall.api.mall.param.MallUserUpdateParam;
+import mall.api.mall.param.PasswordUpdateParam;
 import mall.api.mall.vo.ZhongHeMallUserVO;
 import mall.common.Constants;
 import mall.common.ServiceResultEnum;
@@ -166,12 +167,27 @@ public class ZhongHeMallUserServiceImpl implements ZhongHeMallUserService {
             ZhongHeMallException.fail(ServiceResultEnum.DATA_NOT_EXIST.getResult());
         }
         user.setNickName(mallUser.getNickName());
-        //user.setPasswordMd5(mallUser.getPasswordMd5());
-        //若密码为空字符，则表明用户不打算修改密码，使用原密码保存
-        if (!MD5Util.MD5Encode("", "UTF-8").equals(mallUser.getPasswordMd5())){
-            user.setPasswordMd5(mallUser.getPasswordMd5());
-        }
         user.setIntroduceSign(mallUser.getIntroduceSign());
+        if (mallUserMapper.updateByPrimaryKeySelective(user) > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Boolean updatePassword(PasswordUpdateParam password, Long userId) {
+        MallUser user = mallUserMapper.selectByPrimaryKey(userId);
+        if (user == null) {
+            ZhongHeMallException.fail(ServiceResultEnum.DATA_NOT_EXIST.getResult());
+        }
+        if (!user.getPasswordMd5().equals(password.getPasswordMd5Old())){
+            ZhongHeMallException.fail(ServiceResultEnum.PASSWORD_ERROR.getResult());
+        }
+        user.setPasswordMd5(password.getPasswordMd5New());
+        //若密码为空字符，则表明用户不打算修改密码，使用原密码保存
+//        if (!MD5Util.MD5Encode("", "UTF-8").equals(mallUser.getPasswordMd5())){
+//            user.setPasswordMd5(mallUser.getPasswordMd5());
+//        }
         if (mallUserMapper.updateByPrimaryKeySelective(user) > 0) {
             return true;
         }
