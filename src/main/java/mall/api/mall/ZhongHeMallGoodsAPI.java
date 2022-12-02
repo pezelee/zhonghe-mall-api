@@ -52,7 +52,7 @@ public class ZhongHeMallGoodsAPI {
         logger.info("用户商品搜索接口    loginMallUser={}", loginMallUser);
         Map params = new HashMap(8);
         //两个搜索参数都为空，直接返回异常
-        if (goodsCategoryId == null && StringUtils.isEmpty(keyword)) {
+        if (goodsCategoryId == null && StringUtils.isEmpty(keyword) && !isEnough) {
             ZhongHeMallException.fail("请输入要搜索的商品分类或关键字");
         }
         if (pageNumber == null || pageNumber < 1) {

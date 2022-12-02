@@ -245,6 +245,9 @@ public class ZhongHeMallPersonalAPI {
         String collect = loginMallUser.getCollect();
         //获得收藏列表
         List<ZhongHeMallGoods> collectGoodsList=zhongHeMallUserService.getUserCollect(loginMallUser.getUserId(),collect);
+        if (collectGoodsList == null) {
+            return ResultGenerator.genSuccessResult(null);
+        }
         Long[] ids = new Long[collectGoodsList.size()];
         for (int i = 0; i < collectGoodsList.size(); i++) {
             Long id = collectGoodsList.get(i).getGoodsId();

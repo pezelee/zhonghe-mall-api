@@ -363,7 +363,7 @@ public class ZhongHeMallUserServiceImpl implements ZhongHeMallUserService {
         MallUser user = mallUserMapper.selectByPrimaryKey(userId);
         List<ZhongHeMallGoods> collectGoodsList = new ArrayList<>();
         String newCollect="";//更新收藏字符串
-        if (collect == null) {
+        if (collect == null || "".equals(collect)) {
             return null;
         }
         String[] collectIdList = collect.split(",");
