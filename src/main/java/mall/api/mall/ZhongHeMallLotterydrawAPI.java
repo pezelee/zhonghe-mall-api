@@ -198,65 +198,62 @@ public class ZhongHeMallLotterydrawAPI {
         }
         //------------------核对完成--------------------
 
-        //获得奖品列表
-        List<ZhongHeMallPrize> prizeList = getPrizeList(activity.getPrizes());
-        int stocktotal = 0;
-        for(ZhongHeMallPrize prize : prizeList){
-            stocktotal += prize.getStockNum();
-        }
-        if (stocktotal == 0) {
-            //奖品池已空
-            return ResultGenerator.genFailResult(ServiceResultEnum.PRIZES_NOT_EXIST.getResult());
-        }
         //获得抽奖规则
         Rule rule = activityService.getRuleByActivityId(id);
+        //获得奖品初始化
+        ZhongHeMallPrize prizeResult;
+        Long lotteryDrawId;
 
-        //计算总权重
-        double sumWeight = sumWeight(prizeList);
-
-        ZhongHeMallPrize prizeResult = new ZhongHeMallPrize();
-        int drawCount=0;//抽奖错误累计
-        Long lotteryDrawId = null;
-        //抽奖
-        while (true){
-            ZhongHeMallPrize temp=draw(sumWeight,prizeList);
-            if (temp == null) {
-                return ResultGenerator.genFailResult(ServiceResultEnum.ERROR_DRAW.getResult());
+        //同步锁起点
+        synchronized (this) {
+            //获得奖品列表
+            List<ZhongHeMallPrize> prizeList = getPrizeList(activity.getPrizes());
+            int stocktotal = 0;
+            for (ZhongHeMallPrize prize : prizeList) {
+                stocktotal += prize.getStockNum();
             }
-//            drawCount+=1;//出错时最多抽奖10次
-            logger.info("抽奖结果:{}", temp.toString());
+            //奖品池已空
+            if (stocktotal == 0) return ResultGenerator.genFailResult(ServiceResultEnum.PRIZES_NOT_EXIST.getResult());
 
-            //判定是否重新抽取
-            if (temp.getStockNum() == 0) {
-                logger.info("奖品库存已空");
-            }else {
-                logger.info("获得奖品:{}", temp.toString());
-                prizeResult=temp;
+            //计算总权重
+            double sumWeight = sumWeight(prizeList);
+            //抽奖错误累计
+            int drawCount = 0;
+            //抽奖
+            while (true) {
+                ZhongHeMallPrize temp = draw(sumWeight, prizeList);
+                if (temp == null) return ResultGenerator.genFailResult(ServiceResultEnum.ERROR_DRAW.getResult());
+                logger.info("第 {} 次抽奖结果 :  {}", drawCount+1, temp.toString());
 
-                //奖品归档
-                lotteryDrawId = updateDrawResult(loginMallUser.getUserId(),activity,prizeResult);
-                if (lotteryDrawId != null) {
-                    //归档成功，扣减抽奖次数，退出循环
-                    int times = activityDraw.getDraws();
-                    times -= 1;
-//                    activityDraw.setDraws(times-1);
-                    if (activityService.updateActivityDraws(activityDraw.getId(),times)>0) {
-//                    if (true) {
-                        logger.info("扣减抽奖次数完成");//扣减抽奖次数完成
-                        break;
+                //判定是否重新抽取
+                if (temp.getStockNum() == 0) {
+                    logger.info("奖品库存已空");
+                } else {
+                    logger.info("获得奖品:{}", temp.toString());
+                    prizeResult = temp;
+
+                    //奖品归档
+                    lotteryDrawId = updateDrawResult(loginMallUser.getUserId(), activity, prizeResult);
+                    if (lotteryDrawId != null) {
+                        //归档成功，扣减抽奖次数，退出循环
+                        if (activityService.updateActivityDraws(activityDraw.getId(),
+                                activityDraw.getDraws() -1) > 0) {
+                            logger.info("扣减抽奖次数完成");
+                            break;
+                        }
+                        logger.info("扣减抽奖次数失败");
                     }
-                    logger.info("扣减抽奖次数失败");
-                }
-                drawCount+=1;//出错时最多抽奖10次
-                logger.info("归档出错，次数:{}", drawCount);
-                //次数达到后
-                if (drawCount >= 10) {
+                    drawCount += 1;//出错时最多抽奖10次
+                    logger.info("归档出错，次数:{}", drawCount);
+                    //次数达到后
+                    if (drawCount >= 10) {
 //                    prizeResult=prizeList.get(prizeList.size()-1);//发参与奖
-                    return ResultGenerator.genFailResult(ServiceResultEnum.ERROR_DRAW_MAX.getResult());
+                        return ResultGenerator.genFailResult(ServiceResultEnum.ERROR_DRAW_MAX.getResult());
+                    }
                 }
+            }//抽奖循环结束
+        }//同步锁结束
 
-            }
-        }
         Map prizeInfo = new HashMap(8);
         prizeInfo.put("prize", prizeResult);
         prizeInfo.put("lotteryDrawId", lotteryDrawId);
