@@ -613,6 +613,9 @@
 --                 and expire_time &gt;= now()
         </where>
         order by draw_time desc
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
     </select>
 
     <select id="getTotalLotteryDrawByUserId" parameterType="Map" resultType="int">

@@ -109,9 +109,9 @@ public class ZhongHeMallShoppingCartAPI {
 
     @DeleteMapping("/shop-cart/batchDelete")
     @ApiOperation(value = "批量删除购物项", notes = "传参为购物项ids")
-    public Result updateZhongHeMallShoppingCartItems(@RequestBody Long[] zhongHeMallShoppingCartItemIds,
+    public Result updateZhongHeMallShoppingCartItems(Long[] zhongHeMallShoppingCartItemIds,
                                                     @TokenToMallUser MallUser loginMallUser) {
-        logger.info("用户批量购物项数据接口     MallUser:{},ItemParam:{}", loginMallUser.toString(),zhongHeMallShoppingCartItemIds.toString());
+        logger.info("用户批量购物项数据接口     MallUser:{},ItemParam:{}", loginMallUser.toString(),zhongHeMallShoppingCartItemIds);
         Boolean deleteResult = true;
         for(Long zhongHeMallShoppingCartItemId : zhongHeMallShoppingCartItemIds){
             ZhongHeMallShoppingCartItem zhongHeMallCartItemById = zhongHeMallShoppingCartService.getZhongHeMallCartItemById(zhongHeMallShoppingCartItemId);
