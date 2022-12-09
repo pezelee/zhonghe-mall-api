@@ -55,7 +55,7 @@ public class ZhongHeAdminRegisteUserAPI {
         if (pageNumber == null || pageNumber < 1 || pageSize == null || pageSize < 10) {
             return ResultGenerator.genFailResult("参数异常！");
         }
-        logger.info("列表参数：pageNumber:{},pageSize:{}", pageNumber.toString(),pageSize.toString());
+//        logger.info("列表参数：pageNumber:{},pageSize:{}", pageNumber.toString(),pageSize.toString());
         Map params = new HashMap(8);
 //        Long organizationId = adminUser.getOrganizationId();
         //判定权限是否符合--总管理员
@@ -79,7 +79,7 @@ public class ZhongHeAdminRegisteUserAPI {
             params.put("nickName", nickName);
         }
         PageQueryUtil pageUtil = new PageQueryUtil(params);
-        adminLogService.addSuccessLog(adminUser,"商城注册用户列表接口",params.toString(),"");
+//        adminLogService.addSuccessLog(adminUser,"商城注册用户列表接口",params.toString(),"");
         return ResultGenerator.genSuccessResult(zhongHeMallUserService.getZhongHeMallUsersPage(pageUtil));
     }
 
@@ -153,7 +153,7 @@ public class ZhongHeAdminRegisteUserAPI {
         }
         for(ImportUser user :users){
             if (user.getRowTips().equals("")) {//通过导入格式校验
-                logger.info(user.toString());
+//                logger.info(user.toString());
                 UserAddParam userAddParam = new UserAddParam();
                 userAddParam.setLoginUserName(user.getLoginUserName());//登录名
                 userAddParam.setLoginPassword(user.getLoginPassword());//登录密码

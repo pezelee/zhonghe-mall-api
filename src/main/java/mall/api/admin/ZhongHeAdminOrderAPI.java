@@ -61,7 +61,7 @@ public class ZhongHeAdminOrderAPI {
         if (pageNumber == null || pageNumber < 1 || pageSize == null || pageSize < 10) {
             return ResultGenerator.genFailResult("分页参数异常！");
         }
-        logger.info("列表参数：pageNumber:{},pageSize:{}", pageNumber.toString(),pageSize.toString());
+//        logger.info("列表参数：pageNumber:{},pageSize:{}", pageNumber.toString(),pageSize.toString());
         Map params = new HashMap(8);
         params.put("page", pageNumber);
         params.put("limit", pageSize);
@@ -93,7 +93,7 @@ public class ZhongHeAdminOrderAPI {
 //        Long organizationId=adminUser.getOrganizationId();
 
         PageQueryUtil pageUtil = new PageQueryUtil(params);
-        adminLogService.addSuccessLog(adminUser,"订单列表接口",params.toString(),"");
+//        adminLogService.addSuccessLog(adminUser,"订单列表接口",params.toString(),"");
         return ResultGenerator.genSuccessResult(zhongHeMallOrderService.getZhongHeMallOrdersPage(pageUtil));
     }
 
@@ -167,7 +167,7 @@ public class ZhongHeAdminOrderAPI {
         info.put("orderDetail", orderDetailVO);
         info.put("user", userVO);
         info.put("address", addressVO);
-        adminLogService.addSuccessLog(adminUser,"订单详情接口","id:"+orderId.toString(),"");
+//        adminLogService.addSuccessLog(adminUser,"订单详情接口","id:"+orderId.toString(),"");
         return ResultGenerator.genSuccessResult(info);
     }
 
@@ -267,7 +267,7 @@ public class ZhongHeAdminOrderAPI {
         logger.info("orders{}",orders.toString());
         for(ImportOrder order:orders){
             if (order.getRowTips().equals("")) {//通过导入格式校验
-                logger.info(order.toString());
+//                logger.info(order.toString());
                 String addResult = zhongHeMallOrderService.setMailNoImport(order);
                 if (!ServiceResultEnum.SUCCESS.getResult().equals(addResult)) {
                     //新增错误

@@ -106,7 +106,7 @@ public class ZhongHeMallOrderAPI {
         if (pageNumber < 1 ) {
             return ResultGenerator.genFailResult("分页参数异常！");
         }
-        logger.info("列表参数 pageNumber:{}", pageNumber.toString());
+//        logger.info("列表参数 pageNumber:{}", pageNumber.toString());
         if (orderStatus != null) {
             logger.info("订单状态  orderStatus:{}", orderStatus.toString());
         }

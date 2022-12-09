@@ -64,7 +64,7 @@ public class ZhongHeAdminLotterydrawAPI {
         if (pageNumber < 1 || pageSize < 10) {
             return ResultGenerator.genFailResult("分页参数异常！");
         }
-        logger.info("列表参数：pageNumber:{},pageSize:{}", pageNumber.toString(),pageSize.toString());
+//        logger.info("列表参数：pageNumber:{},pageSize:{}", pageNumber.toString(),pageSize.toString());
         Map params = new HashMap(8);
         params.put("page", pageNumber);
         params.put("limit", pageSize);
@@ -100,7 +100,7 @@ public class ZhongHeAdminLotterydrawAPI {
         params.put("role", role);
         params.put("organizationId", organizationId);
         PageQueryUtil pageUtil = new PageQueryUtil(params);
-        adminLogService.addSuccessLog(adminUser,"抽奖记录列表接口",params.toString(),"");
+//        adminLogService.addSuccessLog(adminUser,"抽奖记录列表接口",params.toString(),"");
         return ResultGenerator.genSuccessResult(lotterydrawService.getLotteryDrawPage(pageUtil));
     }
 
@@ -158,7 +158,7 @@ public class ZhongHeAdminLotterydrawAPI {
         params.put("role", role);
         params.put("organizationId", organizationId);
         PageQueryUtil pageUtil = new PageQueryUtil(params);
-        adminLogService.addSuccessLog(adminUser,"抽奖记录列表接口",params.toString(),"");
+//        adminLogService.addSuccessLog(adminUser,"抽奖记录列表接口",params.toString(),"");
         List<ExportLotterydraw> result = lotterydrawService.getLotteryDrawExport(pageUtil);// 导出数据
         ExcelUtils.export(response, "抽奖记录列表", result,ExportLotterydraw.class);
 //        return ResultGenerator.genSuccessResult(lotterydrawService.getLotteryDrawPage(pageUtil));
@@ -186,7 +186,7 @@ public class ZhongHeAdminLotterydrawAPI {
         logger.info("抽奖记录:{}", lotterydraw.toString());
 
 //        lotterydrawInfo.put("lotterydraw", lotterydraw);
-        adminLogService.addSuccessLog(adminUser,"获取单条抽奖记录接口","id:"+id.toString(),"SUCCESS");
+//        adminLogService.addSuccessLog(adminUser,"获取单条抽奖记录接口","id:"+id.toString(),"SUCCESS");
         return ResultGenerator.genSuccessResult(lotterydraw);
     }
 
@@ -209,7 +209,7 @@ public class ZhongHeAdminLotterydrawAPI {
             //非VIP卡类奖品
             return ResultGenerator.genFailResult(ServiceResultEnum.PRIZE_TYPE_ERROR.getResult());
         }
-        logger.info("抽奖记录:{}", lotterydraw.toString());
+//        logger.info("抽奖记录:{}", lotterydraw.toString());
         //判定权限是否符合--总管理员或相应的分行管理员
         String isAdmin = CheckUtils.isAdmin(adminUser,lotterydraw.getOrganizationId());
         if (!isAdmin.equals(ServiceResultEnum.SUCCESS.getResult())) {
@@ -276,7 +276,7 @@ public class ZhongHeAdminLotterydrawAPI {
         if (lotterydraw == null) {
             return ResultGenerator.genFailResult(ServiceResultEnum.DATA_NOT_EXIST.getResult());
         }
-        logger.info("抽奖记录:{}", lotterydraw.toString());
+//        logger.info("抽奖记录:{}", lotterydraw.toString());
         //判定权限是否符合--总管理员或相应的分行管理员
         String isAdmin = CheckUtils.isAdmin(adminUser,lotterydraw.getOrganizationId());
         if (!isAdmin.equals(ServiceResultEnum.SUCCESS.getResult())) {
@@ -309,10 +309,10 @@ public class ZhongHeAdminLotterydrawAPI {
         if (lotterydraws.size() == 0) {
             errors.add(ExcelUtils.newError(1,"导入表为空"));
         }
-        logger.info("lotterydraws{}",lotterydraws.toString());
+//        logger.info("lotterydraws{}",lotterydraws.toString());
         for(ImportLotterydraw lotterydraw:lotterydraws){
             if (lotterydraw.getRowTips().equals("")) {//通过导入格式校验
-                logger.info(lotterydraw.toString());
+//                logger.info(lotterydraw.toString());
                 String addResult = lotterydrawService.setMailNoImport(lotterydraw);
                 if (!ServiceResultEnum.SUCCESS.getResult().equals(addResult)) {
                     //新增错误

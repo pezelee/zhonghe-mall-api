@@ -1,4 +1,4 @@
- 
+
 package mall.service.impl;
 
 import mall.api.admin.param.BatchPrizesParam;
@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 
 @Service
 public class ActivityServiceImpl implements ActivityService {
-    
+
     @Autowired
     private ActivityMapper activityMapper;
     @Autowired
@@ -255,7 +255,7 @@ public class ActivityServiceImpl implements ActivityService {
         Model temp = modelMapper.selectByActivityId(model.getActivityId());
         model.setActivityName(activity.getActivityName());
         model.setUpdateTime(new Date());
-        if (temp == null) {//初次保存规则
+        if (temp == null) {//初次保存
             model.setCreateTime(new Date());
             model.setCreateUser(model.getUpdateUser());
             if (modelMapper.insertSelective(model)>0) {

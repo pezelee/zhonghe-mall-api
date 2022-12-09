@@ -49,7 +49,7 @@ public class ZhongHeAdminIndexConfigAPI {
         if (pageNumber == null || pageNumber < 1 || pageSize == null || pageSize < 10) {
             return ResultGenerator.genFailResult("分页参数异常！");
         }
-        logger.info("列表参数：pageNumber:{},pageSize:{}", pageNumber.toString(),pageSize.toString());
+//        logger.info("列表参数：pageNumber:{},pageSize:{}", pageNumber.toString(),pageSize.toString());
         IndexConfigTypeEnum indexConfigTypeEnum = IndexConfigTypeEnum.getIndexConfigTypeEnumByType(configType);
         if (indexConfigTypeEnum.equals(IndexConfigTypeEnum.DEFAULT)) {
             return ResultGenerator.genFailResult("非法参数！");
@@ -59,7 +59,7 @@ public class ZhongHeAdminIndexConfigAPI {
         params.put("limit", pageSize);
         params.put("configType", configType);
         PageQueryUtil pageUtil = new PageQueryUtil(params);
-        adminLogService.addSuccessLog(adminUser,"首页配置列表接口",params.toString(),"SUCCESS");
+//        adminLogService.addSuccessLog(adminUser,"首页配置列表接口",params.toString(),"SUCCESS");
         return ResultGenerator.genSuccessResult(zhongHeMallIndexConfigService.getConfigsPage(pageUtil));
     }
 
@@ -111,7 +111,7 @@ public class ZhongHeAdminIndexConfigAPI {
         if (config == null) {
             return ResultGenerator.genFailResult("未查询到数据");
         }
-        adminLogService.addSuccessLog(adminUser,"获取单条首页配置项信息接口","id:"+id.toString(),"SUCCESS");
+//        adminLogService.addSuccessLog(adminUser,"获取单条首页配置项信息接口","id:"+id.toString(),"SUCCESS");
         return ResultGenerator.genSuccessResult(config);
     }
 

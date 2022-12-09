@@ -73,11 +73,11 @@ public class ZhongHeMallPersonalAPI {
         Boolean logoutResult = zhongHeMallUserService.logout(loginMallUser.getUserId());
         //登出成功
         if (logoutResult) {
-            logger.info("登出成功");
+//            logger.info("登出成功");
             return ResultGenerator.genSuccessResult();
         }
         //登出失败
-        logger.info("登出失败");
+//        logger.info("登出失败");
         return ResultGenerator.genFailResult("logout error");
     }
 
@@ -160,7 +160,7 @@ public class ZhongHeMallPersonalAPI {
         if (pageNumber == null || pageNumber < 1 ) {
             return ResultGenerator.genFailResult("分页参数异常！");
         }
-        logger.info("列表参数 pageNumber:{}", pageNumber.toString());
+//        logger.info("列表参数 pageNumber:{}", pageNumber.toString());
 
         Map params = new HashMap(8);
         params.put("page", pageNumber);
@@ -188,7 +188,7 @@ public class ZhongHeMallPersonalAPI {
         logger.info("获取用户积分接口  MallUser:{}", loginMallUser.toString());
         TotalPoint totalPoint;
         totalPoint = zhongHeMallUserService.getTotalPoint(loginMallUser.getUserId());
-        logger.info("用户积分信息：{}", totalPoint.toString());
+//        logger.info("用户积分信息：{}", totalPoint.toString());
         return ResultGenerator.genSuccessResult(totalPoint);
     }
 

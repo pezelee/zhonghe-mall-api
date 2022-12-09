@@ -44,12 +44,12 @@ public class ZhongHeAdminOrganizationAPI {
         if (pageNumber == null || pageNumber < 1 || pageSize == null || pageSize < 10) {
             return ResultGenerator.genFailResult("分页参数异常！");
         }
-        logger.info("列表参数：pageNumber:{},pageSize:{}", pageNumber.toString(),pageSize.toString());
+//        logger.info("列表参数：pageNumber:{},pageSize:{}", pageNumber.toString(),pageSize.toString());
         Map params = new HashMap(4);
         params.put("page", pageNumber);
         params.put("limit", pageSize);
         PageQueryUtil pageUtil = new PageQueryUtil(params);
-        adminLogService.addSuccessLog(adminUser,"分行组织列表接口",params.toString(),"");
+//        adminLogService.addSuccessLog(adminUser,"分行组织列表接口",params.toString(),"");
         return ResultGenerator.genSuccessResult(zhongHeMallOrganizationService.getOrganizationPage(pageUtil));
     }
 
@@ -119,7 +119,7 @@ public class ZhongHeAdminOrganizationAPI {
         if (organization == null) {
             return ResultGenerator.genFailResult(ServiceResultEnum.DATA_NOT_EXIST.getResult());
         }
-        adminLogService.addSuccessLog(adminUser,"获取单条分行组织信息接口","id:"+id.toString(),"SUCCESS");
+//        adminLogService.addSuccessLog(adminUser,"获取单条分行组织信息接口","id:"+id.toString(),"SUCCESS");
         return ResultGenerator.genSuccessResult(organization);
     }
 

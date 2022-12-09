@@ -58,7 +58,7 @@ public class ZhongHeAdminPrizeInfoAPI {
         if (pageNumber == null || pageNumber < 1 || pageSize == null || pageSize < 10) {
             return ResultGenerator.genFailResult("分页参数异常！");
         }
-        logger.info("奖品列表参数：pageNumber:{},pageSize:{}", pageNumber.toString(),pageSize.toString());
+//        logger.info("奖品列表参数：pageNumber:{},pageSize:{}", pageNumber.toString(),pageSize.toString());
         Map params = new HashMap(8);
         params.put("page", pageNumber);
         params.put("limit", pageSize);
@@ -96,7 +96,7 @@ public class ZhongHeAdminPrizeInfoAPI {
         }
         params.put("role", role);
         PageQueryUtil pageUtil = new PageQueryUtil(params);
-        adminLogService.addSuccessLog(adminUser,"奖品列表接口",params.toString(),"");
+//        adminLogService.addSuccessLog(adminUser,"奖品列表接口",params.toString(),"");
         return ResultGenerator.genSuccessResult(zhongHeMallPrizeService.getZhongHeMallPrizePage(pageUtil));
     }
 
@@ -184,7 +184,7 @@ public class ZhongHeAdminPrizeInfoAPI {
             }
         }
 
-        logger.info("奖品信息:{}", prize.toString());
+//        logger.info("奖品信息:{}", prize.toString());
         prizeInfo.put("prize", prize);
         GoodsCategory thirdCategory;
         GoodsCategory secondCategory;
@@ -202,7 +202,7 @@ public class ZhongHeAdminPrizeInfoAPI {
             }
         }
 
-        adminLogService.addSuccessLog(adminUser,"获取单条奖品信息接口","id:"+id.toString(),"SUCCESS");
+//        adminLogService.addSuccessLog(adminUser,"获取单条奖品信息接口","id:"+id.toString(),"SUCCESS");
         return ResultGenerator.genSuccessResult(prizeInfo);
     }
 

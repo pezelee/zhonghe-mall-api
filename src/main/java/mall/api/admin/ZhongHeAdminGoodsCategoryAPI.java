@@ -54,14 +54,14 @@ public class ZhongHeAdminGoodsCategoryAPI {
         if (pageNumber == null || pageNumber < 1 || pageSize == null || pageSize < 10 || categoryLevel == null || categoryLevel < 0 || categoryLevel > 3 || parentId == null || parentId < 0) {
             return ResultGenerator.genFailResult("分页参数异常！");
         }
-        logger.info("列表参数：pageNumber:{},pageSize:{}", pageNumber.toString(),pageSize.toString());
+//        logger.info("列表参数：pageNumber:{},pageSize:{}", pageNumber.toString(),pageSize.toString());
         Map params = new HashMap(8);
         params.put("page", pageNumber);
         params.put("limit", pageSize);
         params.put("categoryLevel", categoryLevel);
         params.put("parentId", parentId);
         PageQueryUtil pageUtil = new PageQueryUtil(params);
-        adminLogService.addSuccessLog(adminUser,"商品分类列表接口",params.toString(),"SUCCESS");
+//        adminLogService.addSuccessLog(adminUser,"商品分类列表接口",params.toString(),"SUCCESS");
         return ResultGenerator.genSuccessResult(zhongHeMallCategoryService.getCategorisPage(pageUtil));
     }
 
@@ -97,7 +97,7 @@ public class ZhongHeAdminGoodsCategoryAPI {
             List<GoodsCategory> thirdLevelCategories = zhongHeMallCategoryService.selectByLevelAndParentIdsAndNumber(Collections.singletonList(categoryId), ZhongHeMallCategoryLevelEnum.LEVEL_THREE.getLevel());
             categoryResult.put("thirdLevelCategories", thirdLevelCategories);
         }
-        adminLogService.addSuccessLog(adminUser,"商品分类列表接口",categoryId.toString(),"SUCCESS");
+//        adminLogService.addSuccessLog(adminUser,"商品分类列表接口",categoryId.toString(),"SUCCESS");
         return ResultGenerator.genSuccessResult(categoryResult);
     }
 
@@ -144,12 +144,12 @@ public class ZhongHeAdminGoodsCategoryAPI {
     @RequestMapping(value = "/categories/{id}", method = RequestMethod.GET)
     @ApiOperation(value = "获取单条分类信息", notes = "根据id查询")
     public Result info(@PathVariable("id") Long id, @TokenToAdminUser AdminUserToken adminUser) {
-        logger.info("获取单条分类信息接口  adminUser:{}", adminUser.toString());
+        logger.info("获取单条分类信息接口  adminUser:{},id:{}", adminUser.toString(),id.toString());
         GoodsCategory goodsCategory = zhongHeMallCategoryService.getGoodsCategoryById(id);
         if (goodsCategory == null) {
             return ResultGenerator.genFailResult("未查询到数据");
         }
-        adminLogService.addSuccessLog(adminUser,"获取单条分类信息接口","id:"+id.toString(),"SUCCESS");
+//        adminLogService.addSuccessLog(adminUser,"获取单条分类信息接口","id:"+id.toString(),"SUCCESS");
         return ResultGenerator.genSuccessResult(goodsCategory);
     }
 

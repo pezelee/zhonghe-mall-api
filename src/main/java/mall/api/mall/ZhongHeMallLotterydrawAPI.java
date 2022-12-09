@@ -58,7 +58,7 @@ public class ZhongHeMallLotterydrawAPI {
         if (pageNumber < 1 || pageSize < 10) {
             return ResultGenerator.genFailResult("分页参数异常！");
         }
-        logger.info("列表参数：pageNumber:{},pageSize:{}", pageNumber.toString(),pageSize.toString());
+//        logger.info("列表参数：pageNumber:{},pageSize:{}", pageNumber.toString(),pageSize.toString());
         Long userId = loginMallUser.getUserId();
         Map params = new HashMap(8);
         params.put("page", pageNumber);
@@ -91,7 +91,7 @@ public class ZhongHeMallLotterydrawAPI {
         if (pageNumber < 1 || pageSize < 10) {
             return ResultGenerator.genFailResult("分页参数异常！");
         }
-        logger.info("列表参数：pageNumber:{},pageSize:{}", pageNumber.toString(),pageSize.toString());
+//        logger.info("列表参数：pageNumber:{},pageSize:{}", pageNumber.toString(),pageSize.toString());
         Long userId = loginMallUser.getUserId();
         Map params = new HashMap(8);
         params.put("page", pageNumber);
@@ -117,7 +117,7 @@ public class ZhongHeMallLotterydrawAPI {
         if (activityId ==null) {
             return ResultGenerator.genFailResult("活动ID不能为空！");
         }
-        logger.info("列表参数：pageNumber:{},pageSize:{},activityId:{}", pageNumber.toString(),pageSize.toString(),activityId.toString());
+//        logger.info("列表参数：pageNumber:{},pageSize:{},activityId:{}", pageNumber.toString(),pageSize.toString(),activityId.toString());
         Long userId = loginMallUser.getUserId();
         Map params = new HashMap(8);
         params.put("page", pageNumber);
@@ -291,7 +291,7 @@ public class ZhongHeMallLotterydrawAPI {
         if (!CheckUtils.isSameId(loginMallUser.getUserId(),lotterydraw.getUserId())) {//用户ID不符合
             return ResultGenerator.genFailResult(ServiceResultEnum.OTHER_USER.getResult());
         }
-        logger.info("抽奖记录:{}", lotterydraw.toString());
+//        logger.info("抽奖记录:{}", lotterydraw.toString());
         ZhongHeMallPrize prize = zhongHeMallPrizeService.getZhongHeMallPrizeById(lotterydraw.getPrizeId());
         LotteryDrawAddress address = lotterydrawService.getAddress(id);
         Map lotterydrawInfo = new HashMap(8);
@@ -313,7 +313,7 @@ public class ZhongHeMallLotterydrawAPI {
         if (activity == null) {
             return ResultGenerator.genFailResult(ServiceResultEnum.DATA_NOT_EXIST.getResult());
         }
-        logger.info("活动信息:{}", activity.toString());
+//        logger.info("活动信息:{}", activity.toString());
 
         //获得奖品列表
         List<ZhongHeMallPrize> prizeList = getPrizeList(activity.getPrizes());
@@ -336,15 +336,9 @@ public class ZhongHeMallLotterydrawAPI {
         logger.info("用户奖品添加地址接口  User:{}，saveOrderParam:{}", loginMallUser.toString(),saveLotteryDrawParam.toString());
         Long lotteryDrawId = saveLotteryDrawParam.getLotteryDrawId();
         LotteryDraw lotterydraw = lotterydrawService.getLotteryDrawById(lotteryDrawId);
-        if (lotterydraw == null) {
-            return ResultGenerator.genFailResult(ServiceResultEnum.DATA_NOT_EXIST.getResult());
-        }
-        if (!CheckUtils.isSameId(loginMallUser.getUserId(),lotterydraw.getUserId())) {//用户ID不符合
-            return ResultGenerator.genFailResult(ServiceResultEnum.OTHER_USER.getResult());
-        }
-//        Date now = new Date();
-        if (lotterydraw.getExpireTime().before(new Date())) {//奖品过期
-            return ResultGenerator.genFailResult(ServiceResultEnum.PRIZE_OUT_TIME.getResult());
+        String check = check(lotterydraw,loginMallUser,"address");
+        if (!"success".equals(check)) {
+            return ResultGenerator.genFailResult(check);
         }
         MallUserAddress address = zhongHeMallUserAddressService.getMallUserAddressById(saveLotteryDrawParam.getAddressId());
         if (!loginMallUser.getUserId().equals(address.getUserId())) {
@@ -366,20 +360,9 @@ public class ZhongHeMallLotterydrawAPI {
         logger.info("用户领取VIP卡接口  User:{}，id:{}", loginMallUser.toString(),lotteryDrawId.toString());
 //        Long lotteryDrawId = saveLotteryDrawParam.getLotteryDrawId();
         LotteryDraw lotterydraw = lotterydrawService.getLotteryDrawById(lotteryDrawId);
-        if (lotterydraw == null) {
-            return ResultGenerator.genFailResult(ServiceResultEnum.DATA_NOT_EXIST.getResult());
-        }
-        if (!CheckUtils.isSameId(loginMallUser.getUserId(),lotterydraw.getUserId())) {//用户ID不符合
-            return ResultGenerator.genFailResult(ServiceResultEnum.OTHER_USER.getResult());
-        }
-        if (lotterydraw.getPrizeType() != 3) {//非VIP卡类奖品
-            return ResultGenerator.genFailResult(ServiceResultEnum.PRIZE_TYPE_ERROR.getResult());
-        }
-        if (lotterydraw.getExpireTime().before(new Date())) {//奖品过期
-            return ResultGenerator.genFailResult(ServiceResultEnum.PRIZE_OUT_TIME.getResult());
-        }
-        if (lotterydraw.getStatus() != 1) {//奖品已领取
-            return ResultGenerator.genFailResult(ServiceResultEnum.PRIZE_GETED.getResult());
+        String check = check(lotterydraw,loginMallUser,"receiveVIP");
+        if (!"success".equals(check)) {
+            return ResultGenerator.genFailResult(check);
         }
         //发出领取申请，改变记录状态
         String result = lotterydrawService.receiveVIP(lotteryDrawId);
@@ -388,6 +371,25 @@ public class ZhongHeMallLotterydrawAPI {
         } else {
             return ResultGenerator.genFailResult(result);
         }
+    }
+
+    private String check(LotteryDraw lotterydraw,MallUser loginMallUser,String type){
+        if (lotterydraw == null) {
+            return ServiceResultEnum.DATA_NOT_EXIST.getResult();
+        }
+        if (!CheckUtils.isSameId(loginMallUser.getUserId(),lotterydraw.getUserId())) {//用户ID不符合
+            return ServiceResultEnum.OTHER_USER.getResult();
+        }
+        if (lotterydraw.getExpireTime().before(new Date())) {//奖品过期
+            return ServiceResultEnum.PRIZE_OUT_TIME.getResult();
+        }
+        if (lotterydraw.getStatus() != 1 && "receiveVIP".equals(type)) {//奖品已领取
+            return ServiceResultEnum.PRIZE_GETED.getResult();
+        }
+        if (lotterydraw.getPrizeType() != 3 && "receiveVIP".equals(type)) {//非VIP卡类奖品
+            return ServiceResultEnum.PRIZE_TYPE_ERROR.getResult();
+        }
+        return "success";
     }
 
 

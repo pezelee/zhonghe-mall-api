@@ -44,7 +44,7 @@ public class ZhongHeAdminManageUserAPI {
         if (pageNumber == null || pageNumber < 1 || pageSize == null || pageSize < 10) {
             return ResultGenerator.genFailResult("参数异常！");
         }
-        logger.info("列表参数：pageNumber:{},pageSize:{}", pageNumber.toString(),pageSize.toString());
+//        logger.info("列表参数：pageNumber:{},pageSize:{}", pageNumber.toString(),pageSize.toString());
         Map params = new HashMap(8);
         params.put("page", pageNumber);
         params.put("limit", pageSize);
@@ -56,8 +56,8 @@ public class ZhongHeAdminManageUserAPI {
         }
         params.put("role", adminUser.getRole());//角色
         PageQueryUtil pageUtil = new PageQueryUtil(params);
-        logger.info("查看分页信息，pageUtil:{}", pageUtil.toString());
-        adminLogService.addSuccessLog(adminUser,"查看管理员列表接口",params.toString(),"");
+//        logger.info("查看分页信息，pageUtil:{}", pageUtil.toString());
+//        adminLogService.addSuccessLog(adminUser,"查看管理员列表接口",params.toString(),"");
         return ResultGenerator.genSuccessResult(adminUserService.getZhongHeMallAdminsPage(pageUtil));
     }
 
@@ -87,7 +87,7 @@ public class ZhongHeAdminManageUserAPI {
             adminUserEntity.setLoginPassword("******");
             Result result = ResultGenerator.genSuccessResult();
             result.setData(adminUserEntity);
-            adminLogService.addSuccessLog(adminUser,"查看本管理员信息接口","","SUCCESS");
+//            adminLogService.addSuccessLog(adminUser,"查看本管理员信息接口","","SUCCESS");
             return result;
         }
         return ResultGenerator.genFailResult(ServiceResultEnum.DATA_NOT_EXIST.getResult());
@@ -102,7 +102,7 @@ public class ZhongHeAdminManageUserAPI {
             adminUserEntity.setLoginPassword("******");
             Result result = ResultGenerator.genSuccessResult();
             result.setData(adminUserEntity);
-            adminLogService.addSuccessLog(adminUser,"查看其他管理员信息接口","id:"+id.toString(),"SUCCESS");
+//            adminLogService.addSuccessLog(adminUser,"查看其他管理员信息接口","id:"+id.toString(),"SUCCESS");
             return result;
         }
         return ResultGenerator.genFailResult(ServiceResultEnum.DATA_NOT_EXIST.getResult());

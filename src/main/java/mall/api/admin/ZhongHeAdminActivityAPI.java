@@ -51,7 +51,7 @@ public class ZhongHeAdminActivityAPI {
         if (pageNumber == null || pageNumber < 1 || pageSize == null || pageSize < 10) {
             return ResultGenerator.genFailResult("分页参数异常！");
         }
-        logger.info("列表参数：pageNumber:{},pageSize:{}", pageNumber.toString(),pageSize.toString());
+//        logger.info("列表参数：pageNumber:{},pageSize:{}", pageNumber.toString(),pageSize.toString());
         Map params = new HashMap(8);
         params.put("page", pageNumber);
         params.put("limit", pageSize);
@@ -74,7 +74,7 @@ public class ZhongHeAdminActivityAPI {
         PageQueryUtil pageUtil = new PageQueryUtil(params);
         PageResult result = activityService.getActivityPage(pageUtil);
 //        logger.info("活动列表:{}", result.getList().toString());
-        adminLogService.addSuccessLog(adminUser,"活动列表接口",params.toString(),"SUCCESS");
+//        adminLogService.addSuccessLog(adminUser,"活动列表接口",params.toString(),"SUCCESS");
         return ResultGenerator.genSuccessResult(result);
     }
 
@@ -188,8 +188,8 @@ public class ZhongHeAdminActivityAPI {
             activityInfo.put("prizeList", prizeList);
         }
         activityInfo.put("activity", activity);
-        adminLogService.addSuccessLog(adminUser,"获取单条活动信息接口",
-                "id:"+id.toString(),"SUCCESS");
+//        adminLogService.addSuccessLog(adminUser,"获取单条活动信息接口",
+//                "id:"+id.toString(),"SUCCESS");
         return ResultGenerator.genSuccessResult(activityInfo);
     }
 
@@ -278,7 +278,7 @@ public class ZhongHeAdminActivityAPI {
         PageQueryUtil pageUtil = new PageQueryUtil(params);
         PageResult result = activityService.getActivityDrawsPage(pageUtil);
         logger.info("活动用户可抽奖次数列表:{}", result.toString());
-        adminLogService.addSuccessLog(adminUser,"活动用户可抽奖次数列表接口",params.toString(),"SUCCESS");
+//        adminLogService.addSuccessLog(adminUser,"活动用户可抽奖次数列表接口",params.toString(),"SUCCESS");
         return ResultGenerator.genSuccessResult(result);
     }
 
@@ -300,7 +300,7 @@ public class ZhongHeAdminActivityAPI {
         }
         Rule rule = activityService.getRuleByActivityId(id);
         logger.info("规则信息:{}", rule.toString());
-        adminLogService.addSuccessLog(adminUser,"获取活动配置的规则信息接口","id:"+id.toString(),"SUCCESS");
+//        adminLogService.addSuccessLog(adminUser,"获取活动配置的规则信息接口","id:"+id.toString(),"SUCCESS");
         return ResultGenerator.genSuccessResult(rule);
     }
 
@@ -345,7 +345,7 @@ public class ZhongHeAdminActivityAPI {
         }
         Model model = activityService.getModelByActivityId(id);
         logger.info("模板信息:{}", model.toString());
-        adminLogService.addSuccessLog(adminUser,"获取活动配置的模板信息接口","id:"+id.toString(),"SUCCESS");
+//        adminLogService.addSuccessLog(adminUser,"获取活动配置的模板信息接口","id:"+id.toString(),"SUCCESS");
         return ResultGenerator.genSuccessResult(model);
     }
 

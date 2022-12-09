@@ -45,7 +45,7 @@ public class ZhongHeMallIndexAPI {
         indexInfoVO.setHotGoodses(hotGoodses);
         indexInfoVO.setNewGoodses(newGoodses);
         indexInfoVO.setRecommendGoodses(recommendGoodses);
-        logger.info("首页数据：carousels:{},hot:{},new:{},recommend:{}", carousels.toString(), hotGoodses.toString(), newGoodses.toString(), recommendGoodses.toString());
+//        logger.info("首页数据：carousels:{},hot:{},new:{},recommend:{}", carousels.toString(), hotGoodses.toString(), newGoodses.toString(), recommendGoodses.toString());
         return ResultGenerator.genSuccessResult(indexInfoVO);
     }
 }

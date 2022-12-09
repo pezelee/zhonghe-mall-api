@@ -49,12 +49,12 @@ public class ZhongHeAdminCarouselAPI {
         if (pageNumber == null || pageNumber < 1 || pageSize == null || pageSize < 10) {
             return ResultGenerator.genFailResult("分页参数异常！");
         }
-        logger.info("列表参数：pageNumber:{},pageSize:{}", pageNumber.toString(),pageSize.toString());
+//        logger.info("列表参数：pageNumber:{},pageSize:{}", pageNumber.toString(),pageSize.toString());
         Map params = new HashMap(4);
         params.put("page", pageNumber);
         params.put("limit", pageSize);
         PageQueryUtil pageUtil = new PageQueryUtil(params);
-        adminLogService.addSuccessLog(adminUser,"轮播图列表接口",params.toString(),"SUCCESS");
+//        adminLogService.addSuccessLog(adminUser,"轮播图列表接口",params.toString(),"SUCCESS");
         return ResultGenerator.genSuccessResult(zhongHeMallCarouselService.getCarouselPage(pageUtil));
     }
 
@@ -101,12 +101,12 @@ public class ZhongHeAdminCarouselAPI {
     @RequestMapping(value = "/carousels/{id}", method = RequestMethod.GET)
     @ApiOperation(value = "获取单条轮播图信息", notes = "根据id查询")
     public Result info(@PathVariable("id") Integer id, @TokenToAdminUser AdminUserToken adminUser) {
-        logger.info("获取单条轮播图信息接口  adminUser:{}", adminUser.toString());
+        logger.info("获取单条轮播图信息接口  adminUser:{}, id:{}", adminUser.toString(),id.toString());
         Carousel carousel = zhongHeMallCarouselService.getCarouselById(id);
         if (carousel == null) {
             return ResultGenerator.genFailResult(ServiceResultEnum.DATA_NOT_EXIST.getResult());
         }
-        adminLogService.addSuccessLog(adminUser,"获取单条轮播图信息接口","id:"+id.toString(),"SUCCESS");
+//        adminLogService.addSuccessLog(adminUser,"获取单条轮播图信息接口","id:"+id.toString(),"SUCCESS");
         return ResultGenerator.genSuccessResult(carousel);
     }
 

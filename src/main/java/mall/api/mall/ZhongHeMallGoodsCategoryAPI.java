@@ -35,7 +35,7 @@ public class ZhongHeMallGoodsCategoryAPI {
         if (CollectionUtils.isEmpty(categories)) {
             ZhongHeMallException.fail(ServiceResultEnum.DATA_NOT_EXIST.getResult());
         }
-        logger.info("用户获取分类数据：categories:{}", categories.toString());
+//        logger.info("用户获取分类数据：categories:{}", categories.toString());
         return ResultGenerator.genSuccessResult(categories);
     }
 }
