@@ -103,7 +103,9 @@ public class CheckUtils {
 
     //判定抽奖规则时段是否合规
     public static String isRulePeriod(String period,Date starttime,Date endtime){
-
+        if ("".equals(period) || period == null) {
+            return "success";
+        }
         //【结束日期，一等奖数量，二等奖数量，三等奖数量】
         String[] period1List = period.split(",");
         DateFormat format=new SimpleDateFormat("yyyy-MM-dd");

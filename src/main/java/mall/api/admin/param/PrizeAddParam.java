@@ -24,8 +24,8 @@ public class PrizeAddParam {
     private String prizeIntro;
 
     @ApiModelProperty("分类id")
-    @NotNull(message = "分类id不能为空")
-    @Min(value = 1, message = "分类id最低为1")
+    @NotNull(message = "奖品分类不能为空")
+    @Min(value = 1, message = "奖品分类最低为1")
     private Long prizeCategoryId;
 
     @ApiModelProperty("奖品种类  0：实物快递  1：实物现场  2： 积分 3：会员卡")

@@ -117,9 +117,10 @@ public interface LotterydrawService {
      * 变成已发送
      *
      *
-     * @param mailParam@return
+     * @param mailParam @return
+     * @return
      */
-    Boolean sending(LotterydrawMailParam mailParam);
+    String sending(LotterydrawMailParam mailParam);
 
     /**
      * 发送完成

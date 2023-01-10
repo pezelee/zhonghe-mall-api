@@ -20,8 +20,17 @@ public class NoticeAddParam implements Serializable {
     private String sender;
 
     @ApiModelProperty("通知内容")
-    @NotEmpty(message = "密码不能为空")
+    @NotEmpty(message = "内容不能为空")
     private String notice;
+
+    @ApiModelProperty("通知内容")
+    private String notice1;
+
+    @ApiModelProperty("通知内容")
+    private String notice2;
+
+    @ApiModelProperty("通知内容")
+    private String notice3;
 
     @ApiModelProperty("通知种类")
     @NotNull(message = "种类(0-抽奖通知 1-订单通知 2-个人信息通知)")

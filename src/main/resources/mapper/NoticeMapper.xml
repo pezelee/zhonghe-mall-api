@@ -12,6 +12,9 @@
         <result column="title" jdbcType="VARCHAR" property="title"/>
         <result column="sender" jdbcType="VARCHAR" property="sender"/>
         <result column="notice" jdbcType="VARCHAR" property="notice"/>
+        <result column="notice1" jdbcType="VARCHAR" property="notice1"/>
+        <result column="notice2" jdbcType="VARCHAR" property="notice2"/>
+        <result column="notice3" jdbcType="VARCHAR" property="notice3"/>
         <result column="notice_type" jdbcType="TINYINT" property="noticeType"/>
         <result column="read_flag" jdbcType="TINYINT" property="readFlag"/>
         <result column="is_deleted" jdbcType="TINYINT" property="isDeleted"/>
@@ -20,7 +23,7 @@
     </resultMap>
     <sql id="Base_Column_List">
     id, user_id, nick_name, login_name, organization_id, phone,
-    title, sender, notice, notice_type, read_flag,
+    title, sender, notice, notice1, notice2, notice3, notice_type, read_flag,
     is_deleted, create_time,read_time
   </sql>
 
@@ -106,12 +109,13 @@
   </update>
     <insert id="insert" parameterType="mall.entity.Notice">
     insert into tb_zhonghe_mall_notice (id, user_id, nick_name, login_name, organization_id, phone,
-    title, sender, notice, notice_type, read_flag,
+    title, sender, notice, notice1, notice2, notice3, notice_type, read_flag,
     is_deleted, create_time,read_time
       )
     values (#{id,jdbcType=BIGINT},#{userId,jdbcType=BIGINT}, #{nickName,jdbcType=VARCHAR}, #{loginName,jdbcType=VARCHAR}, 
       #{organizationId,jdbcType=BIGINT}, #{phone,jdbcType=VARCHAR},
-      #{title,jdbcType=VARCHAR}, #{sender,jdbcType=VARCHAR}, #{notice,jdbcType=VARCHAR},
+      #{title,jdbcType=VARCHAR}, #{sender,jdbcType=VARCHAR},
+      #{notice,jdbcType=VARCHAR},#{notice1,jdbcType=VARCHAR},#{notice2,jdbcType=VARCHAR},#{notice3,jdbcType=VARCHAR},
       #{noticeType,jdbcType=TINYINT}, #{readFlag,jdbcType=TINYINT},
       #{isDeleted,jdbcType=TINYINT},  #{createTime,jdbcType=TIMESTAMP},  #{readTime,jdbcType=TIMESTAMP}
       )
@@ -145,6 +149,15 @@
             </if>
             <if test="notice != null">
                 notice,
+            </if>
+            <if test="notice1 != null">
+                notice1,
+            </if>
+            <if test="notice2 != null">
+                notice2,
+            </if>
+            <if test="notice3 != null">
+                notice3,
             </if>
             <if test="noticeType != null">
                 notice_type,
@@ -190,6 +203,15 @@
             <if test="notice != null">
                 #{notice,jdbcType=VARCHAR},
             </if>
+            <if test="notice1 != null">
+                #{notice1,jdbcType=VARCHAR},
+            </if>
+            <if test="notice2 != null">
+                #{notice2,jdbcType=VARCHAR},
+            </if>
+            <if test="notice3 != null">
+                #{notice3,jdbcType=VARCHAR},
+            </if>
             <if test="noticeType != null">
                 #{noticeType,jdbcType=TINYINT},
             </if>
@@ -234,6 +256,15 @@
             <if test="notice != null">
                 notice = #{notice,jdbcType=VARCHAR},
             </if>
+            <if test="notice1 != null">
+                notice1 = #{notice1,jdbcType=VARCHAR},
+            </if>
+            <if test="notice2 != null">
+                notice2 = #{notice2,jdbcType=VARCHAR},
+            </if>
+            <if test="notice3 != null">
+                notice3 = #{notice3,jdbcType=VARCHAR},
+            </if>
             <if test="noticeType != null">
                 notice_type = #{noticeType,jdbcType=TINYINT},
             </if>
@@ -262,6 +293,9 @@
       title = #{title,jdbcType=VARCHAR},
       sender = #{sender,jdbcType=VARCHAR},
       notice = #{notice,jdbcType=VARCHAR},
+      notice1 = #{notice1,jdbcType=VARCHAR},
+      notice2 = #{notice2,jdbcType=VARCHAR},
+      notice3 = #{notice3,jdbcType=VARCHAR},
       notice_type = #{noticeType,jdbcType=TINYINT},
       read_flag = #{readFlag,jdbcType=TINYINT},
       is_deleted = #{isDeleted,jdbcType=TINYINT},
@@ -278,6 +312,7 @@
     <update id="updateText">
         update tb_zhonghe_mall_notice
         set title = #{title,jdbcType=VARCHAR} ,notice = #{notice,jdbcType=VARCHAR} ,
+        notice1 = #{notice1,jdbcType=VARCHAR} ,notice2 = #{notice2,jdbcType=VARCHAR} ,notice3 = #{notice3,jdbcType=VARCHAR}
         where id = #{id,jdbcType=BIGINT}
     </update>
 </mapper>

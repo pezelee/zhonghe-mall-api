@@ -254,7 +254,7 @@ public class ZhongHeMallUserServiceImpl implements ZhongHeMallUserService {
             for(PointDTO pointDTO : pointDTOS){
                 Date expiretime = pointDTO.getExpiretime();
                 Date now = new Date();
-                if (now.before(expiretime)) {
+                if (!now.after(expiretime)) {
                     //未过期
                     Integer tempPoint =pointDTO.getPoint();
                     if (tempPoint > 0) {

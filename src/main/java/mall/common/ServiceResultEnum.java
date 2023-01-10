@@ -53,6 +53,8 @@ public enum ServiceResultEnum {
 
     RULE_PERIOD_ERROR("规则时段错误！"),
 
+    GOODS_NUM_LESS("商品库存不足！"),
+
     GOODS_PUT_DOWN("商品已下架！"),
 
     PRIZE_PUT_DOWN("奖品已下架！"),
@@ -118,6 +120,8 @@ public enum ServiceResultEnum {
     PRIZE_TYPE_ERROR("奖品类型异常！"),
 
     MAIL_NO_ERROR("运单号输入异常！"),
+
+    MAIL_NO_EXIST("运单号已存在！"),
 
     POINT_NOT_ENOUGH("积分不足！"),
 

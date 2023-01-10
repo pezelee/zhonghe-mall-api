@@ -44,7 +44,6 @@ public class ZhongHeMallShoppingCartServiceImpl implements ZhongHeMallShoppingCa
         if (zhongHeMallGoods == null) {
             return ServiceResultEnum.GOODS_NOT_EXIST.getResult();
         }
-        int totalItem = zhongHeMallShoppingCartItemMapper.selectCountByUserId(userId);
         //超出单个商品的最大数量
         if (saveCartItemParam.getGoodsCount() < 1) {
             return ServiceResultEnum.SHOPPING_CART_ITEM_NUMBER_ERROR.getResult();
@@ -53,8 +52,13 @@ public class ZhongHeMallShoppingCartServiceImpl implements ZhongHeMallShoppingCa
         if (saveCartItemParam.getGoodsCount() > Constants.SHOPPING_CART_ITEM_LIMIT_NUMBER) {
             return ServiceResultEnum.SHOPPING_CART_ITEM_LIMIT_NUMBER_ERROR.getResult();
         }
+        //商品库存不足
+        if (zhongHeMallGoods.getStockNum() <= saveCartItemParam.getGoodsCount()) {
+            return ServiceResultEnum.GOODS_NUM_LESS.getResult();
+        }
+        int totalItem = zhongHeMallShoppingCartItemMapper.selectCountByUserId(userId);
         //超出最大数量
-        if (totalItem > Constants.SHOPPING_CART_ITEM_TOTAL_NUMBER) {
+        if (totalItem >= Constants.SHOPPING_CART_ITEM_TOTAL_NUMBER) {
             return ServiceResultEnum.SHOPPING_CART_ITEM_TOTAL_NUMBER_ERROR.getResult();
         }
         ZhongHeMallShoppingCartItem zhongHeMallShoppingCartItem = new ZhongHeMallShoppingCartItem();

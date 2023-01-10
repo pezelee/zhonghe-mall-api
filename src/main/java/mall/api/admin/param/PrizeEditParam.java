@@ -29,8 +29,8 @@ public class PrizeEditParam {
     private String prizeIntro;
 
     @ApiModelProperty("分类id")
-    @NotNull(message = "分类id不能为空")
-    @Min(value = 1, message = "分类id最低为1")
+    @NotNull(message = "奖品分类不能为空")
+    @Min(value = 1, message = "奖品分类最低为1")
     private Long prizeCategoryId;
 
     @ApiModelProperty("奖品种类")

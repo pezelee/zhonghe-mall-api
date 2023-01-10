@@ -228,7 +228,7 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public Rule getRuleByActivityId(Long activityId) {
         Activity activity = activityMapper.selectByPrimaryKey(activityId);
-        Rule rule = ruleMapper.selectByPrimaryKey(activity.getRule());
+        Rule rule = ruleMapper.selectByActivityId(activityId);
         if (rule == null) {
             ZhongHeMallException.fail(ServiceResultEnum.DATA_NOT_EXIST.getResult());
         }
@@ -259,6 +259,8 @@ public class ActivityServiceImpl implements ActivityService {
             model.setCreateTime(new Date());
             model.setCreateUser(model.getUpdateUser());
             if (modelMapper.insertSelective(model)>0) {
+                activity.setTemplate(model.getId());
+                activityMapper.updateByPrimaryKeySelective(activity);
                 return ServiceResultEnum.SUCCESS.getResult();
             }
         }else {
@@ -294,6 +296,8 @@ public class ActivityServiceImpl implements ActivityService {
             rule.setCreateTime(new Date());
             rule.setCreateUser(rule.getUpdateUser());
             if (ruleMapper.insertSelective(rule)>0) {
+                activity.setRule(rule.getId());
+                activityMapper.updateByPrimaryKeySelective(activity);
                 return ServiceResultEnum.SUCCESS.getResult();
             }
         }else {

@@ -31,6 +31,15 @@ public class ZhongHeMallNoticeVO implements Serializable {
     @ApiModelProperty("通知内容")
     private String notice;
 
+    @ApiModelProperty("通知内容")
+    private String notice1;
+
+    @ApiModelProperty("通知内容")
+    private String notice2;
+
+    @ApiModelProperty("通知内容")
+    private String notice3;
+
     @ApiModelProperty("通知类型")
     private Byte noticeType;
 

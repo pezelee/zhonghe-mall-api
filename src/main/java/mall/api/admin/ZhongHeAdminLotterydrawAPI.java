@@ -219,8 +219,12 @@ public class ZhongHeAdminLotterydrawAPI {
         NoticeAddParam addParam = new NoticeAddParam();
         addParam.setTitle("会员卡号领取");
         addParam.setSender("会员卡发放中心");
-        addParam.setNotice("您在"+ lotterydraw.getActivityName() +"活动中获得的 " + lotterydraw.getPrizeName() +
-                " 已发送, 兑换码： "+VIPKEY+"，请及时领取。");
+//        addParam.setNotice("您在"+ lotterydraw.getActivityName() +"活动中获得的 " + lotterydraw.getPrizeName() +
+//                " 已发送, 兑换码： "+VIPKEY+"，请及时领取。");
+        addParam.setNotice("您在 #{notice1} 活动中获得的 #{notice2} 已发送, 兑换码： #{notice3} ，请及时领取。");
+        addParam.setNotice1(lotterydraw.getActivityName());
+        addParam.setNotice2(lotterydraw.getPrizeName());
+        addParam.setNotice3(VIPKEY);
         addParam.setNoticeType((byte)0);
         noticeService.saveNotice(addParam,lotterydraw.getUserId());
         //修改状态已接收
@@ -252,11 +256,12 @@ public class ZhongHeAdminLotterydrawAPI {
             }
         }
         //填入运单号，修改状态为发送中
-        if (lotterydrawService.sending(mailParam)) {
+        String result = lotterydrawService.sending(mailParam);
+        if ("success".equals(result)) {
             adminLogService.addSuccessLog(adminUser,"添加邮寄单号接口",mailParam.toString(),"SUCCESS");
             return ResultGenerator.genSuccessResult();
         }
-        return ResultGenerator.genFailResult(ServiceResultEnum.MAIL_NO_ERROR.getResult());
+        return ResultGenerator.genFailResult(result);
 //        lotterydrawService.sending(mailParam);
 //        logger.info("抽奖记录:{}", lotterydraw.toString());
 //        return ResultGenerator.genSuccessResult(lotterydrawService.sending(mailParam));

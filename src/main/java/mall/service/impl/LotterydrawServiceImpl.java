@@ -212,12 +212,12 @@ public class LotterydrawServiceImpl implements LotterydrawService {
     }
 
     @Override
-    public Boolean sending(LotterydrawMailParam param) {
+    public String sending(LotterydrawMailParam param) {
         LotteryDraw temp =lotteryDrawMapper.selectByPrimaryKey(param.getLotteryDrawId());
         if (temp != null && temp.getStatus() >= 2 && temp.getStatus() <= 3) {
             LotteryDraw temp2 =lotteryDrawMapper.selectByMailNo(param.getMailNo());
             if (temp2 != null) {
-                return false;
+                return ServiceResultEnum.MAIL_NO_EXIST.getResult();
             }
             LotteryDrawMail mail = new LotteryDrawMail();
             mail.setMailNo(param.getMailNo());
@@ -226,10 +226,10 @@ public class LotterydrawServiceImpl implements LotterydrawService {
             int lotteryDraw = lotteryDrawMapper.sending(mail);
             if (lotteryDraw > 0) {
                 String mailresult = mailNoNotice(temp,param.getMailNo());//发送通知
-                return true;
+                return ServiceResultEnum.SUCCESS.getResult();
             }
         }
-        return false;
+        return ServiceResultEnum.MAIL_NO_ERROR.getResult();
     }
 
     @Override
@@ -269,8 +269,12 @@ public class LotterydrawServiceImpl implements LotterydrawService {
         NoticeAddParam addParam = new NoticeAddParam();
         addParam.setTitle("您的奖品已发出");
         addParam.setSender("奖品发放中心");
-        addParam.setNotice("您在"+ lotterydraw.getActivityName() +"活动中获得的 " + lotterydraw.getPrizeName() +
-                " 已发出，邮寄单号: "+mailNo+"，请注意收取。");
+//        addParam.setNotice("您在"+ lotterydraw.getActivityName() +"活动中获得的 " + lotterydraw.getPrizeName() +
+//                " 已发出，邮寄单号: "+mailNo+"，请注意收取。");
+        addParam.setNotice("您在 #{notice1} 活动中获得的 #{notice2} 已发出，邮寄单号: #{notice3} ，请注意收取。");
+        addParam.setNotice1(lotterydraw.getActivityName());
+        addParam.setNotice2(lotterydraw.getPrizeName());
+        addParam.setNotice3(mailNo);
         addParam.setNoticeType((byte)0);
         String result = noticeService.saveNotice(addParam,lotterydraw.getUserId());
         return result;

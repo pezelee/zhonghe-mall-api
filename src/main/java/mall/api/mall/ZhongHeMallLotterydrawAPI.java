@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiParam;
 import mall.api.mall.param.SaveLotteryDrawParam;
 import mall.api.mall.vo.ZhongHeMallPrizeDetailVO;
 import mall.common.ServiceResultEnum;
+import mall.config.annotation.TokenToAdminUser;
 import mall.config.annotation.TokenToMallUser;
 import mall.entity.*;
 import mall.service.*;
@@ -302,6 +303,21 @@ public class ZhongHeMallLotterydrawAPI {
         return ResultGenerator.genSuccessResult(lotterydrawInfo);
     }
 
+    @GetMapping("/lotterydraw/model/{id}")
+    @ApiOperation(value = "获取活动的模板信息", notes = "根据id查询")
+    public Result getModel(@PathVariable("id") Long id, @TokenToMallUser MallUser loginMallUser) {
+        logger.info("获取活动配置的模板信息接口    id:{}", id.toString());
+        Activity activity = activityService.getActivityById(id);
+        String check = checkActivity(activity,id,loginMallUser);
+        if (!check.equals(ServiceResultEnum.SUCCESS.getResult())) {
+            return ResultGenerator.genFailResult(check);
+        }
+        Model model = activityService.getModelByActivityId(id);
+        logger.info("模板信息:{}", model.toString());
+//        adminLogService.addSuccessLog(adminUser,"获取活动配置的模板信息接口","id:"+id.toString(),"SUCCESS");
+        return ResultGenerator.genSuccessResult(model);
+    }
+
     /**
      * 奖池详情
      */
@@ -390,6 +406,18 @@ public class ZhongHeMallLotterydrawAPI {
             return ServiceResultEnum.PRIZE_TYPE_ERROR.getResult();
         }
         return "success";
+    }
+
+    private String checkActivity(Activity activity,Long id,MallUser loginMallUser){
+        if (activity == null) {
+            logger.info("配置规则信息 错误:{}", ServiceResultEnum.ACTIVITY_NOT_EXIST.getResult());
+            return ServiceResultEnum.ACTIVITY_NOT_EXIST.getResult();
+        }
+        Long organizationId = activity.getOrganizationId();
+        if(!organizationId.equals(loginMallUser.getOrganizationId())){
+            return ServiceResultEnum.OTHER_ORG.getResult();
+        }
+        return ServiceResultEnum.SUCCESS.getResult();
     }
 
 

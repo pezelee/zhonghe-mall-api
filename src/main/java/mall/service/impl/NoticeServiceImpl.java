@@ -104,6 +104,9 @@ public class NoticeServiceImpl implements NoticeService {
         Notice notice = new Notice();
         notice.setTitle(addParam.getTitle());
         notice.setNotice(addParam.getNotice());
+        notice.setNotice1(addParam.getNotice1());
+        notice.setNotice2(addParam.getNotice2());
+        notice.setNotice3(addParam.getNotice3());
         notice.setSender(addParam.getSender());
         notice.setNoticeType(addParam.getNoticeType());
 

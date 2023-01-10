@@ -26,6 +26,12 @@ public class Notice {
 
     private String notice;
 
+    private String notice1;
+
+    private String notice2;
+
+    private String notice3;
+
     private Byte noticeType;
 
     private Byte readFlag;

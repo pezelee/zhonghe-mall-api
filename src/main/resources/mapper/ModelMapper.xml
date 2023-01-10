@@ -45,7 +45,7 @@
       #{updateUser,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP},
       )
   </insert>
-  <insert id="insertSelective" parameterType="mall.entity.Model">
+  <insert id="insertSelective" parameterType="mall.entity.Model" useGeneratedKeys="true" keyProperty="id">
     insert into tb_zhonghe_mall_model
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

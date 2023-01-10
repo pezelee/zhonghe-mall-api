@@ -29,7 +29,7 @@ public class GoodsEditParam {
     private String goodsIntro;
 
     @ApiModelProperty("分类id")
-    @NotNull(message = "分类id不能为空")
+    @NotNull(message = "商品分类不能为空")
     @Min(value = 1, message = "分类id最低为1")
     private Long goodsCategoryId;
 

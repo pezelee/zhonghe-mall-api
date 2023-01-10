@@ -256,7 +256,7 @@ public class ZhongHeMallOrderServiceImpl implements ZhongHeMallOrderService {
             }
             //存在数量大于库存的情况，直接返回错误提醒
             if (shoppingCartItemVO.getGoodsCount() > zhongHeMallGoodsMap.get(shoppingCartItemVO.getGoodsId()).getStockNum()) {
-                ZhongHeMallException.fail(ServiceResultEnum.SHOPPING_ITEM_COUNT_ERROR.getResult());
+                ZhongHeMallException.fail(shoppingCartItemVO.getGoodsName() + ServiceResultEnum.SHOPPING_ITEM_COUNT_ERROR.getResult());
             }
         }
         //删除购物项

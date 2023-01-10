@@ -349,6 +349,36 @@ public class ZhongHeAdminActivityAPI {
         return ResultGenerator.genSuccessResult(model);
     }
 
+    @RequestMapping(value = "/activity/model/{id}", method = RequestMethod.PUT)
+    @ApiOperation(value = "配置活动的模板信息", notes = "配置活动的规则信息")
+    public Result updateModel(@RequestBody @Valid ModelEditParam modelEditParam, @TokenToAdminUser AdminUserToken adminUser) {
+        logger.info("配置模板信息接口  adminUser:{}", adminUser.toString());
+        //判定权限是否符合--总管理员或相应的分行管理员
+        Activity activity = activityService.getActivityById(modelEditParam.getActivityId());
+        if (activity == null) {
+            logger.info("配置模板信息 错误:{}", ServiceResultEnum.ACTIVITY_NOT_EXIST.getResult());
+            return ResultGenerator.genFailResult(ServiceResultEnum.ACTIVITY_NOT_EXIST.getResult());
+        }
+        Long organizationId = activity.getOrganizationId();
+        String isAdmin = CheckUtils.isAdmin(adminUser,organizationId);
+        if (!isAdmin.equals(ServiceResultEnum.SUCCESS.getResult())) {
+            logger.info("配置模板信息 错误:{}", isAdmin);
+            return ResultGenerator.genFailResult(isAdmin);
+        }
+
+        Model model = new Model();
+        BeanUtil.copyProperties(modelEditParam, model);
+        model.setUpdateUser(adminUser.getAdminUserId());
+        String result = activityService.updateModel(model);
+        logger.info("配置模板信息 结果:{}", result);
+        if (ServiceResultEnum.SUCCESS.getResult().equals(result)) {
+            adminLogService.addSuccessLog(adminUser,"配置模板信息接口",modelEditParam.toString(),"SUCCESS");
+            return ResultGenerator.genSuccessResult();
+        } else {
+            return ResultGenerator.genFailResult(result);
+        }
+    }
+
     private String check(Activity activity,Long id,AdminUserToken adminUser){
         if (activity == null) {
             logger.info("配置规则信息 错误:{}", ServiceResultEnum.ACTIVITY_NOT_EXIST.getResult());
