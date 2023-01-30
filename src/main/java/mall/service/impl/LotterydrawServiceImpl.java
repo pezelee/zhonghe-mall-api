@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class LotterydrawServiceImpl implements LotterydrawService {
@@ -49,15 +50,19 @@ public class LotterydrawServiceImpl implements LotterydrawService {
         List<LotteryDraw> lotteryDrawList;
         int total;
         byte role = (byte) pageUtil.get("role");
+//        Integer all = (int) pageUtil.get("all");//本次活动所有人抽奖记录列表
         if (role == 0) {
             //总管理员
             lotteryDrawList = lotteryDrawMapper.findLotteryDrawList(pageUtil);
             total = lotteryDrawMapper.getTotalLotteryDraw(pageUtil);
         }else if(role == -1){
-            //客户
+            //客户个人中心抽奖记录列表
             lotteryDrawList = lotteryDrawMapper.findLotteryDrawListByUserId(pageUtil);
             total = lotteryDrawMapper.getTotalLotteryDrawByUserId(pageUtil);
-        }
+        }else if(role == -2){
+            //本次活动所有人抽奖记录列表
+            lotteryDrawList = lotteryDrawMapper.findLotteryDrawListAllUser(pageUtil);
+            total = lotteryDrawMapper.getTotalLotteryDrawAllUser(pageUtil);        }
         else {
             //分行人员
             lotteryDrawList = lotteryDrawMapper.findLotteryDrawListByOrg(pageUtil);

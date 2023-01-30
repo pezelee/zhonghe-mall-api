@@ -19,9 +19,9 @@ public class RuleAddParam {
     @Min(value = 1, message = "活动id不能为空")
     private Long activityId;
 
-    @ApiModelProperty("未中奖词")
-    @NotEmpty(message = "未中奖词 不能为空")
-    @Length(max = 200,message = "未中奖词 内容过长")
+    @ApiModelProperty("参与奖词")
+    @NotEmpty(message = "参与奖词 不能为空")
+    @Length(max = 200,message = "参与奖词 内容过长")
     private String noticeEmpty;
 
     @ApiModelProperty("一等奖词")
@@ -37,8 +37,8 @@ public class RuleAddParam {
     @Length(max = 200,message = "三等奖词 内容过长")
     private String noticeLv3;
 
-    @ApiModelProperty("其他奖词")
-    @Length(max = 200,message = "其他奖词 内容过长")
+    @ApiModelProperty("四等及以下奖词")
+    @Length(max = 200,message = "四等及以下奖词 内容过长")
     private String noticeOther;
 
     @ApiModelProperty("抽到空缺奖品时：0：重新抽取  1：顺延下一等奖品  2：未中奖")

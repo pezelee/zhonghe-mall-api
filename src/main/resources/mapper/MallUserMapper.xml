@@ -41,7 +41,7 @@
         <if test="organizationId!=null and organizationId!=''">
             and organization_id = #{organizationId}
         </if>
-        order by create_time desc
+        order by user_id desc
         <if test="start!=null and limit!=null">
             limit #{start},#{limit}
         </if>

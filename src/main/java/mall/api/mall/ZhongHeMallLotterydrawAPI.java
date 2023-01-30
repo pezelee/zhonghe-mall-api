@@ -126,7 +126,7 @@ public class ZhongHeMallLotterydrawAPI {
         if (!StringUtils.isEmpty(activityId)) {
             params.put("activityId", activityId);
         }
-        Byte role = -1;
+        Byte role = -2;
         params.put("role", role);
 //        params.put("userId", userId);
         PageQueryUtil pageUtil = new PageQueryUtil(params);
@@ -458,12 +458,14 @@ public class ZhongHeMallLotterydrawAPI {
     private double sumWeight(List<ZhongHeMallPrize> prizeList){
         double sumWeight = 0;
         for (ZhongHeMallPrize prize : prizeList) {
-            sumWeight += prize.getPrizeWeight();
+            sumWeight += prize.getPrizeWeight()*prize.getStockNum();
+//            sumWeight += prize.getPrizeWeight();
         }
 //        logger.info("总权重:{}", sumWeight);
         List<Double> weightList = new ArrayList<Double>();
         weightList.add((double) 0);
         for (ZhongHeMallPrize prize : prizeList) {
+//            double temp = Double.parseDouble(String.valueOf(prize.getPrizeWeight()*prize.getStockNum()))/sumWeight;
             double temp = Double.parseDouble(String.valueOf(prize.getPrizeWeight()))/sumWeight;
             weightList.add(temp);
         }

@@ -10,6 +10,7 @@ import mall.service.ActivityService;
 import mall.util.CheckUtils;
 import mall.util.PageQueryUtil;
 import mall.util.PageResult;
+import mall.util.ResultGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -74,6 +75,9 @@ public class ActivityServiceImpl implements ActivityService {
         Activity temp = activityMapper.selectByPrimaryKey(activity.getActivityId());
         if (temp == null) {
             return ServiceResultEnum.DATA_NOT_EXIST.getResult();
+        }
+        if (activity.getStatus() == 0) {
+            return ServiceResultEnum.ACTIVITY_PUT_UP.getResult();
         }
         Activity temp2 = activityMapper.selectByOrganizationAndName(activity.getActivityName(), activity.getOrganizationId());
         if (temp2 != null && !temp2.getActivityId().equals(activity.getActivityId())) {

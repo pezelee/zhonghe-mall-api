@@ -55,6 +55,12 @@
     activity_id, activity_name, draw_time, expire_time, status, prize_id, prize_name,prize_value,prize_type,mail_no,
     create_user, create_time, update_user, update_time
     </sql>
+    <sql id="showall_Column_List">
+    self.lotterydraw_id, self.user_id, self.login_name, self.nick_name,sponsor, self.organization_id, self.org_name,
+    self.activity_id, self.activity_name, self.draw_time, self.expire_time, self.status,
+    self.prize_id, self.prize_name,self.prize_value, self.prize_type, self.mail_no,
+    self.create_user, self.create_time, self.update_user, self.update_time
+    </sql>
     <insert id="batchInsert">
         INSERT INTO tb_zhonghe_mall_lotterydraw(user_id, login_name, nick_name,sponsor, organization_id, org_name,
         activity_id, activity_name, draw_time, expire_time, status, prize_id, prize_name,prize_value,prize_type,mail_no,
@@ -653,6 +659,36 @@
                 and user_id = #{userId}
             </if>
 --                 and expire_time &gt;= now()
+        </where>
+    </select>
+
+    <select id="findLotteryDrawListAllUser" parameterType="Map" resultMap="BaseResultMap">
+        select
+        <include refid="showall_Column_List"/>
+        from tb_zhonghe_mall_lotterydraw as self
+        left join tb_zhonghe_mall_prize_info as pi on self.prize_id = pi.prize_id
+        <where> 1=1
+            <if test="activityId!=null and activityId!=''">
+                and self.activity_id = #{activityId}
+            </if>
+                and pi.prize_level = 1
+        </where>
+        order by self.draw_time desc
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+
+    <select id="getTotalLotteryDrawAllUser" parameterType="Map" resultType="int">
+        select count(*)
+        from tb_zhonghe_mall_lotterydraw as self
+        left join tb_zhonghe_mall_prize_info as pi on self.prize_id = pi.prize_id
+        <where> 1=1
+            <if test="activityId!=null and activityId!=''">
+                and self.activity_id = #{activityId}
+            </if>
+            and pi.prize_level = 1
+            --                 and expire_time &gt;= now()
         </where>
     </select>
 <!-- 从已抽奖变成待发送  -->

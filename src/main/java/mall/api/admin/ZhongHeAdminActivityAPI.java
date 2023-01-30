@@ -1,5 +1,6 @@
 package mall.api.admin;
 
+import com.sun.org.apache.bcel.internal.generic.IFNE;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -144,6 +145,10 @@ public class ZhongHeAdminActivityAPI {
         if (!isAdmin.equals(ServiceResultEnum.SUCCESS.getResult())) {
             logger.info("修改活动信息 错误:{}", isAdmin);
             return ResultGenerator.genFailResult(isAdmin);
+        }
+        if (activity.getStatus() == 0) {
+            logger.info("修改活动信息 错误:{}", ServiceResultEnum.ACTIVITY_PUT_UP.getResult());
+            return ResultGenerator.genFailResult(ServiceResultEnum.ACTIVITY_PUT_UP.getResult());
         }
         activity.setUpdateUser(adminUser.getAdminUserId());
         String result = activityService.updatePrizes(activity,activityEditParam);
@@ -320,6 +325,10 @@ public class ZhongHeAdminActivityAPI {
             logger.info("配置规则信息 错误:{}", isAdmin);
             return ResultGenerator.genFailResult(isAdmin);
         }
+        if (activity.getStatus() == 0) {
+            logger.info("配置规则信息 错误:{}", ServiceResultEnum.ACTIVITY_PUT_UP.getResult());
+            return ResultGenerator.genFailResult(ServiceResultEnum.ACTIVITY_PUT_UP.getResult());
+        }
 
         Rule rule = new Rule();
         BeanUtil.copyProperties(ruleEditParam, rule);
@@ -364,6 +373,10 @@ public class ZhongHeAdminActivityAPI {
         if (!isAdmin.equals(ServiceResultEnum.SUCCESS.getResult())) {
             logger.info("配置模板信息 错误:{}", isAdmin);
             return ResultGenerator.genFailResult(isAdmin);
+        }
+        if (activity.getStatus() == 0) {
+            logger.info("配置模板信息接口 错误:{}", ServiceResultEnum.ACTIVITY_PUT_UP.getResult());
+            return ResultGenerator.genFailResult(ServiceResultEnum.ACTIVITY_PUT_UP.getResult());
         }
 
         Model model = new Model();

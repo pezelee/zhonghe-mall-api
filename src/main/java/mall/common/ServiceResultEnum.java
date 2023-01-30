@@ -61,6 +61,8 @@ public enum ServiceResultEnum {
 
     ACTIVITY_PUT_DOWN("活动已下架！"),
 
+    ACTIVITY_PUT_UP("上架活动不可修改！"),
+
     PRIZE_USED("奖品已在其他活动！"),
 
     PRIZE_OTHER_ORG("奖品不属于活动分行！"),

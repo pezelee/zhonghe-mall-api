@@ -14,7 +14,7 @@ public class Rule {
 
     private String activityName;
 
-    private String noticeEmpty;//未中奖词
+    private String noticeEmpty;//参与奖词
 
     private String noticeLv1;//一等奖词
 
@@ -22,7 +22,7 @@ public class Rule {
 
     private String noticeLv3;//三等奖词
 
-    private String noticeOther;//其他奖词
+    private String noticeOther;//四等及以下奖词
 
     private Byte vacancy;//抽到空缺奖品时：0：重新抽取  1：顺延下一等奖品  2：未中奖
 

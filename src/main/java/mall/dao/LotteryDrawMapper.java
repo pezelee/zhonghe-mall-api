@@ -45,6 +45,10 @@ public interface LotteryDrawMapper {
 
     int getTotalLotteryDrawByUserId(PageQueryUtil pageUtil);
 
+    List<LotteryDraw> findLotteryDrawListAllUser(PageQueryUtil pageUtil);
+
+    int getTotalLotteryDrawAllUser(PageQueryUtil pageUtil);
+
     int updateStockNum(@Param("stockNumDTO") PrizeStockNumDTO stockNumDTO);
 
     int toBeSent(@Param("lotteryDrawId") Long lotteryDrawId);
